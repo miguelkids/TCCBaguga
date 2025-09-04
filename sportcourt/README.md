@@ -1,5 +1,3 @@
-# semen
-
 ## Project setup
 ```
 npm install
