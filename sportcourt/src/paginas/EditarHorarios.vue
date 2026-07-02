@@ -1,6 +1,7 @@
 <template>
   <div class="min-h-screen bg-slate-50 flex flex-col font-sans">
-    <div class="max-w-md w-full mx-auto px-4 py-8 pb-24">
+    <TopbarDono />
+    <div class="max-w-lg w-full mx-auto px-4 py-8 pb-24">
       <h1 class="text-xl font-extrabold text-slate-900 mb-6">Gerenciar Horários Ocupados</h1>
 
       <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm mb-4 flex flex-col gap-4">
@@ -57,10 +58,12 @@
 </template>
 
 <script>
+import TopbarDono from "@/components/TopbarDono.vue";
 import { api } from "@/api";
 
 export default {
   name: "EditarHorarios",
+  components: { TopbarDono },
   data() {
     return {
       quadraId: localStorage.getItem("quadraId") || null,

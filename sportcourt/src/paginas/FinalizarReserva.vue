@@ -19,159 +19,163 @@
 
       <!-- Layout desktop: 2 colunas -->
       <div class="flex flex-col md:flex-row md:gap-8 md:items-start">
+
         <!-- Coluna Esquerda: Card da quadra + Calendário -->
         <div class="flex-1 min-w-0">
-      <!-- Card da quadra -->
-      <div v-if="quadra && quadra.nomeQuadra" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm mb-5">
-        <div class="w-full h-40 overflow-hidden bg-slate-100">
-          <img v-if="quadra.fotoUrl" :src="quadra.fotoUrl.startsWith('http') ? quadra.fotoUrl : `http://localhost:3006${quadra.fotoUrl}`" :alt="quadra.nomeQuadra" class="w-full h-full object-cover" />
-          <div v-else class="w-full h-full flex items-center justify-center bg-slate-100">
-            <div class="w-16 h-16 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 10.07 4h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 18.07 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3"/></svg>
+
+          <!-- Card da quadra -->
+          <div v-if="quadra && quadra.nomeQuadra" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm mb-5">
+            <div class="w-full h-40 overflow-hidden bg-slate-100">
+              <img v-if="quadra.fotoUrl" :src="quadra.fotoUrl.startsWith('http') ? quadra.fotoUrl : `http://localhost:3006${quadra.fotoUrl}`" :alt="quadra.nomeQuadra" class="w-full h-full object-cover" />
+              <div v-else class="w-full h-full flex items-center justify-center bg-slate-100">
+                <div class="w-16 h-16 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 10.07 4h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 18.07 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="p-4">
+              <h2 class="text-lg font-bold text-slate-800 m-0 mb-1">{{ quadra.nomeQuadra }}</h2>
+              <div class="flex items-center gap-1.5 text-xs text-slate-500 mb-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ quadra.endereco }}<span v-if="quadra.cidade"> — {{ quadra.cidade }}</span>
+              </div>
+              <div class="text-base font-bold text-emerald-600">R$ {{ quadra.preco }} / hora</div>
             </div>
           </div>
-        </div>
-        <div class="p-4">
-          <h2 class="text-lg font-bold text-slate-800 m-0 mb-1">{{ quadra.nomeQuadra }}</h2>
-          <div class="flex items-center gap-1.5 text-xs text-slate-500 mb-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            {{ quadra.endereco }}<span v-if="quadra.cidade"> — {{ quadra.cidade }}</span>
-          </div>
-          <div class="text-base font-bold text-emerald-600">R$ {{ quadra.preco }} / hora</div>
-        </div>
-      </div>
 
-      <p v-else-if="!quadra || !quadra.nomeQuadra" class="text-center text-slate-500 py-5">Carregando informações da quadra...</p>
+          <p v-else-if="!quadra || !quadra.nomeQuadra" class="text-center text-slate-500 py-5">Carregando informações da quadra...</p>
 
-      <!-- Calendário -->
-      <div v-if="quadra && quadra.nomeQuadra" class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-4 p-5 flex flex-col gap-4">
-        <h3 class="text-base font-bold text-slate-800 m-0">Escolha um dia</h3>
-        <div class="border border-slate-200 rounded-xl overflow-hidden">
-          <div class="flex justify-between items-center px-4 py-3 bg-slate-50 border-b border-slate-200">
-            <button @click="mudarMes(-1)" class="bg-transparent border-none text-lg cursor-pointer text-slate-700 w-7 h-7 flex items-center justify-center rounded-md hover:bg-slate-200 transition-colors">&lt;</button>
-            <div class="font-bold text-sm capitalize text-slate-800">{{ mesAtualNome }} {{ anoAtual }}</div>
-            <button @click="mudarMes(1)" class="bg-transparent border-none text-lg cursor-pointer text-slate-700 w-7 h-7 flex items-center justify-center rounded-md hover:bg-slate-200 transition-colors">&gt;</button>
-          </div>
-          <div class="grid grid-cols-7 text-center py-2.5 bg-white text-xs font-semibold text-slate-400 border-b border-slate-100">
-            <div v-for="d in diasSemanaLabel" :key="d">{{ d }}</div>
-          </div>
-          <div class="grid grid-cols-7 bg-white p-2 gap-1">
-            <div
-              v-for="dia in diasMes"
-              :key="dia.id"
-              class="aspect-square flex items-center justify-center text-sm font-medium rounded-lg cursor-pointer transition-all"
-              :class="{
-                'text-slate-300 cursor-default': dia.data && !dia.valido,
-                'bg-emerald-500 text-white font-bold shadow-sm': dia.data && dia.data === dataSelecionada,
-                'hover:bg-slate-100 hover:text-emerald-600': dia.data && dia.valido && dia.data !== dataSelecionada,
-              }"
-              @click="selecionarDia(dia)"
-            >
-              <span v-if="dia.data">{{ dia.numero }}</span>
+          <!-- Calendário -->
+          <div v-if="quadra && quadra.nomeQuadra" class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-4 p-5 flex flex-col gap-4">
+            <h3 class="text-base font-bold text-slate-800 m-0">Escolha um dia</h3>
+            <div class="border border-slate-200 rounded-xl overflow-hidden">
+              <div class="flex justify-between items-center px-4 py-3 bg-slate-50 border-b border-slate-200">
+                <button @click="mudarMes(-1)" class="bg-transparent border-none text-lg cursor-pointer text-slate-700 w-7 h-7 flex items-center justify-center rounded-md hover:bg-slate-200 transition-colors">&lt;</button>
+                <div class="font-bold text-sm capitalize text-slate-800">{{ mesAtualNome }} {{ anoAtual }}</div>
+                <button @click="mudarMes(1)" class="bg-transparent border-none text-lg cursor-pointer text-slate-700 w-7 h-7 flex items-center justify-center rounded-md hover:bg-slate-200 transition-colors">&gt;</button>
+              </div>
+              <div class="grid grid-cols-7 text-center py-2.5 bg-white text-xs font-semibold text-slate-400 border-b border-slate-100">
+                <div v-for="d in diasSemanaLabel" :key="d">{{ d }}</div>
+              </div>
+              <div class="grid grid-cols-7 bg-white p-2 gap-1">
+                <div
+                  v-for="dia in diasMes"
+                  :key="dia.id"
+                  class="aspect-square flex items-center justify-center text-sm font-medium rounded-lg cursor-pointer transition-all"
+                  :class="{
+                    'text-slate-300 cursor-default': dia.data && !dia.valido,
+                    'bg-emerald-500 text-white font-bold shadow-sm': dia.data && dia.data === dataSelecionada,
+                    'hover:bg-slate-100 hover:text-emerald-600': dia.data && dia.valido && dia.data !== dataSelecionada,
+                  }"
+                  @click="selecionarDia(dia)"
+                >
+                  <span v-if="dia.data">{{ dia.numero }}</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        </div><!-- /calendário -->
 
         </div><!-- /Coluna Esquerda -->
+
         <!-- Coluna Direita: Resumo e Confirmação -->
         <div class="w-full md:w-[420px] md:flex-shrink-0">
-      <!-- Resumo e Confirmação -->
-      <div v-if="dataSelecionada && horarioSelecionado" class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-4 p-5 flex flex-col gap-4">
-        <h3 class="text-base font-bold text-slate-800 m-0">Resumo da Reserva</h3>
-        <div class="flex gap-3">
-          <div class="flex-1 flex items-center gap-2 p-3 bg-slate-50 rounded-xl text-sm font-semibold text-slate-700">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span>{{ formatarDataBR(dataSelecionada) }}</span>
-          </div>
-          <div class="flex-1 flex items-center gap-2 p-3 bg-slate-50 rounded-xl text-sm font-semibold text-slate-700">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>{{ horarioSelecionado }}</span>
-          </div>
-        </div>
 
-        <div class="mt-1">
-          <h3 class="text-base font-bold text-slate-800 mb-3">Seus dados</h3>
-          <div class="flex flex-col gap-1 mb-3">
-            <label class="text-xs font-semibold text-slate-700">Nome</label>
-            <input v-model="jogador.nome" placeholder="Seu nome completo" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors" />
-          </div>
-          <div class="flex flex-col gap-1 mb-3">
-            <label class="text-xs font-semibold text-slate-700">Telefone</label>
-            <input v-model="jogador.telefone" placeholder="(11) 99999-9999" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors" />
-          </div>
-        </div>
+          <!-- Resumo e Confirmação -->
+          <div v-if="dataSelecionada && horarioSelecionado" class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-4 p-5 flex flex-col gap-4">
+            <h3 class="text-base font-bold text-slate-800 m-0">Resumo da Reserva</h3>
+            <div class="flex gap-3">
+              <div class="flex-1 flex items-center gap-2 p-3 bg-slate-50 rounded-xl text-sm font-semibold text-slate-700">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span>{{ formatarDataBR(dataSelecionada) }}</span>
+              </div>
+              <div class="flex-1 flex items-center gap-2 p-3 bg-slate-50 rounded-xl text-sm font-semibold text-slate-700">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>{{ horarioSelecionado }}</span>
+              </div>
+            </div>
 
-        <!-- Tipo de Jogo -->
-        <div>
-          <h3 class="text-base font-bold text-slate-800 mb-2.5">Tipo de jogo</h3>
-          <div class="flex gap-2 flex-wrap">
+            <div class="mt-1">
+              <h3 class="text-base font-bold text-slate-800 mb-3">Seus dados</h3>
+              <div class="flex flex-col gap-1 mb-3">
+                <label class="text-xs font-semibold text-slate-700">Nome</label>
+                <input v-model="jogador.nome" placeholder="Seu nome completo" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors" />
+              </div>
+              <div class="flex flex-col gap-1 mb-3">
+                <label class="text-xs font-semibold text-slate-700">Telefone</label>
+                <input v-model="jogador.telefone" placeholder="(11) 99999-9999" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors" />
+              </div>
+            </div>
+
+            <!-- Tipo de Jogo -->
+            <div>
+              <h3 class="text-base font-bold text-slate-800 mb-2.5">Tipo de jogo</h3>
+              <div class="flex gap-2 flex-wrap">
+                <button
+                  type="button"
+                  class="flex-1 min-w-36 flex items-center justify-center gap-2 px-3.5 py-3 border-2 rounded-xl text-sm font-semibold cursor-pointer transition-all"
+                  :class="tipoJogo === 'horario_cheio' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-500 hover:border-emerald-400'"
+                  @click.prevent="tipoJogo = 'horario_cheio'; slotAguardando = null"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Horário Cheio
+                </button>
+                <button
+                  type="button"
+                  class="flex-1 min-w-36 flex items-center justify-center gap-2 px-3.5 py-3 border-2 rounded-xl text-sm font-semibold cursor-pointer transition-all"
+                  :class="tipoJogo === 'contra_time' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-500 hover:border-emerald-400'"
+                  @click.prevent="tipoJogo = 'contra_time'"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  Contra Outro Time
+                </button>
+              </div>
+
+              <div v-if="tipoJogo === 'contra_time'" class="flex flex-col gap-1 mt-3">
+                <label class="text-xs font-semibold text-slate-700">Nome do Time <span class="text-red-500 text-xs font-semibold ml-1">*</span></label>
+                <input v-model="nomeTime" placeholder="Ex: Raios do Sul" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors" />
+              </div>
+            </div>
+
+            <!-- Quem vai jogar -->
+            <div :class="listaSemNomes ? 'p-3 bg-red-50 border-2 border-red-200 rounded-xl' : ''">
+              <h3 class="text-base font-bold text-slate-800 mb-1">
+                Quem vai jogar?
+                <span v-if="jogadoresNomes.length" class="inline-flex items-center justify-center bg-emerald-500 text-white text-xs font-bold rounded-full min-w-5 h-5 px-1.5 ml-1.5">{{ jogadoresNomes.length }}</span>
+                <span v-else class="text-red-500 text-xs font-semibold ml-1.5">* obrigatório</span>
+              </h3>
+              <p class="text-xs text-slate-500 mb-2.5">Informe quantas pessoas vão participar e os nomes de cada uma.</p>
+              <div class="flex gap-2 items-stretch">
+                <input type="number" v-model.number="quantidadeJogadores" min="1" max="50" class="w-28 flex-shrink-0 px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 transition-colors" placeholder="Nº de pessoas" />
+                <button type="button" class="flex items-center gap-1.5 px-4 py-2.5 bg-emerald-500 text-white border-none rounded-xl text-sm font-semibold cursor-pointer whitespace-nowrap flex-shrink-0 transition-opacity disabled:opacity-40 hover:opacity-85" :disabled="!quantidadeJogadores || quantidadeJogadores < 1" @click.prevent="abrirPopupJogadores">
+                  {{ jogadoresNomes.length ? 'Editar lista' : 'Montar lista' }}
+                </button>
+              </div>
+              <div v-if="jogadoresNomes.length" class="flex flex-wrap gap-1.5 mt-2.5">
+                <span v-for="(jog, i) in jogadoresNomes" :key="i"
+                  class="inline-flex items-center px-2.5 py-1 bg-slate-100 border border-slate-200 rounded-full text-xs font-medium text-slate-700"
+                  :class="jog.goleiro ? 'bg-emerald-50 border-emerald-200' : ''"
+                >
+                  {{ jog.nome }}
+                  <span v-if="jog.goleiro" class="text-[10px] opacity-80 ml-1 font-semibold text-emerald-600">
+                    (Goleiro{{ jog.goleiroPaga ? '' : ' - não paga' }})
+                  </span>
+                </span>
+              </div>
+              <p v-if="listaSemNomes" class="flex items-center gap-1.5 text-xs text-red-600 mt-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Informe a quantidade de jogadores e monte a lista de nomes antes de confirmar.
+              </p>
+            </div>
+
             <button
               type="button"
-              class="flex-1 min-w-36 flex items-center justify-center gap-2 px-3.5 py-3 border-2 rounded-xl text-sm font-semibold cursor-pointer transition-all"
-              :class="tipoJogo === 'horario_cheio' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-500 hover:border-emerald-400'"
-              @click.prevent="tipoJogo = 'horario_cheio'; slotAguardando = null"
+              class="flex items-center justify-center gap-2.5 w-full py-4 mt-2 bg-emerald-500 text-white border-none rounded-2xl text-base font-bold cursor-pointer transition-all hover:-translate-y-px hover:shadow-lg"
+              @click.prevent="finalizarReserva"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              Horário Cheio
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Confirmar Reserva
             </button>
-            <button
-              type="button"
-              class="flex-1 min-w-36 flex items-center justify-center gap-2 px-3.5 py-3 border-2 rounded-xl text-sm font-semibold cursor-pointer transition-all"
-              :class="tipoJogo === 'contra_time' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-500 hover:border-emerald-400'"
-              @click.prevent="tipoJogo = 'contra_time'"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              Contra Outro Time
-            </button>
-          </div>
-
-          <div v-if="tipoJogo === 'contra_time'" class="flex flex-col gap-1 mt-3">
-            <label class="text-xs font-semibold text-slate-700">Nome do Time <span class="text-red-500 text-xs font-semibold ml-1">*</span></label>
-            <input v-model="nomeTime" placeholder="Ex: Raios do Sul" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors" />
-          </div>
-        </div>
-
-        <!-- Quem vai jogar -->
-        <div :class="listaSemNomes ? 'p-3 bg-red-50 border-2 border-red-200 rounded-xl' : ''">
-          <h3 class="text-base font-bold text-slate-800 mb-1">
-            Quem vai jogar?
-            <span v-if="jogadoresNomes.length" class="inline-flex items-center justify-center bg-emerald-500 text-white text-xs font-bold rounded-full min-w-5 h-5 px-1.5 ml-1.5">{{ jogadoresNomes.length }}</span>
-            <span v-else class="text-red-500 text-xs font-semibold ml-1.5">* obrigatório</span>
-          </h3>
-          <p class="text-xs text-slate-500 mb-2.5">Informe quantas pessoas vão participar e os nomes de cada uma.</p>
-          <div class="flex gap-2 items-stretch">
-            <input type="number" v-model.number="quantidadeJogadores" min="1" max="50" class="w-28 flex-shrink-0 px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 transition-colors" placeholder="Nº de pessoas" />
-            <button type="button" class="flex items-center gap-1.5 px-4 py-2.5 bg-emerald-500 text-white border-none rounded-xl text-sm font-semibold cursor-pointer whitespace-nowrap flex-shrink-0 transition-opacity disabled:opacity-40 hover:opacity-85" :disabled="!quantidadeJogadores || quantidadeJogadores < 1" @click.prevent="abrirPopupJogadores">
-              {{ jogadoresNomes.length ? 'Editar lista' : 'Montar lista' }}
-            </button>
-          </div>
-          <div v-if="jogadoresNomes.length" class="flex flex-wrap gap-1.5 mt-2.5">
-            <span v-for="(jog, i) in jogadoresNomes" :key="i"
-              class="inline-flex items-center px-2.5 py-1 bg-slate-100 border border-slate-200 rounded-full text-xs font-medium text-slate-700"
-              :class="jog.goleiro ? 'bg-emerald-50 border-emerald-200' : ''"
-            >
-              {{ jog.nome }}
-              <span v-if="jog.goleiro" class="text-[10px] opacity-80 ml-1 font-semibold text-emerald-600">
-                (Goleiro{{ jog.goleiroPaga ? '' : ' - não paga' }})
-              </span>
-            </span>
-          </div>
-          <p v-if="listaSemNomes" class="flex items-center gap-1.5 text-xs text-red-600 mt-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Informe a quantidade de jogadores e monte a lista de nomes antes de confirmar.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          class="flex items-center justify-center gap-2.5 w-full py-4 mt-2 bg-emerald-500 text-white border-none rounded-2xl text-base font-bold cursor-pointer transition-all hover:-translate-y-px hover:shadow-lg"
-          @click.prevent="finalizarReserva"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Confirmar Reserva
-        </button>
-      </div><!-- /card resumo -->
+          </div><!-- /card resumo -->
 
         </div><!-- /Coluna Direita -->
       </div><!-- /Layout desktop -->
