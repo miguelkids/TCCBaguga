@@ -16,6 +16,13 @@ const PaginaEditarHorarios = () => import('../paginas/EditarHorarios.vue')
 const PaginaReservasDono = () => import('../paginas/ReservasDono.vue')
 const PaginaReservaDetalhesDono = () => import('../paginas/ReservaDetalhesDono.vue')
 const PaginaPerfilDono = () => import('../paginas/PerfilDono.vue')
+const PaginaEditarQuadra = () => import('../paginas/EditarQuadra.vue')
+const PaginaFinalizarReserva = () => import('../paginas/FinalizarReserva.vue')
+const PaginaEditarDataHorario = () => import('../paginas/EditarDataHorario.vue')
+const PaginaMenuJogador = () => import('../paginas/MenuJogador.vue')
+const PaginaContaJogador = () => import('../paginas/ContaJogador.vue')
+const PaginaFaturamentoDono = () => import('../paginas/FaturamentoDono.vue')
+const PaginaMinhasQuadras = () => import('../paginas/MinhasQuadras.vue')
 const rotas = [
   {
     path: '/',
@@ -106,7 +113,50 @@ const rotas = [
     name: 'ReservaPerfilDono',
     component: PaginaPerfilDono,
     meta: { requerAutenticacao: false}
+  },
+  {
+    path: '/editar-quadra',
+    name: 'EditarQuadra',
+    component: PaginaEditarQuadra,
+    meta: { requerAutenticacao: true}
+  },
+  {
+    path: '/finalizar-reserva',
+    name: 'FinalizarReserva',
+    component: PaginaFinalizarReserva,
+    meta: { requerAutenticacao: true}
+  },
+  {
+    path: '/editar-data-horario',
+    name: 'EditarDataHorario',
+    component: PaginaEditarDataHorario,
+    meta: { requerAutenticacao: true}
+  },
+  {
+    path: '/menu-jogador',
+    name: 'MenuJogador',
+    component: PaginaMenuJogador,
+    meta: { requerAutenticacao: true}
+  },
+  {
+    path: '/conta-jogador',
+    name: 'ContaJogador',
+    component: PaginaContaJogador,
+    meta: {requerAutenticacao: true}
+  },
+  {
+    path: '/faturamento-dono',
+    name: 'FaturamentoDono',
+    component: PaginaFaturamentoDono,
+    meta: {requerAutenticacao: true}
+  },
+  {
+    path: '/minhas-quadras',
+    name: 'MinhasQuadras',
+    component: PaginaMinhasQuadras,
+    meta: {requerAutenticacao: true}
   }
+ 
 ]
 
 const router = createRouter({

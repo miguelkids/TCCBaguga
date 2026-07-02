@@ -73,7 +73,7 @@
               <input id="input-senha-login" :type="mostrarSenha ? 'text' : 'password'" v-model="senha" placeholder="••••••••" required
                 class="w-full pl-10 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all placeholder:text-slate-400" />
               <button type="button" @click="mostrarSenha = !mostrarSenha"
-                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors p-0 bg-transparent border-none cursor-pointer">
+                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors p-0 bg-transparent border-none cursor-pointer w-auto mt-0 shadow-none hover:scale-100 hover:shadow-none">
                 <img :src="olho" alt="Mostrar senha" class="w-5 h-5 opacity-60" />
               </button>
             </div>
@@ -95,12 +95,12 @@
         <!-- Botões Sociais -->
         <div class="flex gap-3">
           <button type="button"
-            class="flex-1 flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-sm font-semibold text-slate-700">
+            class="flex-1 flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-sm font-semibold text-slate-700 mt-0 w-auto">
             <img :src="google" alt="Google" class="w-5 h-5" />
             Google
           </button>
           <button type="button"
-            class="flex-1 flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-sm font-semibold text-slate-700">
+            class="flex-1 flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all text-sm font-semibold text-slate-700 mt-0 w-auto">
             <img :src="apple" alt="Apple" class="w-5 h-5" />
             Apple
           </button>

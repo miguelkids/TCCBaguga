@@ -3,7 +3,7 @@
 
     <TopbarJogador />
 
-    <div class="max-w-md w-full mx-auto px-4 py-6 pb-24">
+    <div class="max-w-4xl w-full mx-auto px-4 py-6 pb-24">
 
       <!-- Barra de Busca -->
       <div class="relative mb-6">
@@ -35,7 +35,7 @@
       </div>
 
       <!-- Lista de resultados -->
-      <div v-else class="flex flex-col gap-4">
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div v-for="espaco in espacos" :key="espaco.chave"
           class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all">
 

@@ -18,7 +18,7 @@
     </header>
 
     <main class="flex-1 flex flex-col items-center px-6 py-8">
-      <div class="w-full max-w-sm">
+      <div class="w-full max-w-md">
 
         <!-- Indicador de progresso (múltiplas quadras) -->
         <div v-if="!modoAdicionar && totalQuadras > 1" class="flex justify-center gap-2 mb-6">
@@ -43,7 +43,7 @@
         </div>
 
         <!-- Formulário da Quadra -->
-        <div class="flex flex-col gap-4">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
           <!-- Esporte -->
           <div class="flex flex-col gap-1.5">
             <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Esporte *</label>

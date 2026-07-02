@@ -3,7 +3,7 @@
 
     <TopbarDono />
 
-    <div class="max-w-md w-full mx-auto px-4 py-6 pb-24">
+    <div class="max-w-2xl w-full mx-auto px-4 py-6 pb-24">
 
       <!-- Header -->
       <div class="flex items-center gap-3 mb-5">

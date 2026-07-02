@@ -3,74 +3,84 @@
 
     <TopbarDono />
 
-    <div class="max-w-md w-full mx-auto px-4 py-6 pb-24 md:pb-8">
+    <div class="max-w-4xl w-full mx-auto px-4 py-6 pb-24 md:pb-8">
 
-      <!-- Card da Quadra -->
-      <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-4">
-        <!-- Foto -->
-        <div class="w-full aspect-video bg-slate-100 flex items-center justify-center overflow-hidden">
-          <img v-if="fotoPerfilUrl" :src="fotoPerfilUrl" alt="Foto da quadra" class="w-full h-full object-cover" />
-          <svg v-else class="text-slate-300" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Coluna da Esquerda: Card da Quadra -->
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden h-fit">
+          <!-- Foto -->
+          <div class="w-full aspect-video bg-slate-100 flex items-center justify-center overflow-hidden">
+            <img v-if="fotoPerfilUrl" :src="fotoPerfilUrl" alt="Foto da quadra" class="w-full h-full object-cover" />
+            <svg v-else class="text-slate-300" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
 
-        <!-- Informações -->
-        <div class="p-5">
-          <h1 class="text-xl font-extrabold text-slate-900 mb-4">{{ nomeQuadra || 'Minha Quadra' }}</h1>
+          <!-- Informações -->
+          <div class="p-5">
+            <h1 class="text-xl font-extrabold text-slate-900 mb-4">{{ nomeQuadra || 'Minha Quadra' }}</h1>
 
-          <div class="flex flex-col gap-3">
-            <div class="flex items-start gap-3">
-              <svg class="text-slate-400 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <p class="text-sm text-slate-600 font-medium">{{ cidade }} — {{ endereco }}</p>
+            <div class="flex flex-col gap-3">
+              <div class="flex items-start gap-3">
+                <svg class="text-slate-400 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <p class="text-sm text-slate-600 font-medium">{{ cidade }} — {{ endereco }}</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <svg class="text-slate-400 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.81-.81a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <p class="text-sm text-slate-600 font-medium">{{ telefone || 'Sem telefone' }}</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <svg class="text-emerald-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <p class="text-base font-extrabold text-emerald-600">R$ {{ preco }}<span class="text-sm text-slate-400 font-medium">/hora</span></p>
+              </div>
+              <div class="flex items-center gap-3">
+                <svg class="text-slate-400 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <p class="text-sm text-slate-600 font-medium">{{ horario }}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-200">{{ esporte }}</span>
+              </div>
+              <p v-if="descricao" class="text-sm text-slate-500 leading-relaxed pt-1 border-t border-slate-100">{{ descricao }}</p>
             </div>
-            <div class="flex items-center gap-3">
-              <svg class="text-slate-400 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.81-.81a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <p class="text-sm text-slate-600 font-medium">{{ telefone || 'Sem telefone' }}</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <svg class="text-emerald-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <p class="text-base font-extrabold text-emerald-600">R$ {{ preco }}<span class="text-sm text-slate-400 font-medium">/hora</span></p>
-            </div>
-            <div class="flex items-center gap-3">
-              <svg class="text-slate-400 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <p class="text-sm text-slate-600 font-medium">{{ horario }}</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-200">{{ esporte }}</span>
-            </div>
-            <p v-if="descricao" class="text-sm text-slate-500 leading-relaxed pt-1 border-t border-slate-100">{{ descricao }}</p>
           </div>
         </div>
-      </div>
 
-      <!-- Ações -->
-      <div class="flex gap-3 mb-4">
-        <button @click="editarQuadra"
-          class="flex-1 flex items-center justify-center gap-2 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          Editar Quadra
-        </button>
-        <button @click="$router.push('/menu-quadra')"
-          class="flex-1 flex items-center justify-center gap-2 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-sm transition-all border border-emerald-200">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Gerenciar Horários
-        </button>
-      </div>
-
-      <!-- Avaliações -->
-      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-        <h2 class="text-base font-extrabold text-slate-800 mb-3">Avaliações</h2>
-        <div class="flex items-center gap-3">
-          <div class="flex gap-0.5">
-            <svg v-for="i in 5" :key="i" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-              :fill="i <= Math.round(mediaEstrelas) ? '#f59e0b' : 'none'"
-              :stroke="i <= Math.round(mediaEstrelas) ? '#f59e0b' : '#d1d5db'"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-            </svg>
+        <!-- Coluna da Direita: Ações e Avaliações -->
+        <div class="flex flex-col gap-6 h-fit">
+          <!-- Card de Ações -->
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <h2 class="text-base font-extrabold text-slate-800 mb-3">Ações da Quadra</h2>
+            <div class="flex flex-col gap-3">
+              <button @click="editarQuadra"
+                class="w-full flex items-center justify-center gap-2 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition-all shadow-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Editar Quadra
+              </button>
+              <button @click="$router.push('/menu-quadra')"
+                class="w-full flex items-center justify-center gap-2 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-sm transition-all border border-emerald-200 shadow-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Gerenciar Horários
+              </button>
+            </div>
           </div>
-          <span class="text-base font-extrabold text-slate-800">{{ mediaEstrelas.toFixed(1) }}</span>
-          <span class="text-sm text-slate-400">({{ totalAvaliacoes }} avaliações)</span>
+
+          <!-- Card de Avaliações -->
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <h2 class="text-base font-extrabold text-slate-800 mb-3">Avaliações dos Clientes</h2>
+            <div class="flex items-center gap-3">
+              <div class="flex gap-0.5">
+                <svg v-for="i in 5" :key="i" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                  :fill="i <= Math.round(mediaEstrelas) ? '#f59e0b' : 'none'"
+                  :stroke="i <= Math.round(mediaEstrelas) ? '#f59e0b' : '#d1d5db'"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <span class="text-base font-extrabold text-slate-800">{{ mediaEstrelas.toFixed(1) }}</span>
+              <span class="text-sm text-slate-400">({{ totalAvaliacoes }} avaliações)</span>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
 

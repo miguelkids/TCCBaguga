@@ -3,8 +3,8 @@
 
     <TopbarDono />
 
-    <div class="max-w-md w-full mx-auto px-4 py-6 pb-24 md:pb-8">
-      <h1 class="text-xl font-extrabold text-slate-900 mb-6">Gerenciar Quadra</h1>
+    <div class="max-w-lg w-full mx-auto px-4 py-8 pb-24 md:pb-10">
+      <h1 class="text-2xl font-extrabold text-slate-900 mb-8">Gerenciar Quadra</h1>
 
       <!-- Card de Configurações -->
       <button @click="$router.push('/editar-data-horario')"
