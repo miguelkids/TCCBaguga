@@ -32,8 +32,7 @@ Página de destino (landing page) principal do SportCourt. Apresenta a proposta 
   - `/escolher-perfil` (Cadastrar Arena / Criar Arena)
 
 ## 📅 Histórico de Alterações
-| Data | Autor | Descrição da Mudança |
-| :--- | :--- | :--- |
 | 22/06/2026 | Antigravity | Criação do mapeamento inicial da página. |
 | 22/06/2026 | Antigravity | **Correção de layout:** Removidas regras CSS globais conflitantes (`input`, `button`) do `global.css` e CSS legado do `App.vue` que sobrescreviam as classes Tailwind. Página agora renderiza corretamente com padding, botões e tipografia do design system. |
 | 22/06/2026 | Antigravity | **Correção de pipeline:** Resolvido problema raiz em que o Tailwind v4 não gerava classes utilitárias no Webpack/Vue CLI. Corrigido via `@import "tailwindcss" source("../..")` no `global.css` e `css.loaderOptions.postcss` no `vue.config.js`. Dev server reiniciado na porta 8080. |
+| 16/07/2026 | Antigravity | Remoção de classes Tailwind e reescrita do visual em CSS puro escopado. |

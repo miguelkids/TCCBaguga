@@ -58,3 +58,5 @@ Página de edição cadastral da quadra esportiva. Permite ao proprietário atua
 | Data | Autor | Descrição da Mudança |
 | :--- | :--- | :--- |
 | 22/06/2026 | Antigravity | Criação do mapeamento inicial da página. |
+| 16/07/2026 | Antigravity | Remoção de classes Tailwind e reescrita do visual em CSS puro escopado. |
+
