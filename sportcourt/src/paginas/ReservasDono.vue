@@ -1,93 +1,82 @@
 <template>
-  <div class="min-h-screen bg-slate-50 flex flex-col font-sans">
+  <div class="pagina">
 
     <TopbarDono />
 
-    <div class="max-w-5xl w-full mx-auto px-4 py-6 pb-24">
+    <div class="container">
 
       <!-- Cabeçalho -->
-      <div class="flex items-center justify-between mb-5">
+      <div class="cabecalho">
         <div>
-          <h1 class="text-xl font-extrabold text-slate-900">CRM de Reservas</h1>
-          <p class="text-xs text-slate-400 font-medium mt-0.5">{{ reservas.length }} agendamento{{ reservas.length !== 1 ? 's' : '' }} no total</p>
+          <h1 class="titulo">CRM de Reservas</h1>
+          <p class="subtitulo">{{ reservas.length }} agendamento{{ reservas.length !== 1 ? 's' : '' }} no total</p>
         </div>
-        <span class="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-extrabold rounded-full">{{ reservas.length }}</span>
+        <span class="badge-total">{{ reservas.length }}</span>
       </div>
 
       <!-- Abas de Status -->
-      <div class="flex gap-1 bg-slate-100 p-1 rounded-xl mb-5 overflow-x-auto">
+      <div class="abas-wrapper">
         <button v-for="aba in abas" :key="aba.id" @click="abaAtiva = aba.id"
-          class="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all whitespace-nowrap"
-          :class="abaAtiva === aba.id ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'">
+          class="aba-btn"
+          :class="abaAtiva === aba.id ? 'aba-btn--ativo' : ''">
           {{ aba.label }}
-          <span class="px-1.5 py-0.5 rounded-full text-xs font-extrabold"
-            :class="abaAtiva === aba.id ? aba.activeBadge : 'bg-slate-200 text-slate-500'">
+          <span class="aba-badge" :class="abaAtiva === aba.id ? aba.badgeClass : 'aba-badge--inativo'">
             {{ aba.id !== 'crm' ? listaFiltrada(aba.id).length : clientesList.length }}
           </span>
         </button>
       </div>
 
       <!-- Loading -->
-      <div v-if="loading" class="flex justify-center py-12">
-        <div class="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      <div v-if="loading" class="loading-wrapper">
+        <div class="spinner"></div>
       </div>
 
       <!-- Aba CRM Clientes -->
-      <div v-else-if="abaAtiva === 'crm'" class="flex flex-col gap-3">
+      <div v-else-if="abaAtiva === 'crm'" class="lista-crm">
         <!-- Busca e filtros -->
-        <div class="flex gap-2 mb-1">
-          <div class="relative flex-1">
-            <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" v-model="buscaCRM" placeholder="Buscar cliente..."
-              class="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 font-medium focus:outline-none focus:border-emerald-500 transition-all" />
+        <div class="crm-filtros">
+          <div class="crm-busca-wrapper">
+            <svg class="crm-busca-icone" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" v-model="buscaCRM" placeholder="Buscar cliente..." class="crm-busca-input" />
           </div>
-          <div class="flex gap-1">
+          <div class="crm-filtros-btns">
             <button v-for="f in filtrosFinanceiros" :key="f.id" @click="filtroFinanceiro = f.id"
-              class="px-3 py-2 rounded-xl text-xs font-bold transition-all border"
-              :class="filtroFinanceiro === f.id ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-slate-500 border-slate-200'">
+              class="filtro-btn"
+              :class="filtroFinanceiro === f.id ? 'filtro-btn--ativo' : ''">
               {{ f.label }}
             </button>
           </div>
         </div>
 
         <!-- Lista de clientes -->
-        <div v-for="c in clientesFiltrados" :key="c.id"
-          class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-          <button @click="selectedClienteId = selectedClienteId === c.id ? null : c.id"
-            class="w-full flex items-center gap-3 p-4 text-left hover:bg-slate-50 transition-colors">
-            <div class="w-10 h-10 rounded-full flex items-center justify-center font-extrabold text-sm text-white flex-shrink-0"
-              :style="{ background: avatarColor(c.nome) }">
-              {{ iniciais(c.nome) }}
+        <div v-for="c in clientesFiltrados" :key="c.id" class="cliente-card">
+          <button @click="selectedClienteId = selectedClienteId === c.id ? null : c.id" class="cliente-header">
+            <div class="avatar" :style="{ background: avatarColor(c.nome) }">{{ iniciais(c.nome) }}</div>
+            <div class="cliente-info">
+              <p class="cliente-nome">{{ c.nome }}</p>
+              <p class="cliente-stats">{{ c.totalJogos }} jogos · Pago: R$ {{ c.totalPago.toFixed(2) }}</p>
             </div>
-            <div class="flex-1 min-w-0">
-              <p class="font-extrabold text-slate-900 text-sm truncate">{{ c.nome }}</p>
-              <p class="text-xs text-slate-400 font-medium">{{ c.totalJogos }} jogos · Pago: R$ {{ c.totalPago.toFixed(2) }}</p>
-            </div>
-            <div class="flex flex-col items-end gap-1.5">
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full"
-                :class="c.divida > 0 ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'">
+            <div class="cliente-status">
+              <span class="status-badge" :class="c.divida > 0 ? 'status-badge--pendente' : 'status-badge--em-dia'">
                 {{ c.divida > 0 ? 'Pendente' : 'Em dia' }}
               </span>
-              <p v-if="c.divida > 0" class="text-xs font-extrabold text-red-500">R$ {{ c.divida.toFixed(2) }}</p>
+              <p v-if="c.divida > 0" class="divida-valor">R$ {{ c.divida.toFixed(2) }}</p>
             </div>
           </button>
           <!-- Histórico expandido -->
-          <div v-if="selectedClienteId === c.id" class="border-t border-slate-100 px-4 pb-4">
-            <div class="mt-3 flex flex-col gap-2">
-              <div v-for="r in c.reservas" :key="r.id"
-                class="flex items-center justify-between text-xs py-2 border-b border-slate-50 last:border-0">
+          <div v-if="selectedClienteId === c.id" class="cliente-historico">
+            <div class="historico-lista">
+              <div v-for="r in c.reservas" :key="r.id" class="historico-item">
                 <div>
-                  <p class="font-bold text-slate-700">{{ r.data }} · {{ r.horario }}</p>
-                  <p class="text-slate-400">{{ r.nomeQuadra }} · R$ {{ r.preco }}</p>
+                  <p class="historico-data">{{ r.data }} · {{ r.horario }}</p>
+                  <p class="historico-quadra">{{ r.nomeQuadra }} · R$ {{ r.preco }}</p>
                 </div>
-                <span class="font-bold px-2 py-0.5 rounded-full"
-                  :class="r.status_pagamento === 'pago' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'">
+                <span class="pagamento-badge" :class="r.status_pagamento === 'pago' ? 'pagamento-badge--pago' : 'pagamento-badge--pendente'">
                   {{ r.status_pagamento === 'pago' ? 'Pago' : 'Pendente' }}
                 </span>
               </div>
             </div>
-            <a :href="whatsappCRM(c)" target="_blank"
-              class="mt-3 flex items-center justify-center gap-2 w-full py-2.5 bg-[#25d366] text-white font-bold rounded-xl text-xs">
+            <a :href="whatsappCRM(c)" target="_blank" class="btn-whatsapp">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.927 0C5.364 0 .068 5.296.068 11.86c0 2.091.549 4.056 1.508 5.757L0 24l6.567-1.718A11.85 11.85 0 0 0 11.927 23.72c6.563 0 11.86-5.296 11.86-11.86S18.49 0 11.927 0zm0 21.653a9.79 9.79 0 0 1-4.987-1.366l-.358-.213-3.699.969.984-3.596-.233-.371a9.772 9.772 0 0 1-1.499-5.216c0-5.405 4.396-9.8 9.792-9.8 5.397 0 9.792 4.395 9.792 9.8s-4.395 9.793-9.792 9.793z"/></svg>
               WhatsApp
             </a>
@@ -96,68 +85,51 @@
       </div>
 
       <!-- Abas de reservas (Pendentes, Confirmadas, Encerradas) -->
-      <div v-else class="flex flex-col gap-4">
-        <div v-if="listaAtiva.length === 0" class="text-center py-12">
-          <p class="text-sm text-slate-400">Nenhuma reserva {{ abaAtiva }}.</p>
+      <div v-else class="lista-reservas">
+        <div v-if="listaAtiva.length === 0" class="lista-vazia">
+          <p>Nenhuma reserva {{ abaAtiva }}.</p>
         </div>
 
-        <div v-for="r in listaAtiva" :key="r.id"
-          class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <div v-for="r in listaAtiva" :key="r.id" class="reserva-card">
 
           <!-- Cabeçalho do card -->
-          <div class="p-4 pb-3">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-full flex items-center justify-center font-extrabold text-sm text-white flex-shrink-0"
-                :style="{ background: avatarColor(r.nomeJogador) }">
-                {{ iniciais(r.nomeJogador) }}
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="font-extrabold text-slate-900 text-sm truncate">{{ r.nomeJogador || 'Jogador' }}</p>
-                <p class="text-xs text-slate-400 font-medium">{{ r.telefoneJogador }}</p>
-              </div>
-              <span class="text-xs font-bold px-2.5 py-1 rounded-full"
-                :class="r.confirmada ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'">
-                {{ r.confirmada ? 'Confirmada' : 'Pendente' }}
-              </span>
+          <div class="reserva-cabecalho">
+            <div class="avatar" :style="{ background: avatarColor(r.nomeJogador) }">{{ iniciais(r.nomeJogador) }}</div>
+            <div class="reserva-jogador">
+              <p class="jogador-nome">{{ r.nomeJogador || 'Jogador' }}</p>
+              <p class="jogador-tel">{{ r.telefoneJogador }}</p>
             </div>
+            <span class="status-reserva" :class="r.confirmada ? 'status-reserva--confirmada' : 'status-reserva--pendente'">
+              {{ r.confirmada ? 'Confirmada' : 'Pendente' }}
+            </span>
+          </div>
 
-            <!-- Detalhes -->
-            <div class="grid grid-cols-2 gap-2 text-xs">
-              <div class="flex items-center gap-1.5 bg-slate-50 rounded-lg p-2">
-                <svg class="text-blue-400" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <span class="font-semibold text-slate-700">{{ r.data }}</span>
-              </div>
-              <div class="flex items-center gap-1.5 bg-slate-50 rounded-lg p-2">
-                <svg class="text-amber-400" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span class="font-semibold text-slate-700">{{ r.horario }}</span>
-              </div>
-              <div class="flex items-center gap-1.5 bg-slate-50 rounded-lg p-2">
-                <svg class="text-emerald-400" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                <span class="font-semibold text-slate-700">R$ {{ r.preco }}</span>
-              </div>
-              <div class="flex items-center gap-1.5 bg-slate-50 rounded-lg p-2">
-                <svg class="text-blue-400" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                <span class="font-semibold text-slate-700 truncate">{{ r.nomeQuadra }}</span>
-              </div>
+          <!-- Detalhes da reserva -->
+          <div class="reserva-detalhes">
+            <div class="detalhe-item">
+              <svg class="detalhe-icone detalhe-icone--azul" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span class="detalhe-valor">{{ r.data }}</span>
+            </div>
+            <div class="detalhe-item">
+              <svg class="detalhe-icone detalhe-icone--amarelo" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span class="detalhe-valor">{{ r.horario }}</span>
+            </div>
+            <div class="detalhe-item">
+              <svg class="detalhe-icone detalhe-icone--verde" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span class="detalhe-valor">R$ {{ r.preco }}</span>
+            </div>
+            <div class="detalhe-item">
+              <svg class="detalhe-icone detalhe-icone--azul" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span class="detalhe-valor">{{ r.nomeQuadra }}</span>
             </div>
           </div>
 
           <!-- Ações -->
-          <div class="border-t border-slate-100 p-3 flex flex-wrap gap-2">
-            <button v-if="!r.confirmada" @click="confirmarReserva(r)"
-              class="flex-1 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl text-xs transition-all">
-              Confirmar
-            </button>
-            <button v-if="r.confirmada && r.status_pagamento !== 'pago'" @click="concluirHorario(r)"
-              class="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs transition-all">
-              Encerrar Horário
-            </button>
-            <button @click="cancelarReserva(r)"
-              class="flex-1 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl text-xs border border-red-200 transition-all">
-              Cancelar
-            </button>
-            <a :href="`https://wa.me/55${(r.telefoneJogador||'').replace(/\D/g,'')}`" target="_blank"
-              class="flex items-center gap-1 py-2 px-3 bg-[#25d366] text-white font-bold rounded-xl text-xs">
+          <div class="reserva-acoes">
+            <button v-if="!r.confirmada" @click="confirmarReserva(r)" class="acao-btn acao-btn--azul">Confirmar</button>
+            <button v-if="r.confirmada && r.status_pagamento !== 'pago'" @click="concluirHorario(r)" class="acao-btn acao-btn--verde">Encerrar Horário</button>
+            <button @click="cancelarReserva(r)" class="acao-btn acao-btn--vermelho">Cancelar</button>
+            <a :href="`https://wa.me/55${(r.telefoneJogador||'').replace(/\D/g,'')}`" target="_blank" class="acao-btn acao-btn--whatsapp">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
               WA
             </a>
@@ -167,20 +139,20 @@
     </div>
 
     <!-- Bottom Nav Mobile -->
-    <nav class="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-200 flex justify-around items-center z-40 lg:hidden shadow-lg">
-      <router-link to="/minhas-quadras" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/minhas-quadras' ? 'text-emerald-500' : 'text-slate-400 hover:text-slate-700'">
+    <nav class="bottom-nav">
+      <router-link to="/minhas-quadras" class="nav-item" :class="$route.path === '/minhas-quadras' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         <span>Quadras</span>
       </router-link>
-      <router-link to="/reservas" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/reservas' ? 'text-emerald-500' : 'text-slate-400 hover:text-slate-700'">
+      <router-link to="/reservas" class="nav-item" :class="$route.path === '/reservas' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         <span>Reservas</span>
       </router-link>
-      <router-link to="/faturamento-dono" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/faturamento-dono' ? 'text-emerald-500' : 'text-slate-400 hover:text-slate-700'">
+      <router-link to="/faturamento-dono" class="nav-item" :class="$route.path === '/faturamento-dono' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
         <span>Dashboard</span>
       </router-link>
-      <router-link to="/perfil" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/perfil' ? 'text-emerald-500' : 'text-slate-400 hover:text-slate-700'">
+      <router-link to="/perfil" class="nav-item" :class="$route.path === '/perfil' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>Perfil</span>
       </router-link>
@@ -205,10 +177,10 @@ export default {
       selectedClienteId: null,
       filtroFinanceiro: "todos",
       abas: [
-        { id: "pendentes", label: "Pendentes", activeBadge: "bg-amber-100 text-amber-700" },
-        { id: "confirmadas", label: "Confirmadas", activeBadge: "bg-emerald-100 text-emerald-700" },
-        { id: "encerradas", label: "Encerradas", activeBadge: "bg-slate-200 text-slate-600" },
-        { id: "crm", label: "CRM Clientes", activeBadge: "bg-blue-100 text-blue-700" },
+        { id: "pendentes", label: "Pendentes", badgeClass: "aba-badge--amber" },
+        { id: "confirmadas", label: "Confirmadas", badgeClass: "aba-badge--verde" },
+        { id: "encerradas", label: "Encerradas", badgeClass: "aba-badge--cinza" },
+        { id: "crm", label: "CRM Clientes", badgeClass: "aba-badge--azul" },
       ],
       filtrosFinanceiros: [
         { id: "todos", label: "Todos" },
@@ -304,3 +276,575 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.pagina {
+  min-height: 100vh;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+}
+
+.container {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 16px 100px;
+}
+
+/* Cabeçalho */
+.cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.titulo {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.subtitulo {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.badge-total {
+  padding: 6px 12px;
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--primary-dark);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 999px;
+}
+
+/* Abas */
+.abas-wrapper {
+  display: flex;
+  gap: 4px;
+  background: var(--muted);
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.aba-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.aba-btn:hover {
+  transform: none;
+  box-shadow: none;
+  color: #475569;
+}
+
+.aba-btn--ativo {
+  background: white;
+  color: var(--foreground);
+  box-shadow: var(--shadow-xs);
+}
+
+.aba-badge {
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.aba-badge--inativo {
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+.aba-badge--amber {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+}
+
+.aba-badge--verde {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--primary-dark);
+}
+
+.aba-badge--cinza {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.aba-badge--azul {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+}
+
+/* Loading */
+.loading-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 4px solid rgba(34, 197, 94, 0.2);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Lista vazia */
+.lista-vazia {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+
+/* Avatar */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* CRM */
+.lista-crm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.crm-filtros {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.crm-busca-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.crm-busca-icone {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+.crm-busca-input {
+  width: 100%;
+  padding: 10px 16px 10px 36px;
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--foreground);
+  transition: border-color 0.2s;
+}
+
+.crm-busca-input:focus {
+  border-color: var(--primary);
+}
+
+.crm-filtros-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.filtro-btn {
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1.5px solid var(--border);
+  background: white;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filtro-btn:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.filtro-btn--ativo {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.cliente-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+}
+
+.cliente-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cliente-header:hover {
+  background: var(--muted);
+  transform: none;
+  box-shadow: none;
+}
+
+.cliente-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cliente-nome {
+  font-weight: 800;
+  color: var(--foreground);
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cliente-stats {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.cliente-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.status-badge--pendente {
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.status-badge--em-dia {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--primary-dark);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.divida-valor {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--destructive);
+}
+
+.cliente-historico {
+  border-top: 1px solid var(--border);
+  padding: 16px;
+}
+
+.historico-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.historico-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.historico-item:last-child {
+  border-bottom: none;
+}
+
+.historico-data {
+  font-weight: 700;
+  color: #475569;
+}
+
+.historico-quadra {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.pagamento-badge {
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+}
+
+.pagamento-badge--pago {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--primary-dark);
+}
+
+.pagamento-badge--pendente {
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+}
+
+.btn-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  background: #25d366;
+  color: white;
+  font-weight: 700;
+  border-radius: 12px;
+  font-size: 13px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.btn-whatsapp:hover {
+  opacity: 0.9;
+}
+
+/* Lista de reservas */
+.lista-reservas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reserva-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+}
+
+.reserva-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 12px;
+}
+
+.reserva-jogador {
+  flex: 1;
+  min-width: 0;
+}
+
+.jogador-nome {
+  font-weight: 800;
+  color: var(--foreground);
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jogador-tel {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.status-reserva {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.status-reserva--confirmada {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--primary-dark);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.status-reserva--pendente {
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.reserva-detalhes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 16px 12px;
+}
+
+.detalhe-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--muted);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.detalhe-icone {
+  flex-shrink: 0;
+}
+
+.detalhe-icone--azul { color: var(--accent); }
+.detalhe-icone--amarelo { color: #f59e0b; }
+.detalhe-icone--verde { color: var(--primary); }
+
+.detalhe-valor {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ações */
+.reserva-acoes {
+  border-top: 1px solid var(--border);
+  padding: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.acao-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: opacity 0.2s, transform 0.15s;
+  text-decoration: none;
+}
+
+.acao-btn:hover {
+  opacity: 0.85;
+  transform: none;
+  box-shadow: none;
+}
+
+.acao-btn--azul {
+  background: var(--accent);
+  color: white;
+}
+
+.acao-btn--verde {
+  background: var(--primary);
+  color: white;
+}
+
+.acao-btn--vermelho {
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--destructive);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.acao-btn--whatsapp {
+  flex: 0 0 auto;
+  background: #25d366;
+  color: white;
+  padding: 8px 12px;
+}
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: white;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 40;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+
+@media (min-width: 1024px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  padding: 8px 16px;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  color: #475569;
+}
+
+.nav-item--ativo {
+  color: var(--primary);
+}
+</style>

@@ -15,7 +15,6 @@ module.exports = defineConfig({
       postcss: {
         postcssOptions: {
           plugins: [
-            require('@tailwindcss/postcss')({})
           ]
         }
       }
