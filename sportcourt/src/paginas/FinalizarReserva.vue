@@ -1,71 +1,68 @@
 <template>
-  <div class="flex flex-col min-h-screen bg-slate-50">
+  <div class="pagina">
 
     <TopbarJogador />
 
-    <div class="w-full max-w-5xl mx-auto px-4 pb-28 pt-6 md:pb-10">
+    <div class="container">
 
       <!-- Header -->
-      <div class="flex items-center gap-3 mb-6">
-        <button
-          class="flex items-center gap-1 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-colors flex-shrink-0"
-          @click="$router.push('/reserva')"
-        >
+      <div class="cabecalho-secao">
+        <button class="btn-voltar" @click="$router.push('/reserva')">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
           Voltar
         </button>
-        <h1 class="text-xl font-extrabold text-slate-800 m-0">Finalizar Reserva</h1>
+        <h1 class="titulo-secao">Finalizar Reserva</h1>
       </div>
 
       <!-- Layout desktop: 2 colunas -->
-      <div class="flex flex-col md:flex-row md:gap-8 md:items-start">
+      <div class="layout-flex">
 
         <!-- Coluna Esquerda: Card da quadra + Calendário -->
-        <div class="flex-1 min-w-0">
+        <div class="coluna-esquerda">
 
           <!-- Card da quadra -->
-          <div v-if="quadra && quadra.nomeQuadra" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm mb-5">
-            <div class="w-full h-40 overflow-hidden bg-slate-100">
-              <img v-if="quadra.fotoUrl" :src="quadra.fotoUrl.startsWith('http') ? quadra.fotoUrl : `http://localhost:3006${quadra.fotoUrl}`" :alt="quadra.nomeQuadra" class="w-full h-full object-cover" />
-              <div v-else class="w-full h-full flex items-center justify-center bg-slate-100">
-                <div class="w-16 h-16 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400">
+          <div v-if="quadra && quadra.nomeQuadra" class="card-quadra">
+            <div class="quadra-foto-container">
+              <img v-if="quadra.fotoUrl" :src="quadra.fotoUrl.startsWith('http') ? quadra.fotoUrl : `http://localhost:3006${quadra.fotoUrl}`" :alt="quadra.nomeQuadra" class="quadra-foto" />
+              <div v-else class="quadra-foto-placeholder">
+                <div class="foto-placeholder-icone">
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 10.07 4h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 18.07 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3"/></svg>
                 </div>
               </div>
             </div>
-            <div class="p-4">
-              <h2 class="text-lg font-bold text-slate-800 m-0 mb-1">{{ quadra.nomeQuadra }}</h2>
-              <div class="flex items-center gap-1.5 text-xs text-slate-500 mb-1.5">
+            <div class="quadra-info">
+              <h2 class="quadra-nome">{{ quadra.nomeQuadra }}</h2>
+              <div class="quadra-detalhes">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                {{ quadra.endereco }}<span v-if="quadra.cidade"> — {{ quadra.cidade }}</span>
+                <span>{{ quadra.endereco }}<span v-if="quadra.cidade"> — {{ quadra.cidade }}</span></span>
               </div>
-              <div class="text-base font-bold text-emerald-600">R$ {{ quadra.preco }} / hora</div>
+              <div class="quadra-preco">R$ {{ quadra.preco }} / hora</div>
             </div>
           </div>
 
-          <p v-else-if="!quadra || !quadra.nomeQuadra" class="text-center text-slate-500 py-5">Carregando informações da quadra...</p>
+          <p v-else-if="!quadra || !quadra.nomeQuadra" class="carregando-texto">Carregando informações da quadra...</p>
 
           <!-- Calendário -->
-          <div v-if="quadra && quadra.nomeQuadra" class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-4 p-5 flex flex-col gap-4">
-            <h3 class="text-base font-bold text-slate-800 m-0">Escolha um dia</h3>
-            <div class="border border-slate-200 rounded-xl overflow-hidden">
-              <div class="flex justify-between items-center px-4 py-3 bg-slate-50 border-b border-slate-200">
-                <button @click="mudarMes(-1)" class="bg-transparent border-none text-lg cursor-pointer text-slate-700 w-7 h-7 flex items-center justify-center rounded-md hover:bg-slate-200 transition-colors">&lt;</button>
-                <div class="font-bold text-sm capitalize text-slate-800">{{ mesAtualNome }} {{ anoAtual }}</div>
-                <button @click="mudarMes(1)" class="bg-transparent border-none text-lg cursor-pointer text-slate-700 w-7 h-7 flex items-center justify-center rounded-md hover:bg-slate-200 transition-colors">&gt;</button>
+          <div v-if="quadra && quadra.nomeQuadra" class="calendario-card">
+            <h3 class="calendario-titulo">Escolha um dia</h3>
+            <div class="calendario-moldura">
+              <div class="calendario-mes-header">
+                <button @click="mudarMes(-1)" class="btn-mes-nav">&lt;</button>
+                <div class="calendario-mes-titulo">{{ mesAtualNome }} {{ anoAtual }}</div>
+                <button @click="mudarMes(1)" class="btn-mes-nav">&gt;</button>
               </div>
-              <div class="grid grid-cols-7 text-center py-2.5 bg-white text-xs font-semibold text-slate-400 border-b border-slate-100">
-                <div v-for="d in diasSemanaLabel" :key="d">{{ d }}</div>
+              <div class="calendario-semana-labels">
+                <div v-for="d in diasSemanaLabel" :key="d" class="semana-label">{{ d }}</div>
               </div>
-              <div class="grid grid-cols-7 bg-white p-2 gap-1">
+              <div class="calendario-dias-grid">
                 <div
                   v-for="dia in diasMes"
                   :key="dia.id"
-                  class="aspect-square flex items-center justify-center text-sm font-medium rounded-lg cursor-pointer transition-all"
+                  class="dia-item"
                   :class="{
-                    'text-slate-300 cursor-default': dia.data && !dia.valido,
-                    'bg-emerald-500 text-white font-bold shadow-sm': dia.data && dia.data === dataSelecionada,
-                    'hover:bg-slate-100 hover:text-emerald-600': dia.data && dia.valido && dia.data !== dataSelecionada,
+                    'dia-item--vazio': !dia.data,
+                    'dia-item--invalido': dia.data && !dia.valido,
+                    'dia-item--selecionado': dia.data && dia.data === dataSelecionada,
                   }"
                   @click="selecionarDia(dia)"
                 >
@@ -78,42 +75,42 @@
         </div><!-- /Coluna Esquerda -->
 
         <!-- Coluna Direita: Resumo e Confirmação -->
-        <div class="w-full md:w-[420px] md:flex-shrink-0">
+        <div class="coluna-direita">
 
           <!-- Resumo e Confirmação -->
-          <div v-if="dataSelecionada && horarioSelecionado" class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-4 p-5 flex flex-col gap-4">
-            <h3 class="text-base font-bold text-slate-800 m-0">Resumo da Reserva</h3>
-            <div class="flex gap-3">
-              <div class="flex-1 flex items-center gap-2 p-3 bg-slate-50 rounded-xl text-sm font-semibold text-slate-700">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <div v-if="dataSelecionada && horarioSelecionado" class="card-resumo">
+            <h3 class="resumo-titulo">Resumo da Reserva</h3>
+            <div class="resumo-dados-reserva">
+              <div class="resumo-bloco-info">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icone-azul"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 <span>{{ formatarDataBR(dataSelecionada) }}</span>
               </div>
-              <div class="flex-1 flex items-center gap-2 p-3 bg-slate-50 rounded-xl text-sm font-semibold text-slate-700">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <div class="resumo-bloco-info">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icone-amarelo"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 <span>{{ horarioSelecionado }}</span>
               </div>
             </div>
 
-            <div class="mt-1">
-              <h3 class="text-base font-bold text-slate-800 mb-3">Seus dados</h3>
-              <div class="flex flex-col gap-1 mb-3">
-                <label class="text-xs font-semibold text-slate-700">Nome</label>
-                <input v-model="jogador.nome" placeholder="Seu nome completo" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors" />
+            <div class="secao-inputs">
+              <h3 class="subsecao-titulo">Seus dados</h3>
+              <div class="campo">
+                <label class="campo-label">Nome</label>
+                <input v-model="jogador.nome" placeholder="Seu nome completo" class="input-campo" />
               </div>
-              <div class="flex flex-col gap-1 mb-3">
-                <label class="text-xs font-semibold text-slate-700">Telefone</label>
-                <input v-model="jogador.telefone" placeholder="(11) 99999-9999" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors" />
+              <div class="campo">
+                <label class="campo-label">Telefone</label>
+                <input v-model="jogador.telefone" placeholder="(11) 99999-9999" class="input-campo" />
               </div>
             </div>
 
             <!-- Tipo de Jogo -->
-            <div>
-              <h3 class="text-base font-bold text-slate-800 mb-2.5">Tipo de jogo</h3>
-              <div class="flex gap-2 flex-wrap">
+            <div class="secao-tipo-jogo">
+              <h3 class="subsecao-titulo">Tipo de jogo</h3>
+              <div class="tipo-jogo-botoes">
                 <button
                   type="button"
-                  class="flex-1 min-w-36 flex items-center justify-center gap-2 px-3.5 py-3 border-2 rounded-xl text-sm font-semibold cursor-pointer transition-all"
-                  :class="tipoJogo === 'horario_cheio' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-500 hover:border-emerald-400'"
+                  class="btn-opcao-jogo"
+                  :class="tipoJogo === 'horario_cheio' ? 'btn-opcao-jogo--ativo' : ''"
                   @click.prevent="tipoJogo = 'horario_cheio'; slotAguardando = null"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -121,8 +118,8 @@
                 </button>
                 <button
                   type="button"
-                  class="flex-1 min-w-36 flex items-center justify-center gap-2 px-3.5 py-3 border-2 rounded-xl text-sm font-semibold cursor-pointer transition-all"
-                  :class="tipoJogo === 'contra_time' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-500 hover:border-emerald-400'"
+                  class="btn-opcao-jogo"
+                  :class="tipoJogo === 'contra_time' ? 'btn-opcao-jogo--ativo' : ''"
                   @click.prevent="tipoJogo = 'contra_time'"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -130,48 +127,44 @@
                 </button>
               </div>
 
-              <div v-if="tipoJogo === 'contra_time'" class="flex flex-col gap-1 mt-3">
-                <label class="text-xs font-semibold text-slate-700">Nome do Time <span class="text-red-500 text-xs font-semibold ml-1">*</span></label>
-                <input v-model="nomeTime" placeholder="Ex: Raios do Sul" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors" />
+              <div v-if="tipoJogo === 'contra_time'" class="campo mt-3">
+                <label class="campo-label">Nome do Time <span class="text-obrigatorio">*</span></label>
+                <input v-model="nomeTime" placeholder="Ex: Raios do Sul" class="input-campo" />
               </div>
             </div>
 
             <!-- Quem vai jogar -->
-            <div :class="listaSemNomes ? 'p-3 bg-red-50 border-2 border-red-200 rounded-xl' : ''">
-              <h3 class="text-base font-bold text-slate-800 mb-1">
+            <div class="secao-jogadores" :class="listaSemNomes ? 'secao-jogadores--erro' : ''">
+              <h3 class="subsecao-titulo flex-header">
                 Quem vai jogar?
-                <span v-if="jogadoresNomes.length" class="inline-flex items-center justify-center bg-emerald-500 text-white text-xs font-bold rounded-full min-w-5 h-5 px-1.5 ml-1.5">{{ jogadoresNomes.length }}</span>
-                <span v-else class="text-red-500 text-xs font-semibold ml-1.5">* obrigatório</span>
+                <span v-if="jogadoresNomes.length" class="contador-badge">{{ jogadoresNomes.length }}</span>
+                <span v-else class="text-obrigatorio ml-1.5">* obrigatório</span>
               </h3>
-              <p class="text-xs text-slate-500 mb-2.5">Informe quantas pessoas vão participar e os nomes de cada uma.</p>
-              <div class="flex gap-2 items-stretch">
-                <input type="number" v-model.number="quantidadeJogadores" min="1" max="50" class="w-28 flex-shrink-0 px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 transition-colors" placeholder="Nº de pessoas" />
-                <button type="button" class="flex items-center gap-1.5 px-4 py-2.5 bg-emerald-500 text-white border-none rounded-xl text-sm font-semibold cursor-pointer whitespace-nowrap flex-shrink-0 transition-opacity disabled:opacity-40 hover:opacity-85" :disabled="!quantidadeJogadores || quantidadeJogadores < 1" @click.prevent="abrirPopupJogadores">
+              <p class="secao-dica">Informe quantas pessoas vão participar e os nomes de cada uma.</p>
+              <div class="jogadores-montagem">
+                <input type="number" v-model.number="quantidadeJogadores" min="1" max="50" class="input-campo input-campo--qtd" placeholder="Nº pessoas" />
+                <button type="button" class="btn-montar-lista" :disabled="!quantidadeJogadores || quantidadeJogadores < 1" @click.prevent="abrirPopupJogadores">
                   {{ jogadoresNomes.length ? 'Editar lista' : 'Montar lista' }}
                 </button>
               </div>
-              <div v-if="jogadoresNomes.length" class="flex flex-wrap gap-1.5 mt-2.5">
+              <div v-if="jogadoresNomes.length" class="chips-jogadores">
                 <span v-for="(jog, i) in jogadoresNomes" :key="i"
-                  class="inline-flex items-center px-2.5 py-1 bg-slate-100 border border-slate-200 rounded-full text-xs font-medium text-slate-700"
-                  :class="jog.goleiro ? 'bg-emerald-50 border-emerald-200' : ''"
+                  class="chip"
+                  :class="jog.goleiro ? 'chip--goleiro' : ''"
                 >
                   {{ jog.nome }}
-                  <span v-if="jog.goleiro" class="text-[10px] opacity-80 ml-1 font-semibold text-emerald-600">
+                  <span v-if="jog.goleiro" class="chip-goleiro-texto">
                     (Goleiro{{ jog.goleiroPaga ? '' : ' - não paga' }})
                   </span>
                 </span>
               </div>
-              <p v-if="listaSemNomes" class="flex items-center gap-1.5 text-xs text-red-600 mt-2">
+              <p v-if="listaSemNomes" class="aviso-erro">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 Informe a quantidade de jogadores e monte a lista de nomes antes de confirmar.
               </p>
             </div>
 
-            <button
-              type="button"
-              class="flex items-center justify-center gap-2.5 w-full py-4 mt-2 bg-emerald-500 text-white border-none rounded-2xl text-base font-bold cursor-pointer transition-all hover:-translate-y-px hover:shadow-lg"
-              @click.prevent="finalizarReserva"
-            >
+            <button type="button" class="btn-confirmar-reserva" @click.prevent="finalizarReserva">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               Confirmar Reserva
             </button>
@@ -183,45 +176,45 @@
     </div><!-- /container principal -->
 
     <!-- Popup Horários -->
-    <div v-if="mostrarPopup" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm" @click.self="mostrarPopup = false">
-      <div class="bg-white rounded-2xl w-full max-w-sm p-5 shadow-2xl" style="animation: slideUp 0.2s ease-out">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-extrabold text-slate-800 m-0">Horários: {{ formatarDataBR(dataSelecionada) }}</h3>
-          <button class="bg-transparent border-none flex items-center justify-center cursor-pointer text-slate-400 hover:text-emerald-500 transition-colors w-7 h-7 p-0 rounded-md" @click="mostrarPopup = false">
+    <div v-if="mostrarPopup" class="modal-overlay" @click.self="mostrarPopup = false">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-titulo">Horários: {{ formatarDataBR(dataSelecionada) }}</h3>
+          <button class="btn-fechar" @click="mostrarPopup = false">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
 
-        <div v-if="isDiaBloqueado" class="flex items-center gap-2 px-3.5 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 mb-4">
+        <div v-if="isDiaBloqueado" class="bloqueio-alerta">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           Este dia foi bloqueado pelo proprietário.
         </div>
 
         <div v-else>
-          <p class="text-xs text-slate-500 mb-3">Selecione um horário disponível</p>
-          <div class="grid grid-cols-3 gap-2.5 mb-5 max-h-72 overflow-y-auto pr-1">
+          <p class="modal-subtitulo">Selecione um horário disponível</p>
+          <div class="modal-grid-horarios">
             <template v-for="hora in horariosDoDia" :key="hora.horario">
               <!-- Slot aguardando adversário -->
               <button
                 v-if="hora.aguardandoContraTime"
-                class="flex flex-col items-center justify-center gap-0.5 py-2 border-2 rounded-xl text-sm font-semibold cursor-pointer transition-all"
-                :class="horarioSelecionado === hora.horario ? 'bg-amber-500 text-white border-amber-500' : 'bg-amber-50 border-amber-400 text-amber-700 hover:bg-amber-100'"
+                class="hora-bloco-desafio"
+                :class="horarioSelecionado === hora.horario ? 'hora-bloco-desafio--selecionado' : ''"
                 @click="selecionarSlotAguardando(hora)"
                 :title="`${hora.nomeTimeAguardando} busca adversário`"
               >
-                <span class="text-sm">⚔️</span>
-                <span class="text-xs font-bold">{{ hora.horario }}</span>
-                <span class="text-[9px] max-w-[72px] whitespace-nowrap overflow-hidden text-ellipsis opacity-85">{{ hora.nomeTimeAguardando }}</span>
-                <span class="text-[8px] opacity-70 italic">Esperando adversário</span>
+                <span class="desafio-emoji">⚔️</span>
+                <span class="desafio-hora">{{ hora.horario }}</span>
+                <span class="desafio-time">{{ hora.nomeTimeAguardando }}</span>
+                <span class="desafio-status">Esperando adversário</span>
               </button>
               <!-- Slot normal -->
               <button
                 v-else
-                class="py-2.5 border rounded-xl text-sm font-semibold cursor-pointer transition-all"
+                class="hora-bloco"
                 :class="{
-                  'bg-slate-100 text-slate-400 line-through cursor-not-allowed opacity-60': hora.ocupado,
-                  'bg-emerald-500 text-white border-emerald-500': horarioSelecionado === hora.horario,
-                  'border-slate-200 bg-white text-slate-700 hover:border-emerald-400 hover:text-emerald-600': !hora.ocupado && horarioSelecionado !== hora.horario
+                  'hora-bloco--ocupado': hora.ocupado,
+                  'hora-bloco--selecionado': horarioSelecionado === hora.horario,
+                  'hora-bloco--livre': !hora.ocupado && horarioSelecionado !== hora.horario
                 }"
                 :disabled="hora.ocupado"
                 @click="horarioSelecionado = hora.horario; slotAguardando = null"
@@ -230,12 +223,12 @@
               </button>
             </template>
           </div>
-          <p v-if="horariosDoDia.length === 0" class="text-xs text-red-500 col-span-3 text-center py-2.5">Nenhum horário de funcionamento configurado.</p>
+          <p v-if="horariosDoDia.length === 0" class="hora-aviso-erro">Nenhum horário de funcionamento configurado.</p>
         </div>
 
         <button
           v-if="!isDiaBloqueado"
-          class="w-full py-3.5 bg-emerald-500 text-white border-none rounded-xl text-sm font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          class="btn-confirmar-hora"
           :disabled="!horarioSelecionado"
           @click="mostrarPopup = false"
         >
@@ -245,69 +238,72 @@
     </div>
 
     <!-- Mini-Modal: Entrar como adversário -->
-    <div v-if="mostrarModalEntrar" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm" @click.self="cancelarEntrarContraTime">
-      <div class="bg-white rounded-2xl w-full max-w-sm p-5 shadow-2xl text-center">
-        <div class="text-4xl mb-2.5">⚔️</div>
-        <h3 class="text-lg font-extrabold text-slate-800 mb-1.5">Adversário encontrado!</h3>
-        <p class="text-xs text-slate-500 mb-4">
+    <div v-if="mostrarModalEntrar" class="modal-overlay" @click.self="cancelarEntrarContraTime">
+      <div class="modal-card modal-card--center">
+        <div class="modal-desafio-emoji">⚔️</div>
+        <h3 class="modal-desafio-titulo">Adversário encontrado!</h3>
+        <p class="modal-desafio-texto">
           O time <strong>{{ slotAguardando && slotAguardando.nomeTime }}</strong> está esperando um adversário
           para <strong>{{ horarioSelecionado }}</strong>.
           Deseja entrar nessa partida com o seu time?
         </p>
-        <div class="flex flex-col gap-2 mt-4">
-          <button class="w-full py-3.5 bg-emerald-500 text-white border-none rounded-xl text-sm font-bold cursor-pointer" @click="confirmarEntrarContraTime">⚔️ Entrar na Partida</button>
-          <button class="w-full py-3 bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-sm font-semibold cursor-pointer hover:bg-slate-200 transition-colors" @click="cancelarEntrarContraTime">Cancelar</button>
+        <div class="desafio-botoes">
+          <button class="btn-desafio-acao btn-desafio-acao--confirmar" @click="confirmarEntrarContraTime">⚔️ Entrar na Partida</button>
+          <button class="btn-desafio-acao btn-desafio-acao--cancelar" @click="cancelarEntrarContraTime">Cancelar</button>
         </div>
       </div>
     </div>
 
     <!-- Popup Lista de Jogadores -->
-    <div v-if="mostrarPopupJogadores" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm" @click.self="mostrarPopupJogadores = false">
-      <div class="bg-white rounded-2xl w-full max-w-sm p-5 shadow-2xl">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-extrabold text-slate-800 m-0">Lista de Jogadores</h3>
-          <button class="bg-transparent border-none flex items-center justify-center cursor-pointer text-slate-400 hover:text-emerald-500 transition-colors w-7 h-7 p-0 rounded-md" @click="mostrarPopupJogadores = false">
+    <div v-if="mostrarPopupJogadores" class="modal-overlay" @click.self="mostrarPopupJogadores = false">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-titulo">Lista de Jogadores</h3>
+          <button class="btn-fechar" @click="mostrarPopupJogadores = false">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
-        <p class="text-xs text-slate-500 mb-3">Preencha os nomes. Pode adicionar mais se precisar.</p>
-        <div class="flex flex-col gap-3 max-h-72 overflow-y-auto mb-3 pr-0.5">
-          <div v-for="(item, i) in nomesSlotsTemp" :key="i" class="flex flex-col gap-1.5 py-2 border-b border-slate-100 last:border-none">
-            <div class="flex items-center gap-2">
-              <span class="min-w-[22px] text-xs font-bold text-slate-400 text-center">{{ i + 1 }}</span>
-              <input v-model="item.nome" :placeholder="`Jogador ${i + 1}`" class="flex-1 px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-emerald-500 transition-colors" />
+        <p class="modal-subtitulo">Preencha os nomes. Pode adicionar mais se precisar.</p>
+        
+        <div class="jogadores-lista-scroll">
+          <div v-for="(item, i) in nomesSlotsTemp" :key="i" class="jogador-campo-linha">
+            <div class="jogador-input-wrapper">
+              <span class="jogador-numero">{{ i + 1 }}</span>
+              <input v-model="item.nome" :placeholder="`Jogador ${i + 1}`" class="input-campo" />
             </div>
-            <div v-if="mostrarOpcaoGoleiro" class="flex gap-3.5 ml-7 text-xs text-slate-500 items-center">
-              <label class="flex items-center gap-1.5 cursor-pointer select-none">
-                <input type="checkbox" v-model="item.goleiro" class="cursor-pointer m-0" /> Goleiro?
+            <div v-if="mostrarOpcaoGoleiro" class="jogador-goleiro-opcoes">
+              <label class="goleiro-checkbox-label">
+                <input type="checkbox" v-model="item.goleiro" class="goleiro-checkbox" /> Goleiro?
               </label>
-              <label v-if="item.goleiro" class="flex items-center gap-1.5 cursor-pointer select-none">
-                <input type="checkbox" v-model="item.goleiroPaga" class="cursor-pointer m-0" /> Paga a quadra?
+              <label v-if="item.goleiro" class="goleiro-checkbox-label">
+                <input type="checkbox" v-model="item.goleiroPaga" class="goleiro-checkbox" /> Paga a quadra?
               </label>
             </div>
           </div>
         </div>
-        <button class="flex items-center justify-center gap-1.5 w-full py-2.5 bg-slate-100 text-slate-700 border border-dashed border-slate-300 rounded-xl text-sm font-semibold cursor-pointer mb-2.5 hover:bg-slate-200 transition-colors" @click="adicionarSlotExtra">
+
+        <button class="btn-adicionar-jogador" @click="adicionarSlotExtra">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Adicionar mais um
         </button>
-        <button class="w-full py-3.5 bg-emerald-500 text-white border-none rounded-xl text-sm font-bold cursor-pointer mt-2.5" @click="confirmarListaJogadores">
+        
+        <button class="btn-salvar-jogadores" @click="confirmarListaJogadores">
           Confirmar lista ({{ slotsPreenchidosCount }})
         </button>
       </div>
     </div>
 
     <!-- Navegação -->
-    <nav class="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-200 flex justify-around items-center z-50 md:hidden">
-      <router-link to="/menu-jogador" class="flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-400 no-underline px-2 py-1 rounded-xl transition-colors hover:text-emerald-500 [&.router-link-active]:text-emerald-500">
+    <nav class="bottom-nav">
+      <router-link to="/menu-jogador" class="nav-item" :class="$route.path === '/menu-jogador' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         <span>Reservas</span>
       </router-link>
-      <router-link to="/reserva" class="flex flex-col items-center gap-0.5 text-[11px] font-medium text-emerald-500 no-underline px-2 py-1 rounded-xl transition-colors [&.router-link-active]:text-emerald-500">
+      <router-link to="/reserva" class="nav-item" :class="$route.path === '/reserva' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <span>Buscar</span>
       </router-link>
-      <router-link to="/conta-jogador" class="flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-400 no-underline px-2 py-1 rounded-xl transition-colors hover:text-emerald-500 [&.router-link-active]:text-emerald-500">
+      <router-link to="/conta-jogador" class="nav-item" :class="$route.path === '/conta-jogador' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>Perfil</span>
       </router-link>
@@ -657,7 +653,7 @@ export default {
       if (this.tipoJogo === 'contra_time' && (!this.nomeTime || typeof this.nomeTime !== 'string' || !this.nomeTime.trim())) return alert("Informe o nome do seu time.");
       if (!this.jogadoresNomes.length) {
         this.listaSemNomes = true;
-        const el = document.querySelector('.bg-red-50.border-red-200');
+        const el = document.querySelector('.secao-jogadores--erro');
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
@@ -706,9 +702,951 @@ export default {
 };
 </script>
 
-<style>
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+<style scoped>
+.pagina {
+  min-height: 100vh;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+}
+
+.container {
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 16px 100px;
+}
+
+.cabecalho-secao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.btn-voltar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--muted);
+  border: none;
+  color: #475569;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-voltar:hover {
+  background: #e2e8f0;
+  transform: none;
+  box-shadow: none;
+}
+
+.titulo-secao {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+/* Layout flex */
+.layout-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .layout-flex {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.coluna-esquerda {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.coluna-direita {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .coluna-direita {
+    width: 420px;
+  }
+}
+
+/* Card quadra */
+.card-quadra {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+}
+
+.quadra-foto-container {
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  background: var(--muted);
+}
+
+.quadra-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.quadra-foto-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.foto-placeholder-icone {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+}
+
+.quadra-info {
+  padding: 16px;
+}
+
+.quadra-nome {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--foreground);
+  margin-bottom: 6px;
+}
+
+.quadra-detalhes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.quadra-preco {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.carregando-texto {
+  text-align: center;
+  color: var(--muted-foreground);
+  padding: 20px 0;
+  font-size: 14px;
+}
+
+/* Calendario */
+.calendario-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.calendario-titulo {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.calendario-moldura {
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.calendario-mes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border);
+}
+
+.btn-mes-nav {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #475569;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.btn-mes-nav:hover {
+  background: #e2e8f0;
+  transform: none;
+  box-shadow: none;
+}
+
+.calendario-mes-titulo {
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--foreground);
+  text-transform: capitalize;
+}
+
+.calendario-semana-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  padding: 10px 0;
+  background: white;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.calendario-dias-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: white;
+  padding: 8px;
+  gap: 4px;
+}
+
+.dia-item {
+  aspect-ratio: 1/1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dia-item--vazio {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.dia-item--invalido {
+  color: #cbd5e1;
+  cursor: default;
+}
+
+.dia-item--invalido:hover {
+  background: transparent;
+}
+
+.dia-item--selecionado {
+  background: var(--primary) !important;
+  color: white !important;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.dia-item:hover:not(.dia-item--invalido):not(.dia-item--selecionado) {
+  background: #f1f5f9;
+  color: var(--primary-dark);
+}
+
+/* Card resumo */
+.card-resumo {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.resumo-titulo {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.resumo-dados-reserva {
+  display: flex;
+  gap: 12px;
+}
+
+.resumo-bloco-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--muted);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.icone-azul { color: var(--accent); }
+.icone-amarelo { color: #f59e0b; }
+
+.secao-inputs,
+.secao-tipo-jogo,
+.secao-jogadores {
+  display: flex;
+  flex-direction: column;
+}
+
+.subsecao-titulo {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--foreground);
+  margin-bottom: 12px;
+}
+
+.flex-header {
+  display: flex;
+  align-items: center;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.campo:last-child {
+  margin-bottom: 0;
+}
+
+.campo-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input-campo {
+  width: 100%;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--foreground);
+  transition: border-color 0.2s;
+}
+
+.input-campo:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+/* Tipo de jogo */
+.tipo-jogo-botoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-opcao-jogo {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: 2px solid var(--border);
+  background: white;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-opcao-jogo:hover {
+  border-color: rgba(34, 197, 94, 0.4);
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-opcao-jogo--ativo {
+  border-color: var(--primary);
+  background: rgba(34, 197, 94, 0.06);
+  color: var(--primary-dark);
+}
+
+.text-obrigatorio {
+  color: var(--destructive);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mt-3 {
+  margin-top: 12px;
+}
+
+/* Jogadores */
+.secao-jogadores--erro {
+  padding: 12px;
+  background: #fef2f2;
+  border: 1.5px solid rgba(239, 68, 68, 0.2);
+  border-radius: 16px;
+}
+
+.secao-dica {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin-bottom: 10px;
+}
+
+.jogadores-montagem {
+  display: flex;
+  gap: 8px;
+}
+
+.input-campo--qtd {
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.btn-montar-lista {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  font-weight: 700;
+  border-radius: 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-montar-lista:hover {
+  opacity: 0.9;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-montar-lista:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.contador-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 99px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  margin-left: 6px;
+}
+
+.chips-jogadores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.chip--goleiro {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.chip-goleiro-texto {
+  font-size: 10px;
+  opacity: 0.8;
+  margin-left: 4px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.aviso-erro {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--destructive);
+  margin-top: 8px;
+}
+
+.btn-confirmar-reserva {
+  width: 100%;
+  padding: 14px;
+  background: var(--gradient-primary);
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-confirmar-reserva:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+}
+
+/* Modals overlays & Popups */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.modal-card {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 380px;
+  padding: 20px;
+  box-shadow: var(--shadow-glow);
+  position: relative;
+  animation: slideUp 0.2s ease-out;
+}
+
+.modal-card--center {
+  text-align: center;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-titulo {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.btn-fechar {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--muted-foreground);
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  padding: 0;
+  margin: 0;
+  transition: color 0.2s, background 0.2s;
+}
+
+.btn-fechar:hover {
+  color: var(--primary);
+  background: #f1f5f9;
+  transform: none;
+  box-shadow: none;
+}
+
+.bloqueio-alerta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #fef2f2;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 12px;
+  font-size: 13px;
+  color: var(--destructive);
+  margin-bottom: 16px;
+}
+
+.modal-subtitulo {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.modal-grid-horarios {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.hora-bloco {
+  padding: 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  background: white;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.hora-bloco:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary-dark);
+  transform: none;
+  box-shadow: none;
+}
+
+.hora-bloco--ocupado {
+  background: #f1f5f9;
+  color: #94a3b8;
+  text-decoration: line-through;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.hora-bloco--selecionado {
+  background: var(--primary) !important;
+  color: white !important;
+  border-color: var(--primary) !important;
+}
+
+.hora-bloco--livre {
+  border-color: var(--border);
+  color: #475569;
+}
+
+/* Horas desafios ⚔️ */
+.hora-bloco-desafio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px;
+  border: 2px solid #f59e0b;
+  background: #fffbeb;
+  color: #b45309;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hora-bloco-desafio:hover {
+  background: #fef3c7;
+  transform: none;
+  box-shadow: none;
+}
+
+.hora-bloco-desafio--selecionado {
+  background: #f59e0b !important;
+  color: white !important;
+  border-color: #f59e0b !important;
+}
+
+.desafio-emoji {
+  font-size: 14px;
+}
+
+.desafio-hora {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.desafio-time {
+  font-size: 9px;
+  font-weight: 700;
+  max-width: 72px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.desafio-status {
+  font-size: 8px;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.hora-aviso-erro {
+  font-size: 12px;
+  color: var(--destructive);
+  text-align: center;
+  padding: 10px 0;
+}
+
+.btn-confirmar-hora {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-confirmar-hora:hover {
+  opacity: 0.9;
+}
+
+.btn-confirmar-hora:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Adversario Modal */
+.modal-desafio-emoji {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.modal-desafio-titulo {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--foreground);
+  margin-bottom: 6px;
+}
+
+.modal-desafio-texto {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.desafio-botoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-desafio-acao {
+  width: 100%;
+  padding: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+}
+
+.btn-desafio-acao--confirmar {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-desafio-acao--cancelar {
+  background: var(--muted);
+  color: #475569;
+  border: 1px solid var(--border);
+}
+
+/* Popup Lista Jogadores */
+.jogadores-lista-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  padding-right: 4px;
+}
+
+.jogador-campo-linha {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.jogador-campo-linha:last-child {
+  border-bottom: none;
+}
+
+.jogador-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jogador-numero {
+  min-width: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+.jogador-goleiro-opcoes {
+  display: flex;
+  gap: 14px;
+  margin-left: 28px;
+  font-size: 12px;
+  color: #64748b;
+  align-items: center;
+}
+
+.goleiro-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.goleiro-checkbox {
+  cursor: pointer;
+}
+
+.btn-adicionar-jogador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  background: var(--muted);
+  color: #475569;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background 0.2s;
+}
+
+.btn-adicionar-jogador:hover {
+  background: #e2e8f0;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-salvar-jogadores {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: white;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 40;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+
+@media (min-width: 1024px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  padding: 8px 16px;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  color: #475569;
+}
+
+.nav-item--ativo {
+  color: var(--primary);
 }
 </style>

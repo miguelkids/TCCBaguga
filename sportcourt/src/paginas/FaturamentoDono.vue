@@ -1,78 +1,87 @@
 <template>
-  <div class="min-h-screen bg-slate-50 flex flex-col font-sans pb-20 md:pb-8">
+  <div class="pagina">
     <TopbarDono />
-    <div class="max-w-[860px] mx-auto px-4 pb-24 pt-6 w-full">
+    <div class="container">
 
       <!-- Cabeçalho -->
-      <div class="flex items-start justify-between flex-wrap gap-4 mb-7">
-        <div>
-          <h1 class="text-2xl font-extrabold text-slate-800 m-0 text-left">Dashboard</h1>
-          <p class="text-slate-500 text-sm mt-1">Resumo financeiro da sua operação.</p>
+      <div class="cabecalho-secao">
+        <div class="titulos">
+          <h1 class="titulo-pagina">Dashboard</h1>
+          <p class="subtitulo-pagina">Resumo financeiro da sua operação.</p>
         </div>
 
         <!-- Filtros -->
-        <div class="flex gap-2.5 flex-wrap items-center">
-          <select v-model="periodo" @change="atualizar" class="px-3.5 py-2 border border-slate-200 rounded-xl bg-white text-slate-800 text-sm font-semibold cursor-pointer outline-none transition-colors focus:border-blue-500">
-            <option value="mes">Mês</option>
-            <option value="ano">Ano</option>
-          </select>
+        <div class="filtros-wrapper">
+          <div class="select-wrapper">
+            <select v-model="periodo" @change="atualizar" class="select-campo">
+              <option value="mes">Mês</option>
+              <option value="ano">Ano</option>
+            </select>
+            <svg class="select-seta" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
 
-          <select v-if="periodo === 'mes'" v-model="mesSelecionado" @change="atualizar" class="px-3.5 py-2 border border-slate-200 rounded-xl bg-white text-slate-800 text-sm font-semibold cursor-pointer outline-none transition-colors focus:border-blue-500">
-            <option v-for="(nome, idx) in nomesMeses" :key="idx" :value="idx">{{ nome }}</option>
-          </select>
+          <div v-if="periodo === 'mes'" class="select-wrapper">
+            <select v-model="mesSelecionado" @change="atualizar" class="select-campo">
+              <option v-for="(nome, idx) in nomesMeses" :key="idx" :value="idx">{{ nome }}</option>
+            </select>
+            <svg class="select-seta" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
 
-          <select v-model="moeda" @change="converter" class="px-3.5 py-2 border border-slate-200 rounded-xl bg-white text-slate-800 text-sm font-semibold cursor-pointer outline-none transition-colors focus:border-blue-500">
-            <option value="BRL">R$ Real</option>
-            <option value="USD">US$ Dólar</option>
-            <option value="EUR">€ Euro</option>
-          </select>
+          <div class="select-wrapper">
+            <select v-model="moeda" @change="converter" class="select-campo">
+              <option value="BRL">R$ Real</option>
+              <option value="USD">US$ Dólar</option>
+              <option value="EUR">€ Euro</option>
+            </select>
+            <svg class="select-seta" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
         </div>
       </div>
 
       <!-- Stat cards -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-6">
-        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-emerald-50 text-emerald-600">
+      <div class="grid-stats">
+        <div class="stat-card">
+          <div class="stat-icone stat-icone--verde">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
-          <div class="text-xs font-semibold text-slate-400 mb-1.5">Faturamento</div>
-          <div class="text-xl font-extrabold text-slate-800">{{ simbolo }}{{ Number(valorConvertido).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+          <div class="stat-label">Faturamento</div>
+          <div class="stat-valor">{{ simbolo }}{{ Number(valorConvertido).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
         </div>
 
-        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-blue-50 text-blue-600">
+        <div class="stat-card">
+          <div class="stat-icone stat-icone--azul">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
           </div>
-          <div class="text-xs font-semibold text-slate-400 mb-1.5">Horários Agendados</div>
-          <div class="text-xl font-extrabold text-slate-800">{{ totalHorarios }}</div>
+          <div class="stat-label">Horários Agendados</div>
+          <div class="stat-valor">{{ totalHorarios }}</div>
         </div>
 
-        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-amber-50 text-amber-600">
+        <div class="stat-card">
+          <div class="stat-icone stat-icone--laranja">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
           </div>
-          <div class="text-xs font-semibold text-slate-400 mb-1.5">Variação vs. período anterior</div>
-          <div class="text-xl font-extrabold" :class="variacao >= 0 ? 'text-emerald-600' : 'text-red-600'">
+          <div class="stat-label">Variação anterior</div>
+          <div class="stat-valor" :class="variacao >= 0 ? 'text-subida' : 'text-descida'">
             {{ variacao >= 0 ? '+' : '' }}{{ Number(variacao).toFixed(1) }}%
           </div>
         </div>
 
-        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-emerald-50 text-emerald-600">
+        <div class="stat-card">
+          <div class="stat-icone stat-icone--verde">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           </div>
-          <div class="text-xs font-semibold text-slate-400 mb-1.5">Ticket Médio</div>
-          <div class="text-xl font-extrabold text-slate-800">{{ simbolo }}{{ ticketMedio.toFixed(0) }}</div>
+          <div class="stat-label">Ticket Médio</div>
+          <div class="stat-valor">{{ simbolo }}{{ ticketMedio.toFixed(0) }}</div>
         </div>
       </div>
 
       <!-- Gráfico -->
-      <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
-          <h2 class="text-base font-bold text-slate-800 m-0">Faturamento por {{ periodo === 'mes' ? 'dia' : 'mês' }}</h2>
-          <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">{{ periodoLabel }}</span>
+      <div class="grafico-card">
+        <div class="grafico-header">
+          <h2 class="grafico-titulo">Faturamento por {{ periodo === 'mes' ? 'dia' : 'mês' }}</h2>
+          <span class="grafico-badge">{{ periodoLabel }}</span>
         </div>
-        <div class="h-[280px] p-4 relative">
+        <div class="canvas-wrapper">
           <canvas ref="canvas"></canvas>
         </div>
       </div>
@@ -80,20 +89,20 @@
     </div>
 
     <!-- Barra inferior -->
-    <nav class="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-200 flex justify-around items-center z-40 md:hidden shadow-lg">
-      <router-link to="/minhas-quadras" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/minhas-quadras' ? 'text-blue-600' : 'text-slate-400 hover:text-slate-700'">
+    <nav class="bottom-nav">
+      <router-link to="/minhas-quadras" class="nav-item" :class="$route.path === '/minhas-quadras' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Quadras</span>
       </router-link>
-      <router-link to="/reservas" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/reservas' ? 'text-blue-600' : 'text-slate-400 hover:text-slate-700'">
+      <router-link to="/reservas" class="nav-item" :class="$route.path === '/reservas' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         <span>Reservas</span>
       </router-link>
-      <router-link to="/faturamento-dono" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/faturamento-dono' ? 'text-blue-600' : 'text-slate-400 hover:text-slate-700'">
+      <router-link to="/faturamento-dono" class="nav-item" :class="$route.path === '/faturamento-dono' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         <span>Dashboard</span>
       </router-link>
-      <router-link to="/perfil" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/perfil' ? 'text-blue-600' : 'text-slate-400 hover:text-slate-700'">
+      <router-link to="/perfil" class="nav-item" :class="$route.path === '/perfil' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>Perfil</span>
       </router-link>
@@ -281,8 +290,8 @@ export default {
 
       // Cria gradiente verde
       const grad = ctx.createLinearGradient(0, 0, 0, 260);
-      grad.addColorStop(0, "oklch(0.62 0.17 145 / 0.25)");
-      grad.addColorStop(1, "oklch(0.62 0.17 145 / 0.01)");
+      grad.addColorStop(0, "rgba(34, 197, 94, 0.25)");
+      grad.addColorStop(1, "rgba(34, 197, 94, 0.01)");
 
       this.chart = new Chart(ctx, {
         type: "line",
@@ -291,12 +300,12 @@ export default {
           datasets: [
             {
               data: valores,
-              borderColor: "oklch(0.62 0.17 145)",
+              borderColor: "rgb(34, 197, 94)",
               backgroundColor: grad,
               borderWidth: 2.5,
               tension: 0.4,
               pointRadius: 3,
-              pointBackgroundColor: "oklch(0.62 0.17 145)",
+              pointBackgroundColor: "rgb(34, 197, 94)",
               fill: true
             }
           ]
@@ -323,3 +332,230 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.pagina {
+  min-height: 100vh;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+}
+
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 16px 100px;
+  width: 100%;
+}
+
+/* Cabeçalho */
+.cabecalho-secao {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.titulo-pagina {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.subtitulo-pagina {
+  color: var(--muted-foreground);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* Filtros */
+.filtros-wrapper {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-campo {
+  padding: 8px 32px 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: white;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.select-campo:focus {
+  border-color: var(--accent);
+}
+
+.select-seta {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+/* Stats */
+.grid-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+  .grid-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.stat-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow-xs);
+}
+
+.stat-icone {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.stat-icone--verde {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--primary);
+}
+
+.stat-icone--azul {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--accent);
+}
+
+.stat-icone--laranja {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--clay);
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  margin-bottom: 6px;
+}
+
+.stat-valor {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.text-subida {
+  color: var(--primary-dark);
+}
+
+.text-descida {
+  color: var(--destructive);
+}
+
+/* Grafico Card */
+.grafico-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+}
+
+.grafico-header {
+  padding: 20px;
+  border-b: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.grafico-titulo {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.grafico-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  background: rgba(34, 197, 94, 0.08);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.canvas-wrapper {
+  height: 280px;
+  padding: 16px;
+  position: relative;
+}
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: white;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 40;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  padding: 8px 16px;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  color: #475569;
+}
+
+.nav-item--ativo {
+  color: var(--accent);
+}
+</style>

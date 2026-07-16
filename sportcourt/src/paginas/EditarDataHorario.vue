@@ -1,38 +1,38 @@
 <template>
-  <div class="min-h-screen bg-slate-50 flex flex-col font-sans">
+  <div class="pagina">
     <TopbarDono />
-    <div class="max-w-2xl w-full mx-auto px-4 py-8 pb-24 md:pb-10">
+    <div class="container">
 
-      <div class="flex items-center gap-3 mb-6">
-        <button class="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 text-slate-700 font-bold text-xs rounded-xl shadow-sm hover:bg-slate-50 transition-all cursor-pointer" @click="$router.push('/confirmar-quadra')">
+      <div class="cabecalho-secao">
+        <button class="btn-voltar" @click="$router.push('/confirmar-quadra')">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
           Voltar
         </button>
-        <h1 class="text-lg font-extrabold text-slate-900">Gerenciar Horários</h1>
+        <h1 class="titulo-secao">Gerenciar Horários</h1>
       </div>
 
       <!-- Calendário -->
-      <div class="w-full bg-white border border-slate-200 rounded-2xl p-5 shadow-card mb-6">
-        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4">Selecione um dia</h3>
+      <div class="calendario-card">
+        <h3 class="calendario-dica">Selecione um dia</h3>
         
-        <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-          <div class="flex justify-between items-center px-4 py-3 bg-slate-50 border-b border-slate-200">
-            <button @click="mudarMes(-1)" class="bg-transparent border-none text-base cursor-pointer text-slate-700 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-200 transition-colors">&lt;</button>
-            <div class="font-heading font-extrabold text-sm text-slate-800 capitalize">{{ mesAtualNome }} {{ anoAtual }}</div>
-            <button @click="mudarMes(1)" class="bg-transparent border-none text-base cursor-pointer text-slate-700 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-200 transition-colors">&gt;</button>
+        <div class="calendario-moldura">
+          <div class="calendario-mes-header">
+            <button @click="mudarMes(-1)" class="btn-mes-nav">&lt;</button>
+            <div class="calendario-mes-titulo">{{ mesAtualNome }} {{ anoAtual }}</div>
+            <button @click="mudarMes(1)" class="btn-mes-nav">&gt;</button>
           </div>
-          <div class="grid grid-cols-7 text-center py-2.5 bg-white text-xs font-bold text-slate-400 border-b border-slate-200">
-            <div v-for="d in diasSemanaLabel" :key="d">{{ d }}</div>
+          <div class="calendario-semana-labels">
+            <div v-for="d in diasSemanaLabel" :key="d" class="semana-label">{{ d }}</div>
           </div>
-          <div class="grid grid-cols-7 bg-white p-2 gap-1.5">
+          <div class="calendario-dias-grid">
             <div
               v-for="dia in diasMes"
               :key="dia.id"
-              class="aspect-square flex items-center justify-center text-sm font-semibold rounded-xl cursor-pointer transition-all hover:bg-slate-100"
+              class="dia-item"
               :class="{
-                'pointer-events-none opacity-0': !dia.data,
-                'color-slate-300 opacity-40 cursor-not-allowed hover:bg-transparent': dia.data && !dia.valido,
-                'bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-md': dia.data && dia.data === dataSelecionada
+                'dia-item--vazio': !dia.data,
+                'dia-item--invalido': dia.data && !dia.valido,
+                'dia-item--selecionado': dia.data && dia.data === dataSelecionada
               }"
               @click="selecionarDia(dia)"
             >
@@ -45,58 +45,55 @@
     </div>
 
     <!-- Popup Horários -->
-    <div v-if="mostrarPopup" class="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm" @click.self="mostrarPopup = false">
-      <div class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-xl relative animate-scale-in">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-base font-extrabold text-slate-900">Horários: {{ formatarDataBR(dataSelecionada) }}</h3>
-          <button class="bg-transparent border-none display-flex items-center justify-center cursor-pointer text-slate-400 hover:text-blue-600 transition-colors w-7 h-7 p-0 rounded-lg flex-shrink-0" @click="mostrarPopup = false">
+    <div v-if="mostrarPopup" class="modal-overlay" @click.self="mostrarPopup = false">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-titulo">Horários: {{ formatarDataBR(dataSelecionada) }}</h3>
+          <button class="btn-fechar" @click="mostrarPopup = false">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
         
-        <p class="text-xs text-slate-400 font-medium mb-4">Clique no horário para bloquear ou liberar</p>
+        <p class="modal-subtitulo">Clique no horário para bloquear ou liberar</p>
         
-        <div class="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1">
+        <div class="modal-grid-horarios">
           <button
             v-for="hora in horariosDoDia"
             :key="hora.horario"
-            class="w-full py-3 border rounded-xl text-sm font-bold transition-all flex flex-col items-center gap-0.5 cursor-pointer"
-            :class="hora.ocupado ? 'bg-red-50 border-red-100 hover:border-red-200 text-red-500' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-500 hover:text-blue-600'"
+            class="hora-bloco"
+            :class="hora.ocupado ? 'hora-bloco--ocupado' : 'hora-bloco--livre'"
             @click="toggleHorario(hora)"
           >
-            {{ hora.horario }}
-            <div class="text-[10px] font-bold" :class="hora.ocupado ? 'text-red-500' : 'text-blue-500'">
+            <span class="hora-texto">{{ hora.horario }}</span>
+            <div class="hora-status">
               {{ hora.ocupado ? 'Bloqueado' : 'Livre' }}
             </div>
           </button>
         </div>
         
-        <p v-if="horariosDoDia.length === 0" class="text-xs text-red-500 text-center py-2 mb-4">Nenhum horário configurado para este dia.</p>
+        <p v-if="horariosDoDia.length === 0" class="hora-aviso-erro">Nenhum horário configurado para este dia.</p>
         
-        <button 
-          class="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-blue-500/20 hover:-translate-y-0.5 transition-all text-sm mt-4 cursor-pointer"
-          @click="mostrarPopup = false"
-        >
+        <button class="btn-concluir" @click="mostrarPopup = false">
           Concluir
         </button>
       </div>
     </div>
 
     <!-- Navegação -->
-    <nav class="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-200 flex justify-around items-center z-40 md:hidden shadow-lg">
-      <router-link to="/confirmar-quadra" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/confirmar-quadra' ? 'text-blue-600' : 'text-slate-400 hover:text-slate-700'">
+    <nav class="bottom-nav">
+      <router-link to="/confirmar-quadra" class="nav-item" :class="$route.path === '/confirmar-quadra' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Menu</span>
       </router-link>
-      <router-link to="/reservas" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/reservas' ? 'text-blue-600' : 'text-slate-400 hover:text-slate-700'">
+      <router-link to="/reservas" class="nav-item" :class="$route.path === '/reservas' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         <span>Reservas</span>
       </router-link>
-      <router-link to="/faturamento-dono" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/faturamento-dono' ? 'text-blue-600' : 'text-slate-400 hover:text-slate-700'">
+      <router-link to="/faturamento-dono" class="nav-item" :class="$route.path === '/faturamento-dono' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         <span>Dashboard</span>
       </router-link>
-      <router-link to="/perfil" class="flex flex-col items-center gap-0.5 text-xs font-bold py-2 px-4 transition-colors" :class="$route.path === '/perfil' ? 'text-blue-600' : 'text-slate-400 hover:text-slate-700'">
+      <router-link to="/perfil" class="nav-item" :class="$route.path === '/perfil' ? 'nav-item--ativo' : ''">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>Perfil</span>
       </router-link>
@@ -282,13 +279,385 @@ export default {
 };
 </script>
 
-<style>
-.animate-scale-in {
+<style scoped>
+.pagina {
+  min-height: 100vh;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+}
+
+.container {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 16px 100px;
+}
+
+.cabecalho-secao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.btn-voltar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: white;
+  border: 1.5px solid var(--border);
+  color: #475569;
+  font-weight: 700;
+  font-size: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-voltar:hover {
+  background: #f8fafc;
+  transform: none;
+  box-shadow: none;
+}
+
+.titulo-secao {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+/* Calendário */
+.calendario-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.calendario-dica {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+
+.calendario-moldura {
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+}
+
+.calendario-mes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border);
+}
+
+.btn-mes-nav {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #475569;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 0;
+  margin: 0;
+  transition: background 0.2s;
+}
+
+.btn-mes-nav:hover {
+  background: #e2e8f0;
+  transform: none;
+  box-shadow: none;
+}
+
+.calendario-mes-titulo {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--foreground);
+  text-transform: capitalize;
+}
+
+.calendario-semana-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  padding: 10px 0;
+  background: white;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  border-bottom: 1px solid var(--border);
+}
+
+.calendario-dias-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: white;
+  padding: 8px;
+  gap: 6px;
+}
+
+.dia-item {
+  aspect-ratio: 1/1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dia-item:hover {
+  background: #f1f5f9;
+}
+
+.dia-item--vazio {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.dia-item--invalido {
+  color: #cbd5e1;
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.dia-item--invalido:hover {
+  background: transparent;
+}
+
+.dia-item--selecionado {
+  background: var(--accent) !important;
+  color: white !important;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Modal Popup */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.modal-card {
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 380px;
+  padding: 24px;
+  box-shadow: var(--shadow-glow);
+  position: relative;
   animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-titulo {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.btn-fechar {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--muted-foreground);
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin: 0;
+  border-radius: 8px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.btn-fechar:hover {
+  color: var(--accent);
+  background: #f1f5f9;
+  transform: none;
+  box-shadow: none;
+}
+
+.modal-subtitulo {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.modal-grid-horarios {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.hora-bloco {
+  width: 100%;
+  padding: 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  background: white;
+  transition: all 0.2s;
+}
+
+.hora-bloco:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.hora-bloco--ocupado {
+  background: #fef2f2;
+  border-color: rgba(239, 68, 68, 0.2);
+  color: var(--destructive);
+}
+
+.hora-bloco--ocupado:hover {
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.hora-bloco--livre {
+  border-color: var(--border);
+  color: #475569;
+}
+
+.hora-bloco--livre:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.hora-status {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hora-bloco--ocupado .hora-status {
+  color: var(--destructive);
+}
+
+.hora-bloco--livre .hora-status {
+  color: var(--accent);
+}
+
+.hora-aviso-erro {
+  font-size: 12px;
+  color: var(--destructive);
+  text-align: center;
+  padding: 8px 0;
+  margin-bottom: 16px;
+}
+
+.btn-concluir {
+  width: 100%;
+  padding: 14px;
+  background: var(--gradient-accent);
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 16px;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-concluir:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: white;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 40;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  padding: 8px 16px;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  color: #475569;
+}
+
+.nav-item--ativo {
+  color: var(--accent);
+}
+
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.97); }
   to   { opacity: 1; transform: scale(1); }
 }
 </style>
-
