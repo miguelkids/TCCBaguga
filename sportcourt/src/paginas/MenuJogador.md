@@ -31,7 +31,7 @@ Página de painel do atleta/jogador. Centraliza o histórico de reservas do usu�
 *Esta página não recebe propriedades.*
 
 ## 🛠️ Métodos e Ações (`methods`)
-- `formatarDataBR(dataStr)`: Limpa a data ISO e retorna a string formatada em `DD/MM/AAAA`.
+- `formatarDataBR(dataStr)`: Limpa a data ISO e retorna a string formatada em `YYYY/MM/DD`.
 - `handleScroll()`: Monitora o scroll para esconder a barra inferior ao rolar para baixo e reexibir ao rolar para cima.
 - `ouvirReservas()`: Método assíncrono. Obtém as reservas da API via `api.getReservas()`, filtrando aquelas em que o usuário logado participa (como jogador principal `jogadorId` ou oponente desafiante `jogadorIdB`). Formata os caminhos absolutos das fotos de capa.
 - `avaliarQuadra(quadraId, estrelas, reserva)`: Submete uma nota de 1 a 5 para a quadra via `api.avaliarQuadra`. Em caso de sucesso, atualiza o status de votação local da reserva para evitar novos cliques e recalcula a nova média.
@@ -58,3 +58,4 @@ Página de painel do atleta/jogador. Centraliza o histórico de reservas do usu�
 | :--- | :--- | :--- |
 | 22/06/2026 | Antigravity | Criação do mapeamento inicial da página. |
 | 16/07/2026 | Antigravity | Remoção de classes Tailwind e reescrita do visual em CSS puro escopado. |
+| 16/07/2026 | Antigravity | Atualização do formato da data exibida para `YYYY/MM/DD`. |

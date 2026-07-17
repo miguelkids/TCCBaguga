@@ -327,7 +327,6 @@ router.put('/:id/jogadores', authenticateToken, async (req, res) => {
         );
         if (rows.length === 0) return res.status(404).json({ error: 'Reserva não encontrada.' });
         if (rows[0].dono_id !== req.user.id) return res.status(403).json({ error: 'Não autorizado.' });
-        if (!rows[0].confirmada) return res.status(400).json({ error: 'Só é possível editar listas de reservas confirmadas.' });
 
         await db.execute(
             'UPDATE reservas SET jogadores_lista = ?, jogadores_lista_b = ? WHERE id = ?',
@@ -473,6 +472,38 @@ router.put('/:id/editar-jogador', authenticateToken, async (req, res) => {
         res.json({ message: 'Informações atualizadas com sucesso!' });
     } catch (err) {
         console.error('Erro ao editar reserva:', err);
+        res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+});
+
+// Mudar tipo de jogo (dono: contra_time <-> horario_cheio)
+router.put('/:id/tipo-jogo', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.tipo !== 'dono') {
+            return res.status(403).json({ error: 'Apenas donos podem alterar o tipo de jogo.' });
+        }
+        const { id } = req.params;
+        const { tipoJogo } = req.body;
+        if (!['horario_cheio', 'contra_time'].includes(tipoJogo)) {
+            return res.status(400).json({ error: 'Tipo inválido.' });
+        }
+        const [rows] = await db.execute(
+            `SELECT r.id, q.dono_id FROM reservas r JOIN quadras q ON r.quadra_id = q.id WHERE r.id = ?`,
+            [id]
+        );
+        if (rows.length === 0) return res.status(404).json({ error: 'Reserva não encontrada.' });
+        if (rows[0].dono_id !== req.user.id) return res.status(403).json({ error: 'Não autorizado.' });
+        if (tipoJogo === 'horario_cheio') {
+            await db.execute(
+                `UPDATE reservas SET tipo_jogo = ?, nome_jogador_b = NULL, telefone_jogador_b = NULL, nome_time_b = NULL, jogadores_lista_b = NULL, jogador_id_b = NULL WHERE id = ?`,
+                [tipoJogo, id]
+            );
+        } else {
+            await db.execute('UPDATE reservas SET tipo_jogo = ? WHERE id = ?', [tipoJogo, id]);
+        }
+        res.json({ message: 'Tipo de jogo atualizado!', tipoJogo });
+    } catch (err) {
+        console.error('Erro ao atualizar tipo de jogo:', err);
         res.status(500).json({ error: 'Erro interno do servidor.' });
     }
 });

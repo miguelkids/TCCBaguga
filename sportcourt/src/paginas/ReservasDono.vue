@@ -31,9 +31,10 @@
         <div class="spinner"></div>
       </div>
 
-      <!-- Aba CRM Clientes -->
+      <!-- ======================== -->
+      <!-- Aba CRM Clientes         -->
+      <!-- ======================== -->
       <div v-else-if="abaAtiva === 'crm'" class="lista-crm">
-        <!-- Busca e filtros -->
         <div class="crm-filtros">
           <div class="crm-busca-wrapper">
             <svg class="crm-busca-icone" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -48,13 +49,17 @@
           </div>
         </div>
 
-        <!-- Lista de clientes -->
+        <div v-if="clientesFiltrados.length === 0" class="lista-vazia">
+          <p>Nenhum cliente encontrado.</p>
+        </div>
+
         <div v-for="c in clientesFiltrados" :key="c.id" class="cliente-card">
           <button @click="selectedClienteId = selectedClienteId === c.id ? null : c.id" class="cliente-header">
             <div class="avatar" :style="{ background: avatarColor(c.nome) }">{{ iniciais(c.nome) }}</div>
             <div class="cliente-info">
               <p class="cliente-nome">{{ c.nome }}</p>
-              <p class="cliente-stats">{{ c.totalJogos }} jogos · Pago: R$ {{ c.totalPago.toFixed(2) }}</p>
+              <p class="cliente-stats">{{ c.totalJogos }} jogo{{ c.totalJogos !== 1 ? 's' : '' }} · R$ {{ c.totalPago.toFixed(2) }} pagos</p>
+              <p v-if="c.telefone" class="cliente-tel">📞 {{ c.telefone }}</p>
             </div>
             <div class="cliente-status">
               <span class="status-badge" :class="c.divida > 0 ? 'status-badge--pendente' : 'status-badge--em-dia'">
@@ -63,16 +68,16 @@
               <p v-if="c.divida > 0" class="divida-valor">R$ {{ c.divida.toFixed(2) }}</p>
             </div>
           </button>
-          <!-- Histórico expandido -->
+
           <div v-if="selectedClienteId === c.id" class="cliente-historico">
             <div class="historico-lista">
               <div v-for="r in c.reservas" :key="r.id" class="historico-item">
                 <div>
-                  <p class="historico-data">{{ r.data }} · {{ r.horario }}</p>
-                  <p class="historico-quadra">{{ r.nomeQuadra }} · R$ {{ r.preco }}</p>
+                  <p class="historico-data">{{ formatarData(r.data) }} · {{ r.horario }}</p>
+                  <p class="historico-quadra">{{ r.quadraNome }} · R$ {{ r.preco }}</p>
                 </div>
-                <span class="pagamento-badge" :class="r.status_pagamento === 'pago' ? 'pagamento-badge--pago' : 'pagamento-badge--pendente'">
-                  {{ r.status_pagamento === 'pago' ? 'Pago' : 'Pendente' }}
+                <span class="pagamento-badge" :class="r.statusPagamento === 'pago' ? 'pagamento-badge--pago' : 'pagamento-badge--pendente'">
+                  {{ r.statusPagamento === 'pago' ? 'Pago' : 'Pendente' }}
                 </span>
               </div>
             </div>
@@ -84,7 +89,9 @@
         </div>
       </div>
 
-      <!-- Abas de reservas (Pendentes, Confirmadas, Encerradas) -->
+      <!-- ======================== -->
+      <!-- Abas de Reservas         -->
+      <!-- ======================== -->
       <div v-else class="lista-reservas">
         <div v-if="listaAtiva.length === 0" class="lista-vazia">
           <p>Nenhuma reserva {{ abaAtiva }}.</p>
@@ -94,21 +101,36 @@
 
           <!-- Cabeçalho do card -->
           <div class="reserva-cabecalho">
-            <div class="avatar" :style="{ background: avatarColor(r.nomeJogador) }">{{ iniciais(r.nomeJogador) }}</div>
+            <div class="avatar" :style="{ background: avatarColor(r.nome) }">{{ iniciais(r.nome) }}</div>
             <div class="reserva-jogador">
-              <p class="jogador-nome">{{ r.nomeJogador || 'Jogador' }}</p>
-              <p class="jogador-tel">{{ r.telefoneJogador }}</p>
+              <p class="jogador-nome">{{ r.nome || 'Jogador' }}</p>
+              <p class="jogador-tel">{{ r.telefone }}</p>
             </div>
-            <span class="status-reserva" :class="r.confirmada ? 'status-reserva--confirmada' : 'status-reserva--pendente'">
-              {{ r.confirmada ? 'Confirmada' : 'Pendente' }}
-            </span>
+            <div class="card-badges">
+              <span v-if="r.tipoJogo === 'contra_time' && !r.nomeJogadorB"
+                class="badge-contra-aguardando">⚔️ Aguardando</span>
+              <span v-else-if="r.tipoJogo === 'contra_time'"
+                class="badge-contra-fechado">⚔️ Contra Time</span>
+              <span class="status-reserva"
+                :class="r.confirmada ? 'status-reserva--confirmada' : 'status-reserva--pendente'">
+                {{ r.confirmada ? 'Confirmada' : 'Pendente' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Info Contra Time (VS) -->
+          <div v-if="r.tipoJogo === 'contra_time'" class="contra-time-info">
+            <span class="time-nome time-nome-a">{{ r.nomeTime || r.nome || 'Time A' }}</span>
+            <span class="vs-separador">VS</span>
+            <span v-if="r.nomeJogadorB" class="time-nome time-nome-b">{{ r.nomeTimeB || r.nomeJogadorB }}</span>
+            <span v-else class="time-aguardando">??? adversário</span>
           </div>
 
           <!-- Detalhes da reserva -->
           <div class="reserva-detalhes">
             <div class="detalhe-item">
               <svg class="detalhe-icone detalhe-icone--azul" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <span class="detalhe-valor">{{ r.data }}</span>
+              <span class="detalhe-valor">{{ formatarData(r.data) }}</span>
             </div>
             <div class="detalhe-item">
               <svg class="detalhe-icone detalhe-icone--amarelo" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -120,20 +142,143 @@
             </div>
             <div class="detalhe-item">
               <svg class="detalhe-icone detalhe-icone--azul" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span class="detalhe-valor">{{ r.nomeQuadra }}</span>
+              <span class="detalhe-valor">{{ r.quadraNome }}</span>
+            </div>
+          </div>
+
+          <!-- Lista de Jogadores (confirmadas e encerradas) -->
+          <div v-if="abaAtiva !== 'pendentes'" class="jogadores-section">
+            <div class="times-wrapper" :class="r.tipoJogo === 'contra_time' && r.nomeJogadorB ? 'times-duplo' : ''">
+
+              <!-- Time A -->
+              <div class="time-bloco">
+                <p class="time-titulo">
+                  {{ r.tipoJogo === 'contra_time' ? (r.nomeTime || 'Time A') : 'Jogadores' }}
+                </p>
+                <div v-if="r.jogadoresLista && r.jogadoresLista.length > 0" class="jogadores-chips">
+                  <div v-for="(j, idx) in r.jogadoresLista" :key="'a-' + idx" class="jogador-item">
+                    <span class="jogador-item-nome">
+                      {{ j.nome }}
+                      <span v-if="j.goleiro" class="goleiro-tag">🥅</span>
+                    </span>
+                    <button v-if="abaAtiva === 'encerradas'"
+                      @click="togglePagamentoJogador(r, idx)"
+                      class="pago-btn"
+                      :class="j.pago ? 'pago-btn--pago' : 'pago-btn--pendente'">
+                      {{ j.pago ? '✓ Pago' : 'Pendente' }}
+                    </button>
+                    <span v-else class="pago-tag" :class="j.pago ? 'pago-tag--pago' : 'pago-tag--pendente'">
+                      {{ j.pago ? 'Pago' : 'Pendente' }}
+                    </span>
+                  </div>
+                </div>
+                <p v-else class="sem-jogadores">Nenhum jogador cadastrado</p>
+              </div>
+
+              <!-- Time B (contra_time com adversário) -->
+              <div v-if="r.tipoJogo === 'contra_time' && r.nomeJogadorB" class="time-bloco time-bloco--b">
+                <p class="time-titulo">{{ r.nomeTimeB || r.nomeJogadorB || 'Time B' }}</p>
+                <div v-if="r.jogadoresListaB && r.jogadoresListaB.length > 0" class="jogadores-chips">
+                  <div v-for="(j, idx) in r.jogadoresListaB" :key="'b-' + idx" class="jogador-item">
+                    <span class="jogador-item-nome">
+                      {{ j.nome }}
+                      <span v-if="j.goleiro" class="goleiro-tag">🥅</span>
+                    </span>
+                    <button v-if="abaAtiva === 'encerradas'"
+                      @click="togglePagamentoJogadorB(r, idx)"
+                      class="pago-btn"
+                      :class="j.pago ? 'pago-btn--pago' : 'pago-btn--pendente'">
+                      {{ j.pago ? '✓ Pago' : 'Pendente' }}
+                    </button>
+                    <span v-else class="pago-tag" :class="j.pago ? 'pago-tag--pago' : 'pago-tag--pendente'">
+                      {{ j.pago ? 'Pago' : 'Pendente' }}
+                    </span>
+                  </div>
+                </div>
+                <p v-else class="sem-jogadores">Nenhum jogador cadastrado</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Painel de Edição (pendentes) -->
+          <div v-if="abaAtiva === 'pendentes'" class="edicao-wrapper">
+            <button @click="toggleExpandido(r.id)" class="btn-editar-toggle">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              {{ expandidoId === r.id ? 'Fechar edição' : 'Editar jogadores' }}
+            </button>
+
+            <div v-if="expandidoId === r.id" class="edicao-painel">
+
+              <!-- Jogadores Time A -->
+              <div class="edicao-time">
+                <p class="edicao-time-label">{{ r.nomeTime || 'Time A' }}</p>
+                <div v-for="(j, idx) in r.jogadoresLista" :key="'ea-' + idx" class="edicao-linha">
+                  <span class="edicao-nome">{{ j.nome }}</span>
+                  <label class="edicao-goleiro-label">
+                    <input type="checkbox" v-model="r.jogadoresLista[idx].goleiro" class="edicao-checkbox" />
+                    Goleiro
+                  </label>
+                  <button @click="removerJogador(r, idx)" class="btn-remover">✕</button>
+                </div>
+                <div class="edicao-adicionar">
+                  <input :value="novoJogador[r.id] || ''" @input="novoJogador[r.id] = $event.target.value"
+                    type="text" placeholder="Nome do jogador..." class="input-novo-jogador"
+                    @keyup.enter="adicionarJogador(r)" />
+                  <button @click="adicionarJogador(r)" class="btn-adicionar">+</button>
+                </div>
+              </div>
+
+              <!-- Jogadores Time B (se contra_time e adversário entrou) -->
+              <div v-if="r.tipoJogo === 'contra_time' && r.nomeJogadorB" class="edicao-time">
+                <p class="edicao-time-label">{{ r.nomeTimeB || r.nomeJogadorB || 'Time B' }}</p>
+                <div v-for="(j, idx) in (r.jogadoresListaB || [])" :key="'eb-' + idx" class="edicao-linha">
+                  <span class="edicao-nome">{{ j.nome }}</span>
+                  <label class="edicao-goleiro-label">
+                    <input type="checkbox" v-model="r.jogadoresListaB[idx].goleiro" class="edicao-checkbox" />
+                    Goleiro
+                  </label>
+                  <button @click="removerJogadorB(r, idx)" class="btn-remover">✕</button>
+                </div>
+                <div class="edicao-adicionar">
+                  <input :value="novoJogadorB[r.id] || ''" @input="novoJogadorB[r.id] = $event.target.value"
+                    type="text" placeholder="Nome do jogador Time B..." class="input-novo-jogador"
+                    @keyup.enter="adicionarJogadorB(r)" />
+                  <button @click="adicionarJogadorB(r)" class="btn-adicionar">+</button>
+                </div>
+              </div>
+
+              <!-- Mudar para Horário Cheio (se contra sem adversário) -->
+              <button v-if="r.tipoJogo === 'contra_time' && !r.nomeJogadorB"
+                @click="mudarParaHorarioCheio(r)" class="btn-modo-cheio">
+                🔄 Aceitar como Horário Cheio (sem adversário)
+              </button>
+
+              <button @click="salvarListaJogadores(r)" class="btn-salvar-edicao">
+                💾 Salvar lista
+              </button>
             </div>
           </div>
 
           <!-- Ações -->
           <div class="reserva-acoes">
-            <button v-if="!r.confirmada" @click="confirmarReserva(r)" class="acao-btn acao-btn--azul">Confirmar</button>
-            <button v-if="r.confirmada && r.status_pagamento !== 'pago'" @click="concluirHorario(r)" class="acao-btn acao-btn--verde">Encerrar Horário</button>
+            <button v-if="!r.confirmada" @click="confirmarReserva(r)"
+              class="acao-btn acao-btn--azul"
+              :disabled="r.tipoJogo === 'contra_time' && !r.nomeJogadorB"
+              :title="r.tipoJogo === 'contra_time' && !r.nomeJogadorB ? 'Aguardando adversário entrar no jogo' : 'Confirmar reserva'">
+              {{ r.tipoJogo === 'contra_time' && !r.nomeJogadorB ? '⏳ Aguardando' : 'Confirmar' }}
+            </button>
+            <button v-if="r.confirmada && r.statusPagamento !== 'pago'" @click="concluirHorario(r)"
+              class="acao-btn acao-btn--verde">
+              Encerrar Horário
+            </button>
             <button @click="cancelarReserva(r)" class="acao-btn acao-btn--vermelho">Cancelar</button>
-            <a :href="`https://wa.me/55${(r.telefoneJogador||'').replace(/\D/g,'')}`" target="_blank" class="acao-btn acao-btn--whatsapp">
+            <a :href="`https://wa.me/55${(r.telefone||'').replace(/\D/g,'')}`"
+              target="_blank" class="acao-btn acao-btn--whatsapp">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
               WA
             </a>
           </div>
+
         </div>
       </div>
     </div>
@@ -176,6 +321,9 @@ export default {
       buscaCRM: "",
       selectedClienteId: null,
       filtroFinanceiro: "todos",
+      expandidoId: null,
+      novoJogador: {},
+      novoJogadorB: {},
       abas: [
         { id: "pendentes", label: "Pendentes", badgeClass: "aba-badge--amber" },
         { id: "confirmadas", label: "Confirmadas", badgeClass: "aba-badge--verde" },
@@ -190,20 +338,36 @@ export default {
     };
   },
   computed: {
-    pendentes() { return this.reservas.filter(r => !r.confirmada && r.status !== "cancelada"); },
-    confirmadas() { return this.reservas.filter(r => r.confirmada && r.status_pagamento !== "pago"); },
-    encerradas() { return this.reservas.filter(r => r.status_pagamento === "pago"); },
-    listaAtiva() { return this.listaFiltrada(this.abaAtiva); },
+    pendentes() {
+      return this.reservas.filter(r => !r.confirmada && r.status !== "cancelada");
+    },
+    confirmadas() {
+      return this.reservas.filter(r => r.confirmada && r.statusPagamento !== "pago");
+    },
+    encerradas() {
+      return this.reservas.filter(r => r.statusPagamento === "pago");
+    },
+    listaAtiva() {
+      return this.listaFiltrada(this.abaAtiva);
+    },
     clientesList() {
       const mapa = {};
       for (const r of this.reservas) {
         const id = r.jogadorId;
         if (!mapa[id]) {
-          mapa[id] = { id, nome: r.nomeJogador || "Jogador", totalJogos: 0, totalPago: 0, divida: 0, reservas: [] };
+          mapa[id] = {
+            id,
+            nome: r.nome || "Jogador",
+            telefone: r.telefone || "",
+            totalJogos: 0,
+            totalPago: 0,
+            divida: 0,
+            reservas: []
+          };
         }
         mapa[id].totalJogos++;
         mapa[id].reservas.push(r);
-        if (r.status_pagamento === "pago") mapa[id].totalPago += parseFloat(r.preco || 0);
+        if (r.statusPagamento === "pago") mapa[id].totalPago += parseFloat(r.preco || 0);
         else mapa[id].divida += parseFloat(r.preco || 0);
       }
       return Object.values(mapa);
@@ -226,11 +390,18 @@ export default {
     clearInterval(this.pollInterval);
   },
   methods: {
+    formatarData(dataStr) {
+      if (!dataStr) return "";
+      return String(dataStr).slice(0, 10).replace(/-/g, "/");
+    },
     listaFiltrada(id) {
       if (id === "pendentes") return this.pendentes;
       if (id === "confirmadas") return this.confirmadas;
       if (id === "encerradas") return this.encerradas;
       return [];
+    },
+    toggleExpandido(id) {
+      this.expandidoId = this.expandidoId === id ? null : id;
     },
     async carregarReservas() {
       try {
@@ -243,6 +414,7 @@ export default {
       }
     },
     async confirmarReserva(r) {
+      if (r.tipoJogo === "contra_time" && !r.nomeJogadorB) return;
       await api.confirmarReserva(r.id);
       r.confirmada = true;
       await this.carregarReservas();
@@ -254,8 +426,71 @@ export default {
     },
     async concluirHorario(r) {
       await api.concluirReserva(r.id);
-      r.status_pagamento = "pago";
+      r.statusPagamento = "pago";
       await this.carregarReservas();
+    },
+    async togglePagamentoJogador(r, idx) {
+      r.jogadoresLista.splice(idx, 1, {
+        ...r.jogadoresLista[idx],
+        pago: !r.jogadoresLista[idx].pago
+      });
+      try {
+        await api.atualizarListaJogadores(r.id, r.jogadoresLista, r.jogadoresListaB || []);
+      } catch (err) {
+        console.error("Erro ao atualizar pagamento:", err);
+      }
+    },
+    async togglePagamentoJogadorB(r, idx) {
+      r.jogadoresListaB.splice(idx, 1, {
+        ...r.jogadoresListaB[idx],
+        pago: !r.jogadoresListaB[idx].pago
+      });
+      try {
+        await api.atualizarListaJogadores(r.id, r.jogadoresLista || [], r.jogadoresListaB);
+      } catch (err) {
+        console.error("Erro ao atualizar pagamento:", err);
+      }
+    },
+    adicionarJogador(r) {
+      const nome = (this.novoJogador[r.id] || "").trim();
+      if (!nome) return;
+      if (!Array.isArray(r.jogadoresLista)) r.jogadoresLista = [];
+      r.jogadoresLista.push({ nome, pago: false, goleiro: false, goleiroPaga: true });
+      this.novoJogador = { ...this.novoJogador, [r.id]: "" };
+    },
+    removerJogador(r, idx) {
+      r.jogadoresLista.splice(idx, 1);
+    },
+    adicionarJogadorB(r) {
+      const nome = (this.novoJogadorB[r.id] || "").trim();
+      if (!nome) return;
+      if (!Array.isArray(r.jogadoresListaB)) r.jogadoresListaB = [];
+      r.jogadoresListaB.push({ nome, pago: false, goleiro: false, goleiroPaga: true });
+      this.novoJogadorB = { ...this.novoJogadorB, [r.id]: "" };
+    },
+    removerJogadorB(r, idx) {
+      r.jogadoresListaB.splice(idx, 1);
+    },
+    async mudarParaHorarioCheio(r) {
+      if (!confirm("Mudar para Horário Cheio? Isso remove o slot para adversário.")) return;
+      try {
+        await api.atualizarTipoJogo(r.id, "horario_cheio");
+        r.tipoJogo = "horario_cheio";
+        r.nomeJogadorB = null;
+        r.nomeTimeB = null;
+        r.jogadoresListaB = [];
+      } catch (err) {
+        console.error("Erro ao mudar tipo:", err);
+      }
+    },
+    async salvarListaJogadores(r) {
+      try {
+        await api.atualizarListaJogadores(r.id, r.jogadoresLista || [], r.jogadoresListaB || []);
+        this.expandidoId = null;
+      } catch (err) {
+        console.error("Erro ao salvar lista:", err);
+        alert("Erro ao salvar: " + err.message);
+      }
     },
     iniciais(nome) {
       if (!nome) return "?";
@@ -264,12 +499,13 @@ export default {
     avatarColor(nome) {
       let hash = 0;
       for (let i = 0; i < (nome || "").length; i++) hash = nome.charCodeAt(i) + ((hash << 5) - hash);
-      return `oklch(0.55 0.18 ${Math.abs(hash) % 360})`;
+      const angle = Math.abs(hash) % 360;
+      return `hsl(${angle}, 70%, 45%)`;
     },
     whatsappCRM(c) {
-      const tel = ((c.reservas[0] || {}).telefoneJogador || "").replace(/\D/g, "");
+      const tel = (c.telefone || "").replace(/\D/g, "");
       const msg = c.divida > 0
-        ? `Olá ${c.nome}, você tem R$ ${c.divida.toFixed(2)} pendentes. Podemos acertar?`
+        ? `Olá ${c.nome}, você tem R$ ${c.divida.toFixed(2)} pendentes conosco. Podemos acertar?`
         : `Olá ${c.nome}, obrigado por jogar conosco! 🎉`;
       return `https://wa.me/55${tel}?text=${encodeURIComponent(msg)}`;
     },
@@ -372,30 +608,11 @@ export default {
   font-weight: 800;
 }
 
-.aba-badge--inativo {
-  background: #e2e8f0;
-  color: #64748b;
-}
-
-.aba-badge--amber {
-  background: rgba(245, 158, 11, 0.12);
-  color: #b45309;
-}
-
-.aba-badge--verde {
-  background: rgba(34, 197, 94, 0.12);
-  color: var(--primary-dark);
-}
-
-.aba-badge--cinza {
-  background: #e2e8f0;
-  color: #475569;
-}
-
-.aba-badge--azul {
-  background: rgba(59, 130, 246, 0.12);
-  color: #1d4ed8;
-}
+.aba-badge--inativo { background: #e2e8f0; color: #64748b; }
+.aba-badge--amber { background: rgba(245, 158, 11, 0.12); color: #b45309; }
+.aba-badge--verde { background: rgba(34, 197, 94, 0.12); color: var(--primary-dark); }
+.aba-badge--cinza { background: #e2e8f0; color: #475569; }
+.aba-badge--azul { background: rgba(59, 130, 246, 0.12); color: #1d4ed8; }
 
 /* Loading */
 .loading-wrapper {
@@ -435,7 +652,7 @@ export default {
   flex-shrink: 0;
 }
 
-/* CRM */
+/* =============== CRM =============== */
 .lista-crm {
   display: flex;
   flex-direction: column;
@@ -476,6 +693,7 @@ export default {
 
 .crm-busca-input:focus {
   border-color: var(--primary);
+  outline: none;
 }
 
 .crm-filtros-btns {
@@ -501,9 +719,9 @@ export default {
 }
 
 .filtro-btn--ativo {
-  background: var(--primary);
+  background: var(--accent);
   color: white;
-  border-color: var(--primary);
+  border-color: var(--accent);
 }
 
 .cliente-card {
@@ -551,6 +769,13 @@ export default {
   font-size: 12px;
   color: var(--muted-foreground);
   font-weight: 500;
+  margin-top: 2px;
+}
+
+.cliente-tel {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  margin-top: 2px;
 }
 
 .cliente-status {
@@ -606,36 +831,21 @@ export default {
   border-bottom: 1px solid #f1f5f9;
 }
 
-.historico-item:last-child {
-  border-bottom: none;
-}
+.historico-item:last-child { border-bottom: none; }
 
-.historico-data {
-  font-weight: 700;
-  color: #475569;
-}
-
-.historico-quadra {
-  color: var(--muted-foreground);
-  font-size: 11px;
-}
+.historico-data { font-weight: 700; color: #475569; }
+.historico-quadra { color: var(--muted-foreground); font-size: 11px; }
 
 .pagamento-badge {
   font-weight: 700;
   padding: 3px 8px;
   border-radius: 999px;
   font-size: 11px;
+  flex-shrink: 0;
 }
 
-.pagamento-badge--pago {
-  background: rgba(34, 197, 94, 0.1);
-  color: var(--primary-dark);
-}
-
-.pagamento-badge--pendente {
-  background: rgba(245, 158, 11, 0.1);
-  color: #b45309;
-}
+.pagamento-badge--pago { background: rgba(34, 197, 94, 0.1); color: var(--primary-dark); }
+.pagamento-badge--pendente { background: rgba(245, 158, 11, 0.1); color: #b45309; }
 
 .btn-whatsapp {
   display: flex;
@@ -653,11 +863,9 @@ export default {
   transition: opacity 0.2s;
 }
 
-.btn-whatsapp:hover {
-  opacity: 0.9;
-}
+.btn-whatsapp:hover { opacity: 0.9; }
 
-/* Lista de reservas */
+/* =============== Reservas =============== */
 .lista-reservas {
   display: flex;
   flex-direction: column;
@@ -699,6 +907,37 @@ export default {
   font-weight: 500;
 }
 
+/* Badges agrupados */
+.card-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.badge-contra-aguardando {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(249, 115, 22, 0.12);
+  color: #c2410c;
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  white-space: nowrap;
+}
+
+.badge-contra-fechado {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.1);
+  color: #7c3aed;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  white-space: nowrap;
+}
+
 .status-reserva {
   font-size: 12px;
   font-weight: 700;
@@ -718,6 +957,36 @@ export default {
   border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
+/* VS info */
+.contra-time-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.time-nome { color: var(--foreground); }
+.time-nome-a { color: var(--primary-dark); }
+.time-nome-b { color: var(--accent); }
+
+.vs-separador {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 6px;
+  background: var(--muted);
+  border-radius: 6px;
+  color: var(--muted-foreground);
+}
+
+.time-aguardando {
+  color: #c2410c;
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* Detalhes */
 .reserva-detalhes {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -734,10 +1003,7 @@ export default {
   padding: 8px;
 }
 
-.detalhe-icone {
-  flex-shrink: 0;
-}
-
+.detalhe-icone { flex-shrink: 0; }
 .detalhe-icone--azul { color: var(--accent); }
 .detalhe-icone--amarelo { color: #f59e0b; }
 .detalhe-icone--verde { color: var(--primary); }
@@ -749,6 +1015,293 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Lista de jogadores */
+.jogadores-section {
+  padding: 0 16px 12px;
+}
+
+.times-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.times-duplo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.time-bloco {
+  background: var(--muted);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.time-bloco--b { border-left: 2px solid var(--accent); }
+
+.time-titulo {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.jogadores-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.jogador-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.jogador-item-nome {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.goleiro-tag {
+  font-size: 11px;
+}
+
+.pago-btn {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.pago-btn:hover { opacity: 0.8; transform: none; box-shadow: none; }
+
+.pago-btn--pago { background: rgba(34, 197, 94, 0.15); color: var(--primary-dark); }
+.pago-btn--pendente { background: rgba(245, 158, 11, 0.15); color: #b45309; }
+
+.pago-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.pago-tag--pago { background: rgba(34, 197, 94, 0.12); color: var(--primary-dark); }
+.pago-tag--pendente { background: rgba(245, 158, 11, 0.12); color: #b45309; }
+
+.sem-jogadores {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+/* Edição (pendentes) */
+.edicao-wrapper {
+  padding: 0 16px 8px;
+}
+
+.btn-editar-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: var(--muted);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-editar-toggle:hover {
+  background: white;
+  color: var(--foreground);
+  transform: none;
+  box-shadow: none;
+}
+
+.edicao-painel {
+  margin-top: 12px;
+  background: var(--muted);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edicao-time {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edicao-time-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.edicao-linha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.edicao-nome {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+  min-width: 0;
+}
+
+.edicao-goleiro-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.edicao-checkbox {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: var(--primary);
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  font-size: inherit;
+  background: transparent;
+}
+
+.btn-remover {
+  padding: 4px 8px;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--destructive);
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.btn-remover:hover {
+  background: var(--destructive);
+  color: white;
+  transform: none;
+  box-shadow: none;
+}
+
+.edicao-adicionar {
+  display: flex;
+  gap: 8px;
+}
+
+.input-novo-jogador {
+  flex: 1;
+  padding: 8px 12px;
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.input-novo-jogador:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.btn-adicionar {
+  padding: 8px 14px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.btn-adicionar:hover {
+  opacity: 0.9;
+  transform: none;
+  box-shadow: none;
+}
+
+.edicao-time-b {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.btn-modo-cheio {
+  padding: 10px 14px;
+  background: rgba(249, 115, 22, 0.08);
+  color: #c2410c;
+  border: 1.5px solid rgba(249, 115, 22, 0.2);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.15s;
+}
+
+.btn-modo-cheio:hover {
+  background: rgba(249, 115, 22, 0.15);
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-salvar-edicao {
+  padding: 10px 14px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-salvar-edicao:hover {
+  opacity: 0.9;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Ações */
@@ -772,25 +1325,22 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  transition: opacity 0.2s, transform 0.15s;
+  transition: opacity 0.2s;
   text-decoration: none;
+  white-space: nowrap;
 }
 
-.acao-btn:hover {
-  opacity: 0.85;
-  transform: none;
-  box-shadow: none;
+.acao-btn:hover { opacity: 0.85; transform: none; box-shadow: none; }
+
+.acao-btn--azul { background: var(--accent); color: white; }
+.acao-btn--azul:disabled {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
-.acao-btn--azul {
-  background: var(--accent);
-  color: white;
-}
-
-.acao-btn--verde {
-  background: var(--primary);
-  color: white;
-}
+.acao-btn--verde { background: var(--primary); color: white; }
 
 .acao-btn--vermelho {
   background: rgba(239, 68, 68, 0.08);
@@ -822,9 +1372,7 @@ export default {
 }
 
 @media (min-width: 1024px) {
-  .bottom-nav {
-    display: none;
-  }
+  .bottom-nav { display: none; }
 }
 
 .nav-item {
@@ -840,11 +1388,6 @@ export default {
   text-decoration: none;
 }
 
-.nav-item:hover {
-  color: #475569;
-}
-
-.nav-item--ativo {
-  color: var(--primary);
-}
+.nav-item:hover { color: #475569; }
+.nav-item--ativo { color: var(--primary); }
 </style>

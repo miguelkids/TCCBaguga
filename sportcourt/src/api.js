@@ -340,6 +340,17 @@ export const api = {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Erro ao editar informações');
     return data;
+  },
+
+  async atualizarTipoJogo(reservaId, tipoJogo) {
+    const res = await fetch(`${API_URL}/reservas/${reservaId}/tipo-jogo`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify({ tipoJogo })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erro ao atualizar tipo de jogo');
+    return data;
   }
 };
 

@@ -61,6 +61,7 @@ Página crucial para a conclusão de reservas de quadras pelo atleta (jogador). 
 - `carregarOcupacoes()`: Carrega dados unificados de ocupações e reservas da quadra via `api.getQuadraOcupacoes`.
 - `selecionarDia(dia)`: Define o dia no calendário e reseta a seleção de hora caso tenha mudado. Dispara `montarHorariosDoDia()`.
 - `montarHorariosDoDia()`: Varre os horários de expediente. Desabilita horários retroativos se a consulta for para o dia de hoje. Consulta desafiantes do dia usando `api.getContraTimeAguardandoDia` para pintar os botões em laranja.
+- `formatarDataBR(dataIso)`: Converte strings de data do formato `AAAA-MM-DD` para `YYYY/MM/DD`.
 - `abrirPopupJogadores()`: Abre a listagem de jogadores populando os nomes com registros anteriores ou em branco até a quantidade informada.
 - `confirmarListaJogadores()`: Salva e formata os inputs do popup no array definitivo de jogadores.
 - `selecionarSlotAguardando(hora)`: Ativa modo de desafio contra adversário, carregando o modal visual.
@@ -92,3 +93,4 @@ Página crucial para a conclusão de reservas de quadras pelo atleta (jogador). 
 | :--- | :--- | :--- |
 | 22/06/2026 | Antigravity | Criação do mapeamento inicial da página. |
 | 16/07/2026 | Antigravity | Remoção de classes Tailwind e reescrita do visual em CSS puro escopado. |
+| 16/07/2026 | Antigravity | Atualização do formato da data exibida para `YYYY/MM/DD`. |

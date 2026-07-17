@@ -22,11 +22,11 @@
         <!-- Card Time A (cliente principal) -->
         <div class="card-painel">
           <div class="cliente-linha">
-            <div class="avatar" :style="{ background: avatarColor(reserva.nomeJogador) }">
-              {{ iniciais(reserva.nomeJogador) }}
+            <div class="avatar" :style="{ background: avatarColor(reserva.nome) }">
+              {{ iniciais(reserva.nome) }}
             </div>
             <div class="cliente-info">
-              <p class="cliente-nome">{{ reserva.nomeJogador || 'Jogador' }}</p>
+              <p class="cliente-nome">{{ reserva.nome || 'Jogador' }}</p>
               <p class="cliente-time">{{ reserva.nomeTime || 'Time A' }}</p>
             </div>
           </div>
@@ -35,24 +35,24 @@
             <span class="badge-status" :class="reserva.confirmada ? 'badge-status--confirmada' : 'badge-status--pendente'">
               {{ reserva.confirmada ? 'Confirmada' : 'Pendente' }}
             </span>
-            <span class="badge-status" :class="reserva.status_pagamento === 'pago' ? 'badge-status--pago' : 'badge-status--nao-pago'">
-              {{ reserva.status_pagamento === 'pago' ? 'Pago' : 'Pagamento Pendente' }}
+            <span class="badge-status" :class="reserva.statusPagamento === 'pago' ? 'badge-status--pago' : 'badge-status--nao-pago'">
+              {{ reserva.statusPagamento === 'pago' ? 'Pago' : 'Pagamento Pendente' }}
             </span>
-            <span v-if="reserva.contra_time" class="badge-tipo badge-tipo--contra">Contra Time</span>
+            <span v-if="reserva.tipoJogo === 'contra_time'" class="badge-tipo badge-tipo--contra">Contra Time</span>
             <span v-else class="badge-tipo badge-tipo--cheio">Horário Cheio</span>
           </div>
         </div>
 
         <!-- Card Time B (adversário) -->
-        <div v-if="reserva.contra_time && reserva.nomeJogador2" class="card-painel">
+        <div v-if="reserva.tipoJogo === 'contra_time' && reserva.nomeJogadorB" class="card-painel">
           <p class="card-label-secao">Desafiante (Time B)</p>
           <div class="cliente-linha">
-            <div class="avatar" :style="{ background: avatarColor(reserva.nomeJogador2) }">
-              {{ iniciais(reserva.nomeJogador2) }}
+            <div class="avatar" :style="{ background: avatarColor(reserva.nomeJogadorB) }">
+              {{ iniciais(reserva.nomeJogadorB) }}
             </div>
             <div class="cliente-info">
-              <p class="cliente-nome">{{ reserva.nomeJogador2 }}</p>
-              <p class="cliente-time">{{ reserva.nomeTime2 || 'Time B' }}</p>
+              <p class="cliente-nome">{{ reserva.nomeJogadorB }}</p>
+              <p class="cliente-time">{{ reserva.nomeTimeB || 'Time B' }}</p>
             </div>
           </div>
         </div>
@@ -62,15 +62,15 @@
           <div class="dados-reserva-lista">
             <div class="dado-item">
               <svg class="dado-icone" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.81-.81a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <p class="dado-texto">{{ reserva.telefoneJogador }}</p>
+              <p class="dado-texto">{{ reserva.telefone }}</p>
             </div>
-            <div v-if="reserva.contra_time && reserva.telefoneJogador2" class="dado-item">
+            <div v-if="reserva.tipoJogo === 'contra_time' && reserva.telefoneJogadorB" class="dado-item">
               <svg class="dado-icone" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.81-.81a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <p class="dado-texto">{{ reserva.telefoneJogador2 }}</p>
+              <p class="dado-texto">{{ reserva.telefoneJogadorB }}</p>
             </div>
             <div class="dado-item">
               <svg class="dado-icone icone-azul" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <p class="dado-texto">{{ reserva.data }}</p>
+              <p class="dado-texto">{{ formatarData(reserva.data) }}</p>
             </div>
             <div class="dado-item">
               <svg class="dado-icone icone-amarelo" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -78,7 +78,7 @@
             </div>
             <div class="dado-item">
               <svg class="dado-icone" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <p class="dado-texto">{{ reserva.nomeQuadra }} — {{ reserva.endereco }}</p>
+              <p class="dado-texto">{{ reserva.quadraNome }} — {{ reserva.endereco }}</p>
             </div>
           </div>
         </div>
@@ -88,13 +88,13 @@
           <button v-if="!reserva.confirmada" @click="confirmarReserva" class="btn-operacao btn-operacao--azul">
             Confirmar Reserva
           </button>
-          <button v-if="reserva.confirmada && reserva.status_pagamento !== 'pago'" @click="concluirHorario" class="btn-operacao btn-operacao--verde">
+          <button v-if="reserva.confirmada && reserva.statusPagamento !== 'pago'" @click="concluirHorario" class="btn-operacao btn-operacao--verde">
             Encerrar Horário
           </button>
           <button v-if="reserva.confirmada" @click="toggleStatusPagamento"
             class="btn-operacao btn-operacao--alterna"
-            :class="reserva.status_pagamento === 'pago' ? 'btn-operacao--alterna-pendente' : 'btn-operacao--alterna-pago'">
-            {{ reserva.status_pagamento === 'pago' ? 'Marcar como Pagamento Pendente' : 'Marcar como Pago' }}
+            :class="reserva.statusPagamento === 'pago' ? 'btn-operacao--alterna-pendente' : 'btn-operacao--alterna-pago'">
+            {{ reserva.statusPagamento === 'pago' ? 'Marcar como Pagamento Pendente' : 'Marcar como Pago' }}
           </button>
           <button @click="cancelarReserva" class="btn-operacao btn-operacao--cancelar">
             Cancelar Reserva
@@ -149,6 +149,10 @@ export default {
     } catch { this.reserva = null; }
   },
   methods: {
+    formatarData(dataStr) {
+      if (!dataStr) return "";
+      return String(dataStr).slice(0, 10).replace(/-/g, "/");
+    },
     async confirmarReserva() {
       await api.confirmarReserva(this.reserva.id);
       this.reserva.confirmada = true;
@@ -162,16 +166,16 @@ export default {
     async concluirHorario() {
       await api.concluirReserva(this.reserva.id);
       this.reserva.confirmada = true;
-      this.reserva.status_pagamento = "pago";
+      this.reserva.statusPagamento = "pago";
     },
     async toggleStatusPagamento() {
-      const novo = this.reserva.status_pagamento === "pago" ? "pendente" : "pago";
+      const novo = this.reserva.statusPagamento === "pago" ? "pendente" : "pago";
       await api.atualizarStatusPagamento(this.reserva.id, novo);
-      this.reserva.status_pagamento = novo;
+      this.reserva.statusPagamento = novo;
     },
     enviarWhatsApp() {
-      const tel = (this.reserva.telefoneJogador || "").replace(/\D/g, "");
-      const msg = `Olá! Confirmo seu horário em ${this.reserva.nomeQuadra} no dia ${this.reserva.data} às ${this.reserva.horario}. Qualquer dúvida estamos à disposição!`;
+      const tel = (this.reserva.telefone || "").replace(/\D/g, "");
+      const msg = `Olá! Confirmo seu horário em ${this.reserva.quadraNome} no dia ${this.formatarData(this.reserva.data)} às ${this.reserva.horario}. Qualquer dúvida estamos à disposição!`;
       window.open(`https://wa.me/55${tel}?text=${encodeURIComponent(msg)}`, "_blank");
     },
     iniciais(nome) {

@@ -257,11 +257,8 @@ export default {
   },
   methods: {
     formatarDataBR(dataStr) {
-      if (!dataStr || typeof dataStr !== 'string') return dataStr;
-      const dataLimpa = dataStr.split('T')[0];
-      const partes = dataLimpa.split('-');
-      if (partes.length !== 3) return dataLimpa;
-      return `${partes[2]}/${partes[1]}/${partes[0]}`;
+      if (!dataStr) return "";
+      return String(dataStr).slice(0, 10).replace(/-/g, "/");
     },
     handleScroll() {
       const s = window.scrollY;

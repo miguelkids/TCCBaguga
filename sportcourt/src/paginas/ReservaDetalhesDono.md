@@ -37,9 +37,10 @@ Página de visualização e controle operacional de uma reserva sob o ponto de v
 - `cancelarReserva()`: Método assíncrono. Invoca `api.cancelarReserva` para cancelar a locação e redireciona o dono de volta para `/reservas`.
 - `concluirHorario()`: Método assíncrono. Encerra a reserva chamando `api.concluirReserva`, marcando o status como confirmada e faturada (`pago`).
 - `toggleStatusPagamento()`: Método assíncrono. Alterna a cobrança entre `'pago'` e `'pendente'` acionando o método `api.atualizarStatusPagamento`.
-- `enviarWhatsApp()`: Limpa caracteres não numéricos do telefone do capitão e abre uma nova aba direcionada para o chat do WhatsApp (`wa.me`) com uma mensagem padrão de confirmação de horário.
+- `enviarWhatsApp()`: Limpa caracteres não numéricos do telefone do capitão e abre uma nova aba direcionada para o chat do WhatsApp (`wa.me`) com uma mensagem padrão de confirmação de horário com a data formatada.
 - `iniciais(nome)`: Extrai até duas iniciais em letras maiúsculas de um nome fornecido.
-- `avatarColor(nome)`: Gera pseudo-aleatoriamente uma cor de fundo no padrão oklch a partir da hash do nome fornecido para o círculo de avatar.
+- `avatarColor(nome)`: Gera pseudo-aleatoriamente uma cor de fundo no padrão HSL a partir da hash do nome fornecido para o círculo de avatar.
+- `formatarData(dataStr)`: Limpa a data ISO e retorna a string formatada em `YYYY/MM/DD`.
 
 ## 🌐 Integrações & API
 - **Endpoints da API:**
@@ -56,3 +57,4 @@ Página de visualização e controle operacional de uma reserva sob o ponto de v
 | :--- | :--- | :--- |
 | 22/06/2026 | Antigravity | Criação do mapeamento inicial da página. |
 | 16/07/2026 | Antigravity | Remoção de classes Tailwind e reescrita do visual em CSS puro escopado. |
+| 16/07/2026 | Antigravity | Sincronização de campos da reserva com o backend (statusPagamento, tipoJogo, nomeJogadorB, etc.) e formatação de data para `YYYY/MM/DD`. |

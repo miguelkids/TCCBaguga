@@ -584,9 +584,7 @@ export default {
     
     formatarDataBR(dataIso) {
       if (!dataIso) return "";
-      const partes = dataIso.split("-");
-      if (partes.length !== 3) return dataIso;
-      return `${partes[2]}/${partes[1]}/${partes[0]}`;
+      return String(dataIso).slice(0, 10).replace(/-/g, "/");
     },
     
     abrirPopupJogadores() {

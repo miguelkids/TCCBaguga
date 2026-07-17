@@ -40,7 +40,7 @@ Página de administração de agenda para o proprietário da quadra. Apresenta u
 - `selecionarDia(dia)`: Acionado ao clicar em um dia ativo no calendário. Atualiza `dataSelecionada`, carrega os horários e abre o popup.
 - `carregarHorariosDoDia()`: Método assíncrono. Consome a API `api.getHorariosOcupados` filtrando pela quadra e data. Popula o array `horariosDoDia` com loops de hora em hora entre os limites de abertura e fechamento, marcando `ocupado: true` se o horário estiver bloqueado e vinculando o ID do bloqueio correspondente.
 - `toggleHorario(hora)`: Bloqueia ou desbloqueia um slot. Se já estiver ocupado, solicita confirmação ao proprietário e chama `api.desmarcarHorarioOcupado`. Se estiver livre, envia a requisição `api.marcarHorarioOcupado` para indisponibilizá-lo.
-- `formatarDataBR(dataIso)`: Converte strings de data do formato `AAAA-MM-DD` para `DD/MM/AAAA`.
+- `formatarDataBR(dataIso)`: Converte strings de data do formato `AAAA-MM-DD` para `YYYY/MM/DD`.
 
 ## 🌐 Integrações & API
 - **Endpoints da API:**
@@ -58,3 +58,5 @@ Página de administração de agenda para o proprietário da quadra. Apresenta u
 | Data | Autor | Descrição da Mudança |
 | :--- | :--- | :--- |
 | 22/06/2026 | Antigravity | Criação do mapeamento inicial da página. |
+| 16/07/2026 | Antigravity | Remoção de classes Tailwind e reescrita do visual em CSS puro escopado. |
+| 16/07/2026 | Antigravity | Atualização do formato da data exibida para `YYYY/MM/DD`. |
