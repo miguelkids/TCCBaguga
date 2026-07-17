@@ -138,7 +138,7 @@ router.get('/', authenticateToken, async (req, res) => {
                  FROM reservas r
                  JOIN quadras q ON r.quadra_id = q.id
                  LEFT JOIN avaliacoes a ON a.quadra_id = q.id AND a.usuario_id = ?
-                 WHERE r.jogador_id = ? OR r.jogador_id_b = ?`,
+                  WHERE (r.jogador_id = ? AND (r.reserva_par_id IS NULL OR r.confirmada = TRUE)) OR r.jogador_id_b = ?`,
                 [req.user.id, req.user.id, req.user.id]
             );
             reservas = rows;
@@ -211,9 +211,13 @@ router.put('/:id/confirmar', authenticateToken, async (req, res) => {
 
         await db.execute('UPDATE reservas SET confirmada = TRUE WHERE id = ?', [id]);
 
-        // Se for contra_time com par, confirma o par também
+        // Se for contra_time proposta vinculada, deleta a original e as concorrentes
         if (rows[0].reserva_par_id) {
-            await db.execute('UPDATE reservas SET confirmada = TRUE WHERE id = ?', [rows[0].reserva_par_id]);
+            const parId = rows[0].reserva_par_id;
+            await db.execute(
+                `DELETE FROM reservas WHERE (id = ? OR reserva_par_id = ?) AND id != ?`,
+                [parId, parId, id]
+            );
         }
 
         // Bloqueia o horário automaticamente
@@ -252,14 +256,13 @@ router.post('/:id/entrar-contra-time', authenticateToken, async (req, res) => {
         const { id: reservaOriginalId } = req.params;
         const { nomeJogador, telefoneJogador, jogadoresLista, nomeTime } = req.body;
 
-        // Verifica que a reserva original existe, é contra_time e não tem adversário ainda
+        // Busca todos os dados da reserva original
         const [rows] = await db.execute(
-            `SELECT id, confirmada, nome_time_b FROM reservas WHERE id = ?`,
+            `SELECT * FROM reservas WHERE id = ?`,
             [reservaOriginalId]
         );
         if (rows.length === 0) return res.status(404).json({ error: 'Reserva não encontrada.' });
         const original = rows[0];
-        if (original.nome_time_b) return res.status(400).json({ error: 'Já existe um adversário nessa partida.' });
 
         const jogadoresJson = jogadoresLista && jogadoresLista.length > 0
             ? JSON.stringify(jogadoresLista.map(item => {
@@ -276,15 +279,37 @@ router.post('/:id/entrar-contra-time', authenticateToken, async (req, res) => {
             : null;
 
         const jogador_id_b = req.user ? req.user.id : null;
-        console.log('[ENTRAR CONTRA TIME] Atualizando reserva:', reservaOriginalId, 'com jogador B:', jogador_id_b);
+        console.log('[ENTRAR CONTRA TIME] Inserindo proposta vinculada à original:', reservaOriginalId, 'com desafiante B:', jogador_id_b);
 
-        // Atualiza a reserva original com os dados do Time B (sem criar nova linha)
+        const idNovaProposta = uuidv4();
+
+        // Insere a nova proposta clonando os dados do Time A e adicionando o Time B
         await db.execute(
-            `UPDATE reservas SET nome_jogador_b = ?, telefone_jogador_b = ?, nome_time_b = ?, jogadores_lista_b = ?, jogador_id_b = ? WHERE id = ?`,
-            [nomeJogador, telefoneJogador, nomeTime || nomeJogador, jogadoresJson, jogador_id_b, reservaOriginalId]
+            `INSERT INTO reservas (
+                id, quadra_id, jogador_id, nome_jogador, telefone_jogador, nome_time, jogadores_lista,
+                data_reserva, horario_reserva, tipo_jogo, confirmada, status_pagamento,
+                reserva_par_id, jogador_id_b, nome_jogador_b, telefone_jogador_b, nome_time_b, jogadores_lista_b
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'contra_time', FALSE, 'pendente', ?, ?, ?, ?, ?, ?)`,
+            [
+                idNovaProposta,
+                original.quadra_id,
+                original.jogador_id,
+                original.nome_jogador,
+                original.telefone_jogador,
+                original.nome_time,
+                original.jogadores_lista,
+                original.data_reserva,
+                original.horario_reserva,
+                original.id, // reserva_par_id
+                jogador_id_b,
+                nomeJogador,
+                telefoneJogador,
+                nomeTime || nomeJogador,
+                jogadoresJson
+            ]
         );
 
-        res.json({ message: 'Você entrou na partida! Aguarde confirmação do dono.', id: reservaOriginalId });
+        res.json({ message: 'Você entrou na partida! Aguarde confirmação do dono.', id: idNovaProposta });
     } catch (err) {
         console.error('Erro ao entrar contra_time:', err);
         res.status(500).json({ error: 'Erro interno do servidor.' });
@@ -514,7 +539,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
         const { id } = req.params;
 
         const [rows] = await db.execute(
-            `SELECT r.id, r.confirmada, r.status_pagamento, r.quadra_id, r.data_reserva, r.horario_reserva, r.tipo_jogo, q.dono_id, q.preco, r.jogador_id, r.jogador_id_b FROM reservas r JOIN quadras q ON r.quadra_id = q.id WHERE r.id = ?`,
+            `SELECT r.id, r.confirmada, r.status_pagamento, r.quadra_id, r.data_reserva, r.horario_reserva, r.tipo_jogo, r.reserva_par_id, q.dono_id, q.preco, r.jogador_id, r.jogador_id_b FROM reservas r JOIN quadras q ON r.quadra_id = q.id WHERE r.id = ?`,
             [id]
         );
         if (rows.length === 0) return res.status(404).json({ error: 'Reserva não encontrada.' });
@@ -531,12 +556,9 @@ router.delete('/:id', authenticateToken, async (req, res) => {
             return res.status(403).json({ error: 'Reserva já confirmada. Apenas o dono pode cancelar.' });
         }
 
-        // Jogador B cancela em contra_time pendente: apenas limpa dados do time B
+        // Jogador B cancela proposta pendente contra_time: deleta apenas sua proposta
         if (isJogadorB && !reserva.confirmada && reserva.tipo_jogo === 'contra_time') {
-            await db.execute(
-                `UPDATE reservas SET nome_jogador_b = NULL, telefone_jogador_b = NULL, nome_time_b = NULL, jogadores_lista_b = NULL, jogador_id_b = NULL WHERE id = ?`,
-                [id]
-            );
+            await db.execute('DELETE FROM reservas WHERE id = ?', [id]);
             return res.json({ message: 'Você saiu da partida com sucesso!', saiuTimeB: true });
         }
 
@@ -560,7 +582,12 @@ router.delete('/:id', authenticateToken, async (req, res) => {
             );
         }
 
-        await db.execute('DELETE FROM reservas WHERE id = ?', [id]);
+        // Se for a reserva original (sem par), deleta ela e todas as propostas vinculadas
+        if (!reserva.reserva_par_id) {
+            await db.execute('DELETE FROM reservas WHERE id = ? OR reserva_par_id = ?', [id, id]);
+        } else {
+            await db.execute('DELETE FROM reservas WHERE id = ?', [id]);
+        }
 
         res.json({ message: 'Reserva cancelada com sucesso!' });
     } catch (err) {

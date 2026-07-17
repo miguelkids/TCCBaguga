@@ -151,7 +151,7 @@ router.get('/:id/ocupacoes', async (req, res) => {
         const [reservas] = await db.execute(
             `SELECT data_reserva as data, horario_reserva as horario FROM reservas
              WHERE quadra_id = ?
-               AND NOT (tipo_jogo = 'contra_time' AND confirmada = FALSE AND nome_time_b IS NULL)`,
+               AND NOT (tipo_jogo = 'contra_time' AND confirmada = FALSE)`,
             [quadraId]
         );
 
