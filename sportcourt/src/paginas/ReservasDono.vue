@@ -147,13 +147,16 @@
           </div>
 
           <!-- Lista de Jogadores (confirmadas e encerradas) -->
-          <div v-if="abaAtiva !== 'pendentes'" class="jogadores-section">
+          <div v-if="abaAtiva !== 'pendentes' && expandidoId !== r.id" class="jogadores-section">
             <div class="times-wrapper" :class="r.tipoJogo === 'contra_time' && r.nomeJogadorB ? 'times-duplo' : ''">
 
               <!-- Time A -->
               <div class="time-bloco">
                 <p class="time-titulo">
                   {{ r.tipoJogo === 'contra_time' ? (r.nomeTime || 'Time A') : 'Jogadores' }}
+                  <span class="time-cota-info">
+                    (Cota: R$ {{ calcularValorPorJogadorA(r).toFixed(2) }})
+                  </span>
                 </p>
                 <div v-if="r.jogadoresLista && r.jogadoresLista.length > 0" class="jogadores-chips">
                   <div v-for="(j, idx) in r.jogadoresLista" :key="'a-' + idx" class="jogador-item">
@@ -161,15 +164,20 @@
                       {{ j.nome }}
                       <span v-if="j.goleiro" class="goleiro-tag">🥅</span>
                     </span>
-                    <button v-if="abaAtiva === 'encerradas'"
-                      @click="togglePagamentoJogador(r, idx)"
-                      class="pago-btn"
-                      :class="j.pago ? 'pago-btn--pago' : 'pago-btn--pendente'">
-                      {{ j.pago ? '✓ Pago' : 'Pendente' }}
-                    </button>
-                    <span v-else class="pago-tag" :class="j.pago ? 'pago-tag--pago' : 'pago-tag--pendente'">
-                      {{ j.pago ? 'Pago' : 'Pendente' }}
-                    </span>
+                    <div class="jogador-financeiro-info">
+                      <span class="jogador-cota">
+                        {{ (!j.goleiro || j.goleiroPaga) ? 'R$ ' + calcularValorPorJogadorA(r).toFixed(2) : 'Isento' }}
+                      </span>
+                      <button v-if="abaAtiva === 'encerradas'"
+                        @click="togglePagamentoJogador(r, idx)"
+                        class="pago-btn"
+                        :class="j.pago ? 'pago-btn--pago' : 'pago-btn--pendente'">
+                        {{ j.pago ? '✓ Pago' : 'Pendente' }}
+                      </button>
+                      <span v-else class="pago-tag" :class="j.pago ? 'pago-tag--pago' : 'pago-tag--pendente'">
+                        {{ j.pago ? 'Pago' : 'Pendente' }}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <p v-else class="sem-jogadores">Nenhum jogador cadastrado</p>
@@ -177,22 +185,32 @@
 
               <!-- Time B (contra_time com adversário) -->
               <div v-if="r.tipoJogo === 'contra_time' && r.nomeJogadorB" class="time-bloco time-bloco--b">
-                <p class="time-titulo">{{ r.nomeTimeB || r.nomeJogadorB || 'Time B' }}</p>
+                <p class="time-titulo">
+                  {{ r.nomeTimeB || r.nomeJogadorB || 'Time B' }}
+                  <span class="time-cota-info">
+                    (Cota: R$ {{ calcularValorPorJogadorB(r).toFixed(2) }})
+                  </span>
+                </p>
                 <div v-if="r.jogadoresListaB && r.jogadoresListaB.length > 0" class="jogadores-chips">
                   <div v-for="(j, idx) in r.jogadoresListaB" :key="'b-' + idx" class="jogador-item">
                     <span class="jogador-item-nome">
                       {{ j.nome }}
                       <span v-if="j.goleiro" class="goleiro-tag">🥅</span>
                     </span>
-                    <button v-if="abaAtiva === 'encerradas'"
-                      @click="togglePagamentoJogadorB(r, idx)"
-                      class="pago-btn"
-                      :class="j.pago ? 'pago-btn--pago' : 'pago-btn--pendente'">
-                      {{ j.pago ? '✓ Pago' : 'Pendente' }}
-                    </button>
-                    <span v-else class="pago-tag" :class="j.pago ? 'pago-tag--pago' : 'pago-tag--pendente'">
-                      {{ j.pago ? 'Pago' : 'Pendente' }}
-                    </span>
+                    <div class="jogador-financeiro-info">
+                      <span class="jogador-cota">
+                        {{ (!j.goleiro || j.goleiroPaga) ? 'R$ ' + calcularValorPorJogadorB(r).toFixed(2) : 'Isento' }}
+                      </span>
+                      <button v-if="abaAtiva === 'encerradas'"
+                        @click="togglePagamentoJogadorB(r, idx)"
+                        class="pago-btn"
+                        :class="j.pago ? 'pago-btn--pago' : 'pago-btn--pendente'">
+                        {{ j.pago ? '✓ Pago' : 'Pendente' }}
+                      </button>
+                      <span v-else class="pago-tag" :class="j.pago ? 'pago-tag--pago' : 'pago-tag--pendente'">
+                        {{ j.pago ? 'Pago' : 'Pendente' }}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <p v-else class="sem-jogadores">Nenhum jogador cadastrado</p>
@@ -200,8 +218,8 @@
             </div>
           </div>
 
-          <!-- Painel de Edição (pendentes) -->
-          <div v-if="abaAtiva === 'pendentes'" class="edicao-wrapper">
+          <!-- Painel de Edição (pendentes e confirmadas) -->
+          <div v-if="abaAtiva === 'pendentes' || abaAtiva === 'confirmadas'" class="edicao-wrapper">
             <button @click="toggleExpandido(r.id)" class="btn-editar-toggle">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               {{ expandidoId === r.id ? 'Fechar edição' : 'Editar jogadores' }}
@@ -214,10 +232,16 @@
                 <p class="edicao-time-label">{{ r.nomeTime || 'Time A' }}</p>
                 <div v-for="(j, idx) in r.jogadoresLista" :key="'ea-' + idx" class="edicao-linha">
                   <span class="edicao-nome">{{ j.nome }}</span>
-                  <label class="edicao-goleiro-label">
-                    <input type="checkbox" v-model="r.jogadoresLista[idx].goleiro" class="edicao-checkbox" />
-                    Goleiro
-                  </label>
+                  <div class="edicao-controles-jogador">
+                    <label class="edicao-goleiro-label">
+                      <input type="checkbox" v-model="r.jogadoresLista[idx].goleiro" class="edicao-checkbox" />
+                      Goleiro
+                    </label>
+                    <label v-if="r.jogadoresLista[idx].goleiro" class="edicao-goleiro-label">
+                      <input type="checkbox" v-model="r.jogadoresLista[idx].goleiroPaga" class="edicao-checkbox" />
+                      Paga?
+                    </label>
+                  </div>
                   <button @click="removerJogador(r, idx)" class="btn-remover">✕</button>
                 </div>
                 <div class="edicao-adicionar">
@@ -233,10 +257,16 @@
                 <p class="edicao-time-label">{{ r.nomeTimeB || r.nomeJogadorB || 'Time B' }}</p>
                 <div v-for="(j, idx) in (r.jogadoresListaB || [])" :key="'eb-' + idx" class="edicao-linha">
                   <span class="edicao-nome">{{ j.nome }}</span>
-                  <label class="edicao-goleiro-label">
-                    <input type="checkbox" v-model="r.jogadoresListaB[idx].goleiro" class="edicao-checkbox" />
-                    Goleiro
-                  </label>
+                  <div class="edicao-controles-jogador">
+                    <label class="edicao-goleiro-label">
+                      <input type="checkbox" v-model="r.jogadoresListaB[idx].goleiro" class="edicao-checkbox" />
+                      Goleiro
+                    </label>
+                    <label v-if="r.jogadoresListaB[idx].goleiro" class="edicao-goleiro-label">
+                      <input type="checkbox" v-model="r.jogadoresListaB[idx].goleiroPaga" class="edicao-checkbox" />
+                      Paga?
+                    </label>
+                  </div>
                   <button @click="removerJogadorB(r, idx)" class="btn-remover">✕</button>
                 </div>
                 <div class="edicao-adicionar">
@@ -248,7 +278,7 @@
               </div>
 
               <!-- Mudar para Horário Cheio (se contra sem adversário) -->
-              <button v-if="r.tipoJogo === 'contra_time' && !r.nomeJogadorB"
+              <button v-if="r.tipoJogo === 'contra_time' && !r.nomeJogadorB && abaAtiva === 'pendentes'"
                 @click="mudarParaHorarioCheio(r)" class="btn-modo-cheio">
                 🔄 Aceitar como Horário Cheio (sem adversário)
               </button>
@@ -267,7 +297,7 @@
               :title="r.tipoJogo === 'contra_time' && !r.nomeJogadorB ? 'Aguardando adversário entrar no jogo' : 'Confirmar reserva'">
               {{ r.tipoJogo === 'contra_time' && !r.nomeJogadorB ? '⏳ Aguardando' : 'Confirmar' }}
             </button>
-            <button v-if="r.confirmada && r.statusPagamento !== 'pago'" @click="concluirHorario(r)"
+            <button v-if="r.confirmada && r.statusPagamento !== 'pago'" @click="abrirModalEncerramento(r)"
               class="acao-btn acao-btn--verde">
               Encerrar Horário
             </button>
@@ -279,6 +309,69 @@
             </a>
           </div>
 
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Encerramento (Rateio) -->
+    <div v-if="modalEncerramento.aberto && modalEncerramento.reserva" class="modal-overlay" @click.self="fecharModalEncerramento">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 class="modal-titulo">Encerrar Horário & Rateio</h2>
+          <button class="btn-fechar" @click="fecharModalEncerramento">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="resumo-titulo">{{ modalEncerramento.reserva.quadraNome }}</p>
+          <p class="resumo-data">{{ formatarData(modalEncerramento.reserva.data) }} às {{ modalEncerramento.reserva.horario }}</p>
+          
+          <div class="divisor-linha"></div>
+          
+          <div class="rateio-secao">
+            <div class="rateio-row">
+              <span class="rateio-row-label">Valor Total da Quadra:</span>
+              <span class="rateio-valor-destaque">R$ {{ parseFloat(modalEncerramento.reserva.preco).toFixed(2) }}</span>
+            </div>
+            
+            <!-- Rateio Time A -->
+            <div class="rateio-bloco">
+              <p class="rateio-bloco-titulo">
+                {{ modalEncerramento.reserva.tipoJogo === 'contra_time' ? (modalEncerramento.reserva.nomeTime || 'Time A') : 'Rateio Jogadores' }}
+              </p>
+              <div class="rateio-detalhe">
+                <span>Valor do Time (50%):</span>
+                <span>R$ {{ (modalEncerramento.reserva.tipoJogo === 'contra_time' ? parseFloat(modalEncerramento.reserva.preco)/2 : parseFloat(modalEncerramento.reserva.preco)).toFixed(2) }}</span>
+              </div>
+              <div class="rateio-detalhe">
+                <span>Jogadores Pagantes:</span>
+                <span>{{ (modalEncerramento.reserva.jogadoresLista || []).filter(j => !j.goleiro || j.goleiroPaga).length }}</span>
+              </div>
+              <div class="rateio-detalhe rateio-cota-destaque">
+                <span>Cota por Jogador:</span>
+                <span>R$ {{ calcularValorPorJogadorA(modalEncerramento.reserva).toFixed(2) }}</span>
+              </div>
+            </div>
+
+            <!-- Rateio Time B -->
+            <div v-if="modalEncerramento.reserva.tipoJogo === 'contra_time' && modalEncerramento.reserva.nomeJogadorB" class="rateio-bloco">
+              <p class="rateio-bloco-titulo">{{ modalEncerramento.reserva.nomeTimeB || modalEncerramento.reserva.nomeJogadorB || 'Time B' }}</p>
+              <div class="rateio-detalhe">
+                <span>Valor do Time (50%):</span>
+                <span>R$ {{ (parseFloat(modalEncerramento.reserva.preco)/2).toFixed(2) }}</span>
+              </div>
+              <div class="rateio-detalhe">
+                <span>Jogadores Pagantes:</span>
+                <span>{{ (modalEncerramento.reserva.jogadoresListaB || []).filter(j => !j.goleiro || j.goleiroPaga).length }}</span>
+              </div>
+              <div class="rateio-detalhe rateio-cota-destaque">
+                <span>Cota por Jogador:</span>
+                <span>R$ {{ calcularValorPorJogadorB(modalEncerramento.reserva).toFixed(2) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-botoes-acoes">
+          <button class="btn-acao btn-acao--cancelar" @click="fecharModalEncerramento">Voltar</button>
+          <button class="btn-acao btn-acao--salvar" @click="confirmarEncerramento">Concluir e Registrar</button>
         </div>
       </div>
     </div>
@@ -324,6 +417,10 @@ export default {
       expandidoId: null,
       novoJogador: {},
       novoJogadorB: {},
+      modalEncerramento: {
+        aberto: false,
+        reserva: null
+      },
       abas: [
         { id: "pendentes", label: "Pendentes", badgeClass: "aba-badge--amber" },
         { id: "confirmadas", label: "Confirmadas", badgeClass: "aba-badge--verde" },
@@ -424,10 +521,40 @@ export default {
       await api.cancelarReserva(r.id);
       await this.carregarReservas();
     },
-    async concluirHorario(r) {
-      await api.concluirReserva(r.id);
-      r.statusPagamento = "pago";
-      await this.carregarReservas();
+    abrirModalEncerramento(r) {
+      this.modalEncerramento.reserva = r;
+      this.modalEncerramento.aberto = true;
+    },
+    fecharModalEncerramento() {
+      this.modalEncerramento.reserva = null;
+      this.modalEncerramento.aberto = false;
+    },
+    async confirmarEncerramento() {
+      const r = this.modalEncerramento.reserva;
+      if (!r) return;
+      try {
+        await api.concluirReserva(r.id);
+        r.statusPagamento = "pago";
+        this.fecharModalEncerramento();
+        await this.carregarReservas();
+      } catch (err) {
+        alert("Erro ao encerrar horário: " + err.message);
+      }
+    },
+    calcularValorPorJogadorA(r) {
+      const precoTotal = parseFloat(r.preco || 0);
+      const isContra = r.tipoJogo === "contra_time";
+      const precoTime = isContra ? precoTotal / 2 : precoTotal;
+      const pagantes = (r.jogadoresLista || []).filter(j => !j.goleiro || j.goleiroPaga).length;
+      if (pagantes <= 0) return precoTime;
+      return precoTime / pagantes;
+    },
+    calcularValorPorJogadorB(r) {
+      const precoTotal = parseFloat(r.preco || 0);
+      const precoTime = precoTotal / 2;
+      const pagantes = (r.jogadoresListaB || []).filter(j => !j.goleiro || j.goleiroPaga).length;
+      if (pagantes <= 0) return precoTime;
+      return precoTime / pagantes;
     },
     async togglePagamentoJogador(r, idx) {
       r.jogadoresLista.splice(idx, 1, {
@@ -1049,6 +1176,16 @@ export default {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.time-cota-info {
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: none;
+  font-weight: 700;
 }
 
 .jogadores-chips {
@@ -1077,6 +1214,18 @@ export default {
 
 .goleiro-tag {
   font-size: 11px;
+}
+
+.jogador-financeiro-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jogador-cota {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
 }
 
 .pago-btn {
@@ -1112,7 +1261,7 @@ export default {
   font-style: italic;
 }
 
-/* Edição (pendentes) */
+/* Edição (pendentes e confirmadas) */
 .edicao-wrapper {
   padding: 0 16px 8px;
 }
@@ -1178,6 +1327,12 @@ export default {
   font-weight: 600;
   color: var(--foreground);
   min-width: 0;
+}
+
+.edicao-controles-jogador {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .edicao-goleiro-label {
@@ -1353,6 +1508,176 @@ export default {
   background: #25d366;
   color: white;
   padding: 8px 12px;
+}
+
+/* Modal Overlay & Card (Modais Customizados) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.modal-card {
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-titulo {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.btn-fechar {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.resumo-titulo {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.resumo-data {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.divisor-linha {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+
+.rateio-secao {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rateio-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.rateio-row-label {
+  color: var(--muted-foreground);
+}
+
+.rateio-valor-destaque {
+  font-size: 18px;
+  color: var(--primary-dark);
+  font-weight: 800;
+}
+
+.rateio-bloco {
+  background: var(--muted);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--border);
+}
+
+.rateio-bloco-titulo {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.rateio-detalhe {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.rateio-cota-destaque {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+  font-weight: 700;
+  color: var(--foreground);
+  font-size: 13px;
+}
+
+.modal-botoes-acoes {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+}
+
+.btn-acao {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  transition: opacity 0.15s;
+}
+
+.btn-acao:hover { opacity: 0.9; }
+
+.btn-acao--cancelar {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+}
+
+.btn-acao--salvar {
+  background: var(--primary);
+  color: white;
 }
 
 /* Bottom Nav */

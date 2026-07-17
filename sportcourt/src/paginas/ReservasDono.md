@@ -73,3 +73,4 @@ Página de central operacional e inteligência de negócios para o proprietário
 | :--- | :--- | :--- |
 | 22/06/2026 | Antigravity | Criação do mapeamento inicial da página. |
 | 16/07/2026 | Antigravity | Removido Tailwind, reescrita completa com suporte a nomes reais, bloqueio de confirmação para contra_time sem oponente, edição manual de convocados/goleiros, alteração de modo de jogo e CRM financeiro com WhatsApp. |
+| 16/07/2026 | Antigravity | Liberado painel de edição na aba Confirmadas, adicionado controle de goleiro isento vs pagante, implementado cálculo dinâmico de cotas por jogador e modal de Rateio visual ao Encerrar Horário. |
