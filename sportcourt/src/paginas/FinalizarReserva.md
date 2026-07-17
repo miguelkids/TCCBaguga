@@ -94,3 +94,4 @@ Página crucial para a conclusão de reservas de quadras pelo atleta (jogador). 
 | 22/06/2026 | Antigravity | Criação do mapeamento inicial da página. |
 | 16/07/2026 | Antigravity | Remoção de classes Tailwind e reescrita do visual em CSS puro escopado. |
 | 16/07/2026 | Antigravity | Atualização do formato da data exibida para `YYYY/MM/DD`. |
+| 16/07/2026 | Antigravity | Fluxo de desafio contra_time: `entrarContraTime` agora envia proposta como nova linha vinculada (`reserva_par_id`). Slot permanece laranja no calendário até o dono confirmar um dos desafiantes. |
