@@ -180,19 +180,19 @@
                     <span>{{ j.goleiroPaga ? 'Paga R$' : 'Isento' }}</span>
                   </button>
 
-                  <!-- Botão Remover Jogador com Lixeira Vermelha Destacada -->
+                  <!-- Botão Excluir Jogador com Ícone e Texto -->
                   <button
-                    class="btn-mini btn-remover"
+                    class="btn-tag tag-remover"
                     @click="removerJogador(r, idx)"
                     title="Excluir jogador"
-                    style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.12); width: 30px; height: 30px;"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="3 6 5 6 21 6"/>
                       <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                       <line x1="10" y1="11" x2="10" y2="17"/>
                       <line x1="14" y1="11" x2="14" y2="17"/>
                     </svg>
+                    <span>Excluir</span>
                   </button>
                 </div>
               </div>
@@ -691,6 +691,15 @@ export default {
   background: rgba(107, 114, 128, 0.15) !important;
   color: #9ca3af !important;
   border-color: rgba(107, 114, 128, 0.3) !important;
+}
+.tag-remover {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+}
+.tag-remover:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+  border-color: #ef4444 !important;
 }
 .btn-mini {
   width: 26px;
