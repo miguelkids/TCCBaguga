@@ -94,7 +94,7 @@
             <input type="password" class="sc-input" v-model="novaSubconta.senha" placeholder="Senha inicial" />
             <input type="text" class="sc-input" v-model="novaSubconta.cargo" placeholder="Cargo (ex: Recepcionista)" />
           </div>
-          <button class="sc-btn sc-btn-primary sc-btn-sm" @click="adicionarSubconta" style="width: 100%;">
+          <button class="sc-btn sc-btn-primary sc-btn-sm" @click="adicionarSubconta" style="width: 100%; min-height: 44px; border-radius: var(--sc-radius);">
             Adicionar Subconta
           </button>
         </div>

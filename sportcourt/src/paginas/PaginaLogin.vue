@@ -1,10 +1,9 @@
 <template>
-  <div class="sc-page sc-flex" style="min-height: 100vh; justify-content: center; align-items: center; padding: 24px;">
+  <div class="sc-page sc-flex" style="min-height: 100vh; justify-content: center; align-items: center; padding: 32px 16px;">
     <div class="sc-card" style="width: 100%; max-width: 440px; padding: 32px;">
       <div style="text-align: center; margin-bottom: 24px;">
         <router-link to="/" class="sc-topbar-logo" style="justify-content: center; margin-bottom: 16px;">
-          <img :src="logo" alt="SportCourt" style="height: 40px;" />
-          <span style="font-size: 24px;">SportCourt</span>
+          <img :src="logo" alt="SportCourt" style="height: 48px; width: auto;" />
         </router-link>
         <h1 class="sc-h2" style="font-size: 22px; margin-bottom: 6px;">Bem-vindo de volta</h1>
         <p class="sc-muted">Entre para acessar sua conta na plataforma</p>
@@ -31,7 +30,7 @@
         </div>
 
         <button type="submit" class="sc-btn sc-btn-primary sc-btn-lg" :disabled="carregando" style="margin-top: 8px;">
-          {{ carregando ? 'Entrando...' : 'Entrar na Conta →' }}
+          {{ carregando ? 'Entrando...' : 'Entrar na Conta' }}
         </button>
       </form>
 
@@ -46,7 +45,7 @@
 </template>
 
 <script>
-import logo from "@/assets/logosite.png";
+import logo from "@/assets/logosite1.png";
 import { api } from "@/api";
 
 export default {

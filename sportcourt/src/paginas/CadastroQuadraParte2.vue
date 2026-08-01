@@ -1,13 +1,19 @@
 <template>
   <div class="sc-page sc-flex" style="min-height: 100vh; flex-direction: column;">
-    <header class="sc-topbar">
-      <button @click="voltarPasso" class="sc-btn sc-btn-ghost sc-btn-sm">
-        ← Voltar
-      </button>
+    <header class="sc-topbar" style="position: sticky; top: 0; z-index: 100; background: rgba(15, 17, 23, 0.95); backdrop-filter: blur(12px);">
+      <div class="sc-flex sc-gap-2">
+        <button @click="voltarPasso" class="sc-btn sc-btn-ghost sc-btn-sm" aria-label="Voltar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          <span>Voltar</span>
+        </button>
+        <router-link to="/" class="sc-topbar-logo" style="margin-left: 8px;">
+          <img :src="logo" alt="SportCourt" style="height: 34px; width: auto;" />
+        </router-link>
+      </div>
       <span class="sc-badge sc-badge-green">Etapa 2 de 2</span>
     </header>
 
-    <main class="sc-container-sm sc-flex" style="flex: 1; align-items: center; justify-content: center; padding: 32px 16px;">
+    <main class="sc-container-sm sc-flex" style="flex: 1; align-items: center; justify-content: center; padding: 48px 16px 32px;">
       <div class="sc-card" style="width: 100%; padding: 32px;">
         <h1 class="sc-h2" style="margin-bottom: 6px;">Personalize a Quadra</h1>
         <p class="sc-muted" style="margin-bottom: 24px;">Preço, esporte, foto e horários de funcionamento</p>
@@ -16,12 +22,12 @@
         <div style="margin-bottom: 24px; text-align: center;">
           <label style="cursor: pointer; display: inline-block;">
             <input type="file" accept="image/*" @change="carregarImagem" hidden />
-            <div class="sc-avatar" style="width: 120px; height: 120px; border-radius: var(--sc-radius-xl); border: 2px dashed var(--sc-primary);">
-              <img v-if="quadraAtualObj.fotoPreview" :src="quadraAtualObj.fotoPreview" alt="Foto da quadra" />
-              <span v-else style="font-size: 36px;">📷</span>
+            <div class="sc-avatar" style="width: 120px; height: 120px; border-radius: var(--sc-radius-xl); border: 2px dashed var(--sc-primary); display: flex; align-items: center; justify-content: center;">
+              <img v-if="quadraAtualObj.fotoPreview" :src="quadraAtualObj.fotoPreview" alt="Foto da quadra" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--sc-radius-xl);" />
+              <svg v-else xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-primary);"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             </div>
-            <div class="sc-muted" style="font-size: 12px; margin-top: 8px; color: var(--sc-primary);">
-              {{ quadraAtualObj.fotoPreview ? 'Trocar Foto' : '+ Adicionar Foto da Quadra' }}
+            <div class="sc-muted" style="font-size: 12px; margin-top: 8px; color: var(--sc-primary); font-weight: 600;">
+              {{ quadraAtualObj.fotoPreview ? 'Trocar Foto' : 'Adicionar Foto da Quadra' }}
             </div>
           </label>
         </div>
@@ -62,7 +68,7 @@
           </div>
 
           <button type="submit" class="sc-btn sc-btn-primary sc-btn-lg" :disabled="salvando">
-            {{ salvando ? 'Finalizando...' : 'Concluir e Ir para Painel ✓' }}
+            {{ salvando ? 'Finalizando...' : 'Concluir e Ir para Painel' }}
           </button>
         </form>
       </div>
@@ -71,12 +77,14 @@
 </template>
 
 <script>
+import logo from "@/assets/logosite1.png";
 import { api } from "@/api";
 
 export default {
   name: "CadastroQuadraParte2",
   data() {
     return {
+      logo,
       quadraAtualObj: {
         esporte: "Futebol",
         preco: "",

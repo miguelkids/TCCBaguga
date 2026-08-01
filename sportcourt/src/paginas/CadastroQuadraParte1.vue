@@ -1,14 +1,13 @@
 <template>
   <div class="sc-page sc-flex" style="min-height: 100vh; flex-direction: column;">
-    <header class="sc-topbar">
+    <header class="sc-topbar" style="position: sticky; top: 0; z-index: 100; background: rgba(15, 17, 23, 0.95); backdrop-filter: blur(12px);">
       <router-link to="/" class="sc-topbar-logo">
-        <img :src="logo" alt="SportCourt" />
-        <span>SportCourt</span>
+        <img :src="logo" alt="SportCourt" style="height: 38px; width: auto;" />
       </router-link>
       <span class="sc-badge sc-badge-green">Etapa 1 de 2</span>
     </header>
 
-    <main class="sc-container-sm sc-flex" style="flex: 1; align-items: center; justify-content: center; padding: 32px 16px;">
+    <main class="sc-container-sm sc-flex" style="flex: 1; align-items: center; justify-content: center; padding: 48px 16px 32px;">
       <div class="sc-card" style="width: 100%; padding: 32px;">
         <h1 class="sc-h2" style="margin-bottom: 6px;">Informações da Arena</h1>
         <p class="sc-muted" style="margin-bottom: 24px;">Passo 1: Nome, localização e número de quadras</p>
@@ -44,7 +43,7 @@
           </div>
 
           <button type="submit" class="sc-btn sc-btn-primary sc-btn-lg">
-            Continuar para Detalhes →
+            Continuar para Detalhes
           </button>
         </form>
       </div>
@@ -53,7 +52,7 @@
 </template>
 
 <script>
-import logo from "@/assets/logosite.png";
+import logo from "@/assets/logosite1.png";
 
 export default {
   name: "CadastroQuadraParte1",
