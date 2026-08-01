@@ -171,7 +171,7 @@ export default {
   async created() {
     const qStr = localStorage.getItem("quadraSelecionada");
     if (qStr) {
-      try { this.quadra = JSON.parse(qStr); } catch (e) {}
+      try { this.quadra = JSON.parse(qStr); } catch (_e) { /* ignorado */ }
     }
     const userStr = localStorage.getItem("user");
     if (userStr) {
@@ -179,7 +179,7 @@ export default {
         const u = JSON.parse(userStr);
         this.jogador.nome = u.nome || "";
         this.jogador.telefone = u.telefone || "";
-      } catch (e) {}
+      } catch (_e) { /* ignorado */ }
     }
     if (this.quadra && this.dataSelecionada) {
       await this.carregarHorariosOcupados();

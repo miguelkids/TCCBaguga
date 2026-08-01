@@ -95,7 +95,7 @@ export default {
   created() {
     const p1 = localStorage.getItem("cadastroQuadraTemp");
     if (p1) {
-      try { this.dadosParte1 = JSON.parse(p1); } catch (e) {}
+      try { this.dadosParte1 = JSON.parse(p1); } catch (_e) { /* ignorado */ }
     }
   },
   methods: {

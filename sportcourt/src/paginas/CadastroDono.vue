@@ -83,7 +83,7 @@ export default {
     async handleCadastro() {
       try {
         this.carregando = true;
-        const res = await api.register({
+        await api.register({
           nome: this.nome,
           usuario: this.usuario,
           telefone: this.telefone,

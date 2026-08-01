@@ -77,7 +77,7 @@ export default {
         this.cidade = parsed.cidade || "";
         this.telefone = parsed.telefone || "";
         this.quantidadeQuadras = parsed.quantidadeQuadras || 1;
-      } catch (e) {}
+      } catch (_e) { /* ignorado */ }
     }
   },
   methods: {
