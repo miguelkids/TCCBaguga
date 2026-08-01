@@ -322,6 +322,25 @@ router.put('/usuarios/perfil', authenticateToken, async (req, res) => {
     }
 });
 
+// Listar todas as avaliações com comentários de uma quadra
+router.get('/:id/avaliacoes', async (req, res) => {
+    try {
+        const quadraId = req.params.id;
+        const [rows] = await db.execute(
+            `SELECT a.id, a.estrelas, a.mensagem, a.usuario_id, u.nome as nomeJogador, u.foto_perfil_url as fotoJogador
+             FROM avaliacoes a
+             LEFT JOIN usuarios u ON a.usuario_id = u.id
+             WHERE a.quadra_id = ?
+             ORDER BY a.id DESC`,
+            [quadraId]
+        );
+        res.json(rows);
+    } catch (err) {
+        console.error('Erro ao buscar avaliações da quadra:', err);
+        res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+});
+
 // Avaliar quadra
 router.post('/:id/avaliar', authenticateToken, async (req, res) => {
     try {

@@ -260,6 +260,15 @@ export const api = {
   },
 
   // --- AVALIAÇÕES ---
+  async getAvaliacoesQuadra(quadraId) {
+    const res = await fetch(`${API_URL}/quadras/${quadraId}/avaliacoes`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    if (!res.ok) throw new Error('Erro ao buscar avaliações');
+    return await res.json();
+  },
+
   async avaliarQuadra(quadraId, estrelas, mensagem) {
     const res = await fetch(`${API_URL}/quadras/${quadraId}/avaliar`, {
       method: 'POST',

@@ -77,21 +77,63 @@
 
           <!-- Avaliações dos Clientes -->
           <div class="sc-card" style="padding: 24px;">
-            <h2 class="sc-h3" style="margin-bottom: 12px;">Avaliações dos Clientes</h2>
-            <p class="sc-muted" style="font-size: 13px; margin-bottom: 16px;">Média das notas deixadas por atletas pós-partida</p>
+            <h2 class="sc-h3" style="margin-bottom: 4px;">Avaliações dos Clientes</h2>
+            <p class="sc-muted" style="font-size: 13px; margin-bottom: 16px;">Comentários e notas deixadas pelos atletas</p>
 
-            <div class="sc-flex sc-gap-3" style="align-items: center; background: var(--sc-bg-elevated); padding: 16px; border-radius: var(--sc-radius); border: 1px solid var(--sc-border);">
+            <div class="sc-flex sc-gap-3" style="align-items: center; background: var(--sc-bg-elevated); padding: 16px; border-radius: var(--sc-radius); border: 1px solid var(--sc-border); margin-bottom: 20px;">
               <div class="sc-flex" style="gap: 4px;">
                 <svg v-for="i in 5" :key="i" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
-                  :fill="i <= Math.round(mediaEstrelas) ? 'var(--sc-amber)' : 'none'"
-                  :stroke="i <= Math.round(mediaEstrelas) ? 'var(--sc-amber)' : 'var(--sc-text-faint)'"
+                  :fill="i <= Math.round(mediaEstrelas) ? '#fbbf24' : 'none'"
+                  :stroke="i <= Math.round(mediaEstrelas) ? '#fbbf24' : 'var(--sc-text-faint)'"
                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
               </div>
               <div>
-                <div style="font-weight: 900; font-size: 18px; color: var(--sc-amber);">{{ mediaEstrelas.toFixed(1) }}</div>
-                <div class="sc-muted" style="font-size: 12px;">({{ totalAvaliacoes }} avaliações)</div>
+                <div style="font-weight: 900; font-size: 18px; color: #fbbf24;">{{ Number(mediaEstrelas || 5).toFixed(1) }}</div>
+                <div class="sc-muted" style="font-size: 12px;">({{ avaliacoes.length }} avaliações registradas)</div>
+              </div>
+            </div>
+
+            <!-- Lista de avaliações individuais com comentário -->
+            <div v-if="carregandoAvaliacoes" class="sc-empty" style="padding: 20px;">
+              Carregando avaliações...
+            </div>
+            <div v-else-if="avaliacoes.length === 0" class="sc-empty" style="padding: 24px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-text-muted); margin-bottom: 8px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <p class="sc-muted" style="font-size: 13px;">Nenhuma avaliação por escrito ainda para esta quadra.</p>
+            </div>
+            <div v-else style="display: flex; flex-direction: column; gap: 14px; max-height: 420px; overflow-y: auto; padding-right: 4px;">
+              <div
+                v-for="av in avaliacoes"
+                :key="av.id"
+                style="background: var(--sc-bg-elevated); border: 1px solid var(--sc-border); border-radius: 12px; padding: 14px;"
+              >
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 34px; height: 34px; border-radius: 50%; background: var(--sc-bg-card); border: 1px solid var(--sc-border); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: var(--sc-primary); overflow: hidden; flex-shrink: 0;">
+                      <img v-if="av.fotoJogador" :src="fotoSrc(av.fotoJogador)" style="width: 100%; height: 100%; object-fit: cover;" />
+                      <span v-else>{{ inicialNome(av.nomeJogador) }}</span>
+                    </div>
+                    <span style="font-weight: 700; font-size: 14px; color: var(--sc-text);">{{ av.nomeJogador || 'Atleta' }}</span>
+                  </div>
+
+                  <div style="display: flex; gap: 2px;">
+                    <svg v-for="s in 5" :key="s" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                      :fill="s <= av.estrelas ? '#fbbf24' : 'none'"
+                      :stroke="s <= av.estrelas ? '#fbbf24' : 'var(--sc-text-faint)'"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <div v-if="av.mensagem" style="font-size: 13px; color: var(--sc-text); background: var(--sc-bg-card); padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--sc-primary); margin-top: 6px; line-height: 1.4;">
+                  "{{ av.mensagem }}"
+                </div>
+                <div v-else style="font-size: 12px; color: var(--sc-text-muted); font-style: italic; margin-top: 4px;">
+                  Sem comentário por escrito.
+                </div>
               </div>
             </div>
           </div>
@@ -121,13 +163,23 @@ export default {
       descricao: "",
       fotoPerfilUrl: null,
       mediaEstrelas: 5.0,
-      totalAvaliacoes: 12
+      totalAvaliacoes: 0,
+      avaliacoes: [],
+      carregandoAvaliacoes: false
     };
   },
   async created() {
     await this.carregarQuadra();
   },
   methods: {
+    fotoSrc(url) {
+      if (!url) return '';
+      return url.startsWith('http') ? url : `http://localhost:3006${url}`;
+    },
+    inicialNome(nome) {
+      if (!nome) return '?';
+      return nome.trim().charAt(0).toUpperCase();
+    },
     async carregarQuadra() {
       if (!this.quadraId) return;
       try {
@@ -140,12 +192,25 @@ export default {
         this.horario = q.horario || "";
         this.esporte = q.esporte || "";
         this.descricao = q.descricao || "";
+        this.mediaEstrelas = Number(q.mediaAvaliacao || 5);
+        this.totalAvaliacoes = Number(q.totalAvaliacoes || 0);
+
         if (q.foto_url || q.fotoUrl) {
           const url = q.foto_url || q.fotoUrl;
           this.fotoPerfilUrl = url.startsWith("http") ? url : `http://localhost:3006${url}`;
         }
       } catch (err) {
         console.error("Erro ao carregar quadra:", err);
+      }
+
+      try {
+        this.carregandoAvaliacoes = true;
+        this.avaliacoes = await api.getAvaliacoesQuadra(this.quadraId);
+      } catch (err) {
+        console.error("Erro ao carregar avaliações:", err);
+        this.avaliacoes = [];
+      } finally {
+        this.carregandoAvaliacoes = false;
       }
     }
   }
