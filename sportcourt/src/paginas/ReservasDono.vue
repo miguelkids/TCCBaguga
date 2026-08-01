@@ -140,40 +140,53 @@
                   class="sc-input"
                   v-model="j.nome"
                   placeholder="Nome do jogador"
-                  style="height: 32px; font-size: 13px; flex: 1; margin-right: 6px;"
+                  style="height: 34px; font-size: 13px; flex: 1; min-width: 120px;"
                 />
-                <span class="pagamento-valor" style="font-size: 12px; color: var(--sc-text-muted);">
+                <span class="pagamento-valor" style="font-size: 12px; font-weight: 700; color: var(--sc-primary); min-width: 65px; text-align: right;">
                   {{ j.goleiro && !j.goleiroPaga ? 'Isento' : `R$ ${valorPorJogador(r)}` }}
                 </span>
-                <div style="display: flex; gap: 6px; align-items: center;">
+                <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                  <!-- Status Pago / Pendente -->
                   <button
                     class="pagamento-toggle"
                     :class="j.pago ? 'toggle-pago' : 'toggle-pendente'"
                     @click="togglePagamentoJogador(r, idx)"
-                    :title="j.pago ? 'Pagamento efetuado' : 'Pagamento pendente'"
+                    title="Alternar entre Pago e Pendente"
                   >
                     <svg v-if="j.pago" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                     {{ j.pago ? 'Pago' : 'Pendente' }}
                   </button>
+
+                  <!-- Botão Goleiro -->
                   <button
-                    class="btn-mini"
+                    class="btn-tag"
+                    :class="{ 'tag-goleiro-ativo': j.goleiro }"
                     @click="toggleGoleiro(r, idx)"
-                    :title="j.goleiro ? 'É goleiro (clique para alterar)' : 'Marcar como goleiro'"
-                    :style="j.goleiro ? 'border-color: #f59e0b; background: rgba(245,158,11,0.1);' : ''"
+                    title="Alternar se o jogador é Goleiro"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" :stroke="j.goleiro ? '#f59e0b' : 'currentColor'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Goleiro</span>
                   </button>
+
+                  <!-- Botão Goleiro Paga / Isento -->
                   <button
                     v-if="j.goleiro"
-                    class="btn-mini"
+                    class="btn-tag"
+                    :class="j.goleiroPaga ? 'tag-paga' : 'tag-isento'"
                     @click="toggleGoleiroPaga(r, idx)"
-                    :title="j.goleiroPaga ? 'Goleiro paga (clique para isentar)' : 'Goleiro isento (clique para cobrar)'"
-                    :style="j.goleiroPaga ? 'color: var(--sc-primary); border-color: var(--sc-primary);' : 'color: var(--sc-text-muted);'"
+                    title="Alternar se o goleiro Paga ou é Isento"
                   >
-                    <span style="font-size: 10px; font-weight: 800;">{{ j.goleiroPaga ? 'R$' : '0' }}</span>
+                    <span>{{ j.goleiroPaga ? 'Paga R$' : 'Isento' }}</span>
                   </button>
-                  <button class="btn-mini btn-remover" @click="removerJogador(r, idx)" title="Remover jogador">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+
+                  <!-- Botão Remover com Lixeira -->
+                  <button
+                    class="btn-mini btn-remover"
+                    @click="removerJogador(r, idx)"
+                    title="Remover jogador da partida"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                   </button>
                 </div>
               </div>
@@ -632,6 +645,40 @@ export default {
   background: rgba(251, 191, 36, 0.12);
   color: #fbbf24;
   border: 1px solid rgba(251, 191, 36, 0.3);
+}
+.btn-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid var(--sc-border);
+  background: var(--sc-bg-elevated);
+  color: var(--sc-text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-tag:hover {
+  border-color: var(--sc-primary);
+  color: var(--sc-text);
+}
+.tag-goleiro-ativo {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #f59e0b !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+.tag-paga {
+  background: rgba(74, 222, 128, 0.15) !important;
+  color: #4ade80 !important;
+  border-color: rgba(74, 222, 128, 0.3) !important;
+}
+.tag-isento {
+  background: rgba(107, 114, 128, 0.15) !important;
+  color: #9ca3af !important;
+  border-color: rgba(107, 114, 128, 0.3) !important;
 }
 .btn-mini {
   width: 26px;
