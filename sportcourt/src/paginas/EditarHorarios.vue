@@ -1,56 +1,89 @@
 <template>
-  <div class="pagina">
+  <div class="sc-page">
     <TopbarDono />
-    <div class="container">
-      <h1 class="titulo-pagina">Gerenciar Horários Ocupados</h1>
 
-      <div class="card-formulario">
-        <!-- Seletor de data -->
-        <div class="campo">
-          <label class="campo-label">Selecione a data</label>
-          <input type="date" v-model="dataSelecionada" class="input-campo" />
+    <main class="sc-container sc-main sc-main-padded">
+      <div class="sc-flex-between sc-gap-4" style="margin-bottom: 24px; flex-wrap: wrap;">
+        <div>
+          <h1 class="sc-h2">Gerenciar Horários e Bloqueios</h1>
+          <p class="sc-muted">Bloqueie horários específicos ou dias inteiros para manutenção ou eventos.</p>
         </div>
-
-        <!-- Seletor de horário -->
-        <div class="campo">
-          <label class="campo-label">Selecione o horário</label>
-          <div class="select-wrapper">
-            <select v-model="horarioSelecionado" class="select-campo">
-              <option value="">Escolha um horário</option>
-              <option v-for="h in horarios" :key="h" :value="h">{{ h }}</option>
-            </select>
-            <svg class="select-seta" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-        </div>
-
-        <!-- Botão alternador -->
-        <button @click="alternarHorario" class="btn-submit">
-          Ocupar / Desocupar Horário
+        <button class="sc-btn sc-btn-secondary" @click="$router.push('/minhas-quadras')">
+          ← Voltar
         </button>
       </div>
 
-      <!-- Lista de horários bloqueados -->
-      <div v-if="dataSelecionada" class="card-lista">
-        <h2 class="lista-titulo">Horários bloqueados em {{ dataSelecionada }}</h2>
-        <div v-if="horariosDia.length === 0" class="lista-vazia">
-          <p>Nenhum horário bloqueado nesta data.</p>
-        </div>
-        <div v-for="item in horariosDia" :key="item.id" class="lista-item">
-          <div class="item-info">
-            <svg class="item-icone" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span class="item-horario">{{ item.horario }}</span>
+      <div class="sc-grid-2" style="margin-bottom: 24px;">
+        <!-- Card de formulário: Novo Bloqueio -->
+        <div class="sc-card" style="padding: 24px;">
+          <h2 class="sc-h3" style="margin-bottom: 16px;">Novo Bloqueio</h2>
+
+          <div class="sc-form-group">
+            <label class="sc-label">Data</label>
+            <input type="date" v-model="dataSelecionada" class="sc-input" :min="hojeISO" />
           </div>
-          <button @click="removerHorario(item.id)" class="btn-cancelar">
-            Cancelar
+
+          <div class="sc-form-group">
+            <label class="sc-flex sc-gap-2" style="cursor: pointer; font-size: 13px; font-weight: 600;">
+              <input type="checkbox" v-model="diaInteiro" />
+              <span>Bloquear Dia Inteiro</span>
+            </label>
+          </div>
+
+          <div class="sc-form-group" v-if="!diaInteiro">
+            <label class="sc-label">Horário Específico</label>
+            <select v-model="horarioSelecionado" class="sc-input">
+              <option value="">Selecione o horário</option>
+              <option v-for="h in horarios" :key="h" :value="h">{{ h }}</option>
+            </select>
+          </div>
+
+          <div class="sc-form-group">
+            <label class="sc-label">Motivo / Descrição (Opcional)</label>
+            <input type="text" class="sc-input" v-model="descricaoBloqueio" placeholder="Ex: Feriado, manutenção, evento..." />
+          </div>
+
+          <button @click="confirmarBloqueio" class="sc-btn sc-btn-primary sc-btn-lg">
+            Confirmar Bloqueio
           </button>
         </div>
-      </div>
 
-      <!-- Voltar -->
-      <button @click="$router.push('/menu-quadra')" class="btn-voltar">
-        Voltar ao Menu
-      </button>
-    </div>
+        <!-- Grade Visual dos Slots do dia -->
+        <div class="sc-card" style="padding: 24px;">
+          <div class="sc-flex-between" style="margin-bottom: 16px;">
+            <h2 class="sc-h3">Horários em {{ dataSelecionada || 'Selecione uma data' }}</h2>
+          </div>
+
+          <div v-if="!dataSelecionada" class="sc-empty">
+            <p>Selecione uma data para visualizar os horários.</p>
+          </div>
+          <div v-else class="sc-grid-3" style="gap: 8px;">
+            <div
+              v-for="h in horarios"
+              :key="h"
+              class="sc-card"
+              style="padding: 10px; font-size: 13px;"
+              :style="getEstiloSlot(h)"
+            >
+              <div class="sc-flex-between">
+                <span style="font-weight: 700;">{{ h }}</span>
+                <button
+                  v-if="isBloqueado(h)"
+                  class="sc-btn sc-btn-ghost sc-btn-sm"
+                  style="padding: 2px 6px; font-size: 10px;"
+                  @click="desbloquearHorario(h)"
+                >
+                  ✕
+                </button>
+              </div>
+              <div style="font-size: 10px; margin-top: 4px;" class="sc-muted">
+                {{ getStatusTexto(h) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
@@ -64,10 +97,13 @@ export default {
   data() {
     return {
       quadraId: localStorage.getItem("quadraId") || null,
-      dataSelecionada: "",
+      dataSelecionada: new Date().toISOString().slice(0, 10),
       horarioSelecionado: "",
-      horarios: Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, "0")}:00`),
+      diaInteiro: false,
+      descricaoBloqueio: "",
+      horarios: Array.from({ length: 15 }, (_, i) => `${String(i + 8).padStart(2, "0")}:00`),
       horariosDia: [],
+      hojeISO: new Date().toISOString().slice(0, 10)
     };
   },
   watch: {
@@ -75,246 +111,70 @@ export default {
       if (val) this.carregarHorarios();
     },
   },
+  async created() {
+    if (this.dataSelecionada) await this.carregarHorarios();
+  },
   methods: {
     async carregarHorarios() {
       try {
-        this.horariosDia = await api.getHorariosOcupados(this.quadraId, this.dataSelecionada);
+        if (!this.quadraId) {
+          const minhas = await api.getMinhasQuadras();
+          if (minhas.length > 0) this.quadraId = minhas[0].id;
+        }
+        if (this.quadraId) {
+          this.horariosDia = await api.getHorariosOcupados(this.quadraId, this.dataSelecionada);
+        }
       } catch (err) {
         console.error("Erro ao carregar horários:", err);
       }
     },
-    async alternarHorario() {
-      if (!this.dataSelecionada || !this.horarioSelecionado) {
-        alert("Selecione uma data e um horário.");
+    isBloqueado(h) {
+      return this.horariosDia.some(item => item.horario === h);
+    },
+    getStatusTexto(h) {
+      return this.isBloqueado(h) ? "Bloqueado" : "Livre";
+    },
+    getEstiloSlot(h) {
+      if (this.isBloqueado(h)) {
+        return "border-color: rgba(248,113,113,0.4); background: var(--sc-red-subtle); color: var(--sc-red);";
+      }
+      return "border-color: rgba(74,222,128,0.3); background: var(--sc-primary-subtle); color: var(--sc-primary);";
+    },
+    async confirmarBloqueio() {
+      if (!this.dataSelecionada) {
+        alert("Selecione uma data.");
         return;
       }
-      const existente = this.horariosDia.find(h => h.horario === this.horarioSelecionado);
-      if (existente) {
-        await this.removerHorario(existente.id);
-        alert("Horário liberado!");
-      } else {
-        await api.marcarHorarioOcupado(this.quadraId, this.dataSelecionada, this.horarioSelecionado);
-        alert("Horário marcado como ocupado!");
+      try {
+        if (this.diaInteiro) {
+          await api.marcarDataOcupada(this.quadraId, this.dataSelecionada);
+          alert("Dia inteiro marcado como bloqueado!");
+        } else {
+          if (!this.horarioSelecionado) {
+            alert("Selecione o horário.");
+            return;
+          }
+          await api.marcarHorarioOcupado(this.quadraId, this.dataSelecionada, this.horarioSelecionado);
+          alert("Horário bloqueado!");
+        }
+        await this.carregarHorarios();
+        this.horarioSelecionado = "";
+        this.descricaoBloqueio = "";
+      } catch (e) {
+        alert(e.message || "Erro ao bloquear.");
       }
-      await this.carregarHorarios();
-      this.horarioSelecionado = "";
     },
-    async removerHorario(id) {
-      await api.desmarcarHorarioOcupado(this.quadraId, id);
-      await this.carregarHorarios();
-    },
-  },
+    async desbloquearHorario(h) {
+      const item = this.horariosDia.find(i => i.horario === h);
+      if (item) {
+        try {
+          await api.desmarcarHorarioOcupado(this.quadraId, item.id);
+          await this.carregarHorarios();
+        } catch (e) {
+          alert("Erro ao desbloquear.");
+        }
+      }
+    }
+  }
 };
 </script>
-
-<style scoped>
-.pagina {
-  min-height: 100vh;
-  background: var(--background);
-  display: flex;
-  flex-direction: column;
-  font-family: var(--font-body);
-}
-
-.container {
-  max-width: 520px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 32px 16px 100px;
-}
-
-.titulo-pagina {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--foreground);
-  margin-bottom: 24px;
-}
-
-/* Card Formulario */
-.card-formulario {
-  background: white;
-  border: 1.5px solid var(--border);
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: var(--shadow-xs);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.campo {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.campo-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #475569;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.input-campo {
-  width: 100%;
-  padding: 12px 16px;
-  background: #f8fafc;
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--foreground);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.input-campo:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-muted);
-}
-
-/* Select */
-.select-wrapper {
-  position: relative;
-}
-
-.select-campo {
-  width: 100%;
-  padding: 12px 40px 12px 16px;
-  background: #f8fafc;
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--foreground);
-  appearance: none;
-  cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.select-campo:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-muted);
-}
-
-.select-seta {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--muted-foreground);
-  pointer-events: none;
-}
-
-/* Submit button */
-.btn-submit {
-  width: 100%;
-  padding: 14px;
-  background: var(--gradient-primary);
-  color: white;
-  font-weight: 700;
-  font-size: 14px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
-  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-submit:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
-}
-
-/* Card lista */
-.card-lista {
-  background: white;
-  border: 1.5px solid var(--border);
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: var(--shadow-xs);
-  margin-bottom: 16px;
-}
-
-.lista-titulo {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--foreground);
-  margin-bottom: 12px;
-}
-
-.lista-vazia {
-  text-align: center;
-  padding: 16px 0;
-  color: var(--muted-foreground);
-  font-size: 13px;
-}
-
-.lista-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.lista-item:last-child {
-  border-bottom: none;
-}
-
-.item-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.item-icone {
-  color: var(--destructive);
-}
-
-.item-horario {
-  font-size: 14px;
-  font-weight: 600;
-  color: #475569;
-}
-
-.btn-cancelar {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--destructive);
-  background: #fef2f2;
-  border: 1.5px solid rgba(239, 68, 68, 0.2);
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-cancelar:hover {
-  background: #fee2e2;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Voltar button */
-.btn-voltar {
-  width: 100%;
-  padding: 14px;
-  background: var(--muted);
-  color: #475569;
-  font-weight: 700;
-  font-size: 14px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-voltar:hover {
-  background: #e2e8f0;
-  transform: none;
-  box-shadow: none;
-}
-</style>

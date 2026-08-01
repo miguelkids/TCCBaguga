@@ -155,8 +155,31 @@ const rotas = [
     name: 'MinhasQuadras',
     component: PaginaMinhasQuadras,
     meta: {requerAutenticacao: true}
+  },
+  {
+    path: '/crm-clientes',
+    name: 'CRMClientes',
+    component: () => import('../paginas/CRMClientes.vue'),
+    meta: {requerAutenticacao: true}
+  },
+  {
+    path: '/chat-dono',
+    name: 'ChatDono',
+    component: () => import('../paginas/ChatDono.vue'),
+    meta: {requerAutenticacao: true}
+  },
+  {
+    path: '/avisos-politicas',
+    name: 'AvisosPoliticas',
+    component: () => import('../paginas/AvisosPoliticas.vue'),
+    meta: {requerAutenticacao: true}
+  },
+  {
+    path: '/subcontas',
+    name: 'Subcontas',
+    component: () => import('../paginas/Subcontas.vue'),
+    meta: {requerAutenticacao: true}
   }
- 
 ]
 
 const router = createRouter({

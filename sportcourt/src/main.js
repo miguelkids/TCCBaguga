@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 
 import './assets/global.css'
+import './assets/design-system.css'
 
 const app = createApp(App);
 

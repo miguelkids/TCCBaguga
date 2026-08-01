@@ -351,6 +351,73 @@ export const api = {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Erro ao atualizar tipo de jogo');
     return data;
+  },
+
+  // --- CHAT ---
+  async getChatMensagens(quadraId) {
+    const res = await fetch(`${API_URL}/chat/${quadraId}`, { method: 'GET', headers: getHeaders() });
+    if (!res.ok) throw new Error('Erro ao carregar mensagens');
+    return await res.json();
+  },
+
+  async getChatThreads(quadraId) {
+    const res = await fetch(`${API_URL}/chat/${quadraId}/threads`, { method: 'GET', headers: getHeaders() });
+    if (!res.ok) throw new Error('Erro ao carregar conversas');
+    return await res.json();
+  },
+
+  async getChatThreadJogador(quadraId, jogadorId) {
+    const res = await fetch(`${API_URL}/chat/${quadraId}/jogador/${jogadorId}`, { method: 'GET', headers: getHeaders() });
+    if (!res.ok) throw new Error('Erro ao carregar conversa');
+    return await res.json();
+  },
+
+  async enviarMensagem(quadraId, texto, autorNome) {
+    const res = await fetch(`${API_URL}/chat/${quadraId}`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ texto, autorNome })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erro ao enviar mensagem');
+    return data;
+  },
+
+  async marcarMensagensLidas(quadraId, jogadorId) {
+    const res = await fetch(`${API_URL}/chat/${quadraId}/lida`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify({ jogadorId })
+    });
+    return await res.json();
+  },
+
+  // --- DASHBOARD / KPIS ---
+  async getDashboardKpis(mes) {
+    const url = mes ? `${API_URL}/dashboard/kpis?mes=${mes}` : `${API_URL}/dashboard/kpis`;
+    const res = await fetch(url, { method: 'GET', headers: getHeaders() });
+    if (!res.ok) throw new Error('Erro ao carregar KPIs');
+    return await res.json();
+  },
+
+  async getDashboardSerieDiaria(mes) {
+    const url = mes ? `${API_URL}/dashboard/serie-diaria?mes=${mes}` : `${API_URL}/dashboard/serie-diaria`;
+    const res = await fetch(url, { method: 'GET', headers: getHeaders() });
+    if (!res.ok) throw new Error('Erro ao carregar faturamento diário');
+    return await res.json();
+  },
+
+  async getDashboardHorariosPopulares(mes) {
+    const url = mes ? `${API_URL}/dashboard/horarios-populares?mes=${mes}` : `${API_URL}/dashboard/horarios-populares`;
+    const res = await fetch(url, { method: 'GET', headers: getHeaders() });
+    if (!res.ok) throw new Error('Erro ao carregar horários populares');
+    return await res.json();
+  },
+
+  async getCRMClientes(quadraId) {
+    const res = await fetch(`${API_URL}/dashboard/clientes/${quadraId}`, { method: 'GET', headers: getHeaders() });
+    if (!res.ok) throw new Error('Erro ao carregar clientes');
+    return await res.json();
   }
 };
 

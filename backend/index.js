@@ -19,11 +19,15 @@ app.use('/uploads', express.static('uploads'));
 const authRoutes = require('./routes/auth');
 const quadrasRoutes = require('./routes/quadras');
 const reservasRoutes = require('./routes/reservas');
+const chatRoutes = require('./routes/chat');
+const dashboardRoutes = require('./routes/dashboard');
 
 // Uso das rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/quadras', quadrasRoutes);
 app.use('/api/reservas', reservasRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Rota de teste
 app.get('/', (req, res) => {
