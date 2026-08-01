@@ -126,8 +126,9 @@
       <div class="modal-box">
         <div class="modal-header">
           <h2 style="font-size: 18px; font-weight: 800; margin: 0;">Avaliar Quadra</h2>
-          <button class="btn-fechar" @click="fecharModal" title="Voltar" aria-label="Voltar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          <button class="sc-btn sc-btn-ghost sc-btn-sm" @click="fecharModal" style="display: flex; align-items: center; gap: 6px; color: var(--sc-text); padding: 6px 12px; border-radius: 8px; background: var(--sc-bg-elevated); border: 1px solid var(--sc-border); font-size: 13px; font-weight: 600; cursor: pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+            <span>Voltar</span>
           </button>
         </div>
 
