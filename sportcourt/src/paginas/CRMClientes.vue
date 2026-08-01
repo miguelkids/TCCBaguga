@@ -139,8 +139,10 @@ export default {
       try {
         this.carregando = true;
         const res = await api.getReservas().catch(() => []);
+        // CRM processa APENAS clientes de horários encerrados
+        const encerradas = res.filter(r => r.status === 'encerrada' || (r.confirmada && r.statusPagamento === 'pago'));
         const mapa = {};
-        res.forEach(r => {
+        encerradas.forEach(r => {
           const nome = r.nome || r.nome_jogador || r.nomeJogador || 'Cliente Avulso';
           const tel = r.telefone || r.telefone_jogador || r.telefoneJogador || '';
           const foto = r.fotoJogador ? (r.fotoJogador.startsWith('http') ? r.fotoJogador : `http://localhost:3006${r.fotoJogador}`) : null;

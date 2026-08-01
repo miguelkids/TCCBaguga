@@ -135,10 +135,13 @@
               </div>
 
               <div v-for="(j, idx) in editando[r.id] || r.jogadoresLista" :key="idx" class="pagamento-row">
-                <span class="pagamento-nome">
-                  {{ typeof j === 'string' ? j : j.nome }}
-                  <span v-if="j.goleiro" style="color: #f59e0b; font-size: 10px; margin-left: 4px;">Goleiro</span>
-                </span>
+                <input
+                  type="text"
+                  class="sc-input"
+                  v-model="j.nome"
+                  placeholder="Nome do jogador"
+                  style="height: 32px; font-size: 13px; flex: 1; margin-right: 6px;"
+                />
                 <span class="pagamento-valor" style="font-size: 12px; color: var(--sc-text-muted);">
                   {{ j.goleiro && !j.goleiroPaga ? 'Isento' : `R$ ${valorPorJogador(r)}` }}
                 </span>
@@ -147,12 +150,27 @@
                     class="pagamento-toggle"
                     :class="j.pago ? 'toggle-pago' : 'toggle-pendente'"
                     @click="togglePagamentoJogador(r, idx)"
+                    :title="j.pago ? 'Pagamento efetuado' : 'Pagamento pendente'"
                   >
                     <svg v-if="j.pago" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     {{ j.pago ? 'Pago' : 'Pendente' }}
                   </button>
-                  <button class="btn-mini" @click="toggleGoleiro(r, idx)" :title="j.goleiro ? 'Remover goleiro' : 'Marcar como goleiro'">
+                  <button
+                    class="btn-mini"
+                    @click="toggleGoleiro(r, idx)"
+                    :title="j.goleiro ? 'É goleiro (clique para alterar)' : 'Marcar como goleiro'"
+                    :style="j.goleiro ? 'border-color: #f59e0b; background: rgba(245,158,11,0.1);' : ''"
+                  >
                     <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" :stroke="j.goleiro ? '#f59e0b' : 'currentColor'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                  </button>
+                  <button
+                    v-if="j.goleiro"
+                    class="btn-mini"
+                    @click="toggleGoleiroPaga(r, idx)"
+                    :title="j.goleiroPaga ? 'Goleiro paga (clique para isentar)' : 'Goleiro isento (clique para cobrar)'"
+                    :style="j.goleiroPaga ? 'color: var(--sc-primary); border-color: var(--sc-primary);' : 'color: var(--sc-text-muted);'"
+                  >
+                    <span style="font-size: 10px; font-weight: 800;">{{ j.goleiroPaga ? 'R$' : '0' }}</span>
                   </button>
                   <button class="btn-mini btn-remover" @click="removerJogador(r, idx)" title="Remover jogador">
                     <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -166,7 +184,7 @@
                   type="text"
                   class="sc-input"
                   v-model="novoJogadorNome[r.id]"
-                  placeholder="Nome do jogador"
+                  placeholder="Novo jogador..."
                   style="height: 34px; font-size: 13px; flex: 1;"
                   @keyup.enter="adicionarJogador(r)"
                 />
@@ -176,9 +194,9 @@
                 </button>
               </div>
 
-              <button class="sc-btn sc-btn-primary sc-btn-sm" style="width: 100%; margin-top: 8px;" @click="salvarListaJogadores(r)">
+              <button class="sc-btn sc-btn-primary sc-btn-sm" style="width: 100%; margin-top: 10px;" @click="salvarListaJogadores(r)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                Salvar Alterações
+                Salvar Alterações dos Jogadores
               </button>
             </div>
           </div>
@@ -230,10 +248,10 @@ export default {
       return this.reservas.filter(r => !r.confirmada && r.status !== 'encerrada' && r.status !== 'cancelada');
     },
     reservasConfirmadas() {
-      return this.reservas.filter(r => r.confirmada && r.status !== 'encerrada');
+      return this.reservas.filter(r => r.confirmada && r.status !== 'encerrada' && r.statusPagamento !== 'pago');
     },
     reservasEncerradas() {
-      return this.reservas.filter(r => r.status === 'encerrada');
+      return this.reservas.filter(r => r.status === 'encerrada' || (r.confirmada && r.statusPagamento === 'pago'));
     },
     listaExibicao() {
       if (this.abaAtiva === 'pendentes') return this.reservasPendentes;
@@ -272,10 +290,17 @@ export default {
         this.carregando = true;
         const data = await api.getReservas();
         this.reservas = data;
-        // Inicializa editando com cópia da lista para encerradas
         data.forEach(r => {
           if (r.jogadoresLista && r.jogadoresLista.length > 0) {
-            this.editando[r.id] = JSON.parse(JSON.stringify(r.jogadoresLista));
+            this.editando[r.id] = JSON.parse(JSON.stringify(r.jogadoresLista.map(item => {
+              if (typeof item === 'string') return { nome: item, pago: false, goleiro: false, goleiroPaga: true };
+              return {
+                nome: item.nome || '',
+                pago: !!item.pago,
+                goleiro: !!item.goleiro,
+                goleiroPaga: item.goleiroPaga !== undefined ? !!item.goleiroPaga : true
+              };
+            })));
           }
         });
       } catch (e) {
@@ -291,6 +316,7 @@ export default {
       try {
         await api.atualizarStatusPagamento(r.id, novoStatus);
         r.statusPagamento = novoStatus;
+        if (novoStatus === 'pago') r.status = 'encerrada';
       } catch (e) {
         alert(e.message || 'Erro ao alterar pagamento.');
       }
@@ -299,7 +325,7 @@ export default {
     // Toggle pago/pendente de um jogador individual na lista editável
     togglePagamentoJogador(r, idx) {
       if (!this.editando[r.id]) {
-        this.editando[r.id] = JSON.parse(JSON.stringify(r.jogadoresLista));
+        this.editando[r.id] = JSON.parse(JSON.stringify(r.jogadoresLista || []));
       }
       const j = this.editando[r.id][idx];
       this.editando[r.id][idx] = { ...j, pago: !j.pago };
@@ -307,10 +333,19 @@ export default {
 
     toggleGoleiro(r, idx) {
       if (!this.editando[r.id]) {
-        this.editando[r.id] = JSON.parse(JSON.stringify(r.jogadoresLista));
+        this.editando[r.id] = JSON.parse(JSON.stringify(r.jogadoresLista || []));
       }
       const j = this.editando[r.id][idx];
-      this.editando[r.id][idx] = { ...j, goleiro: !j.goleiro, goleiroPaga: j.goleiro ? true : false };
+      const isGoleiro = !j.goleiro;
+      this.editando[r.id][idx] = { ...j, goleiro: isGoleiro, goleiroPaga: isGoleiro ? false : true };
+    },
+
+    toggleGoleiroPaga(r, idx) {
+      if (!this.editando[r.id]) {
+        this.editando[r.id] = JSON.parse(JSON.stringify(r.jogadoresLista || []));
+      }
+      const j = this.editando[r.id][idx];
+      this.editando[r.id][idx] = { ...j, goleiroPaga: !j.goleiroPaga };
     },
 
     removerJogador(r, idx) {
