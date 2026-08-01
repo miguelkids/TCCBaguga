@@ -49,13 +49,13 @@
           <div class="secao-painel">
             <h2 class="painel-titulo">Ações da Quadra</h2>
             <div class="painel-botoes">
-              <button @click="editarQuadra" class="btn-acao btn-acao--cinza">
+              <button @click="$router.push('/editar-quadra')" class="btn-acao btn-acao--cinza">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                Editar Quadra
+                Editar Informações da Quadra
               </button>
-              <button @click="$router.push('/menu-quadra')" class="btn-acao btn-acao--verde">
+              <button @click="$router.push('/editar-data-horario')" class="btn-acao btn-acao--verde">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                Gerenciar Horários
+                Gerenciar Horários e Bloqueios
               </button>
             </div>
           </div>

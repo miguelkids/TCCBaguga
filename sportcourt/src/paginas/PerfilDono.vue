@@ -1,103 +1,127 @@
 <template>
-  <div class="pagina">
-
+  <div class="sc-page">
     <TopbarDono />
 
-    <div class="container">
-      <h1 class="titulo-pagina">Meu Perfil</h1>
+    <main class="sc-container sc-main sc-main-padded" style="max-width: 800px;">
+      <div style="margin-bottom: 24px;">
+        <h1 class="sc-h2">Meu Perfil</h1>
+        <p class="sc-muted">Suas informações pessoais e gerenciamento da conta.</p>
+      </div>
 
-      <!-- Foto de Perfil -->
-      <div class="foto-secao">
-        <label class="foto-label">
-          <input type="file" accept="image/*" @change="carregarImagem" hidden />
-          <div class="foto-moldura">
-            <img :src="previewFoto || form.fotoPerfilUrl || defaultImage" alt="Foto de perfil" class="foto-img" />
-            <div class="foto-hover-overlay">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <!-- Card do Perfil -->
+      <div class="sc-card" style="padding: 24px; margin-bottom: 24px;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <div style="position: relative;">
+            <div style="width: 100px; height: 100px; border-radius: 50%; overflow: hidden; border: 2px solid var(--sc-primary); background: var(--sc-bg-elevated); display: flex; align-items: center; justify-content: center;">
+              <img v-if="previewFoto || form.fotoPerfilUrl" :src="previewFoto || form.fotoPerfilUrl" alt="Foto" style="width: 100%; height: 100%; object-fit: cover;" />
+              <svg v-else xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-text-muted);"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
+            <label style="position: absolute; bottom: 0; right: 0; background: var(--sc-primary); color: #0f1117; padding: 8px; border-radius: 50%; cursor: pointer; box-shadow: var(--sc-shadow-glow-sm);">
+              <input type="file" accept="image/*" @change="carregarImagem" hidden />
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </label>
           </div>
-        </label>
-        <p class="foto-subtitulo">Toque para trocar</p>
-      </div>
-
-      <!-- Formulário -->
-      <div class="card-formulario">
-        <div class="campo">
-          <label class="campo-label">Nome e Sobrenome</label>
-          <input v-model="form.nomeCompleto" type="text" placeholder="Nome completo" class="input-campo" />
+          <div style="text-align: center;">
+            <div style="font-weight: 800; font-size: 18px;">{{ form.nomeCompleto || 'Sem nome' }}</div>
+            <div class="sc-muted" style="font-size: 13px;">{{ form.email }}</div>
+            <span class="sc-badge sc-badge-primary" style="margin-top: 6px; display: inline-block;">Dono de Quadra</span>
+          </div>
         </div>
 
-        <div class="campo">
-          <label class="campo-label">Nome de usuário</label>
-          <input v-model="form.nomeUsuario" type="text" placeholder="Nome de usuário" class="input-campo" />
-        </div>
+        <div class="sc-grid-2" style="gap: 16px;">
+          <div class="sc-form-group">
+            <label class="sc-label">Nome Completo</label>
+            <input type="text" class="sc-input" v-model="form.nomeCompleto" placeholder="Seu nome" />
+          </div>
 
-        <div class="campo">
-          <label class="campo-label">Gênero</label>
-          <div class="select-wrapper">
-            <select v-model="form.genero" class="select-campo">
+          <div class="sc-form-group">
+            <label class="sc-label">Nome de Usuário</label>
+            <input type="text" class="sc-input" v-model="form.nomeUsuario" placeholder="@usuario" />
+          </div>
+
+          <div class="sc-form-group">
+            <label class="sc-label">E-mail</label>
+            <input type="email" class="sc-input" v-model="form.email" disabled style="opacity: 0.7; cursor: not-allowed;" />
+          </div>
+
+          <div class="sc-form-group">
+            <label class="sc-label">Telefone</label>
+            <input type="text" class="sc-input" v-model="form.telefone" placeholder="(00) 00000-0000" />
+          </div>
+
+          <div class="sc-form-group">
+            <label class="sc-label">CPF</label>
+            <input type="text" class="sc-input" v-model="form.cpf" placeholder="000.000.000-00" />
+          </div>
+
+          <div class="sc-form-group">
+            <label class="sc-label">Gênero</label>
+            <select class="sc-input" v-model="form.genero">
               <option value="">Selecione</option>
-              <option>Masculino</option>
-              <option>Feminino</option>
-              <option>Outro</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Feminino">Feminino</option>
+              <option value="Outro">Outro</option>
             </select>
-            <svg class="select-seta" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
         </div>
 
-        <div class="campo">
-          <label class="campo-label">E-mail</label>
-          <input v-model="form.email" type="email" placeholder="E-mail" disabled class="input-campo" />
-        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; border-top: 1px solid var(--sc-border); padding-top: 20px;">
+          <button class="sc-btn sc-btn-danger" @click="sairDaConta">
+            Sair da Conta
+          </button>
 
-        <div class="campo">
-          <label class="campo-label">Telefone</label>
-          <input v-model="form.telefone" type="text" placeholder="Telefone" class="input-campo" />
-        </div>
-
-        <div class="campo">
-          <label class="campo-label">CPF</label>
-          <input v-model="form.cpf" type="text" placeholder="CPF" class="input-campo" />
-        </div>
-
-        <div class="campo">
-          <label class="campo-label">Data de Nascimento</label>
-          <input v-model="form.dataNascimento" type="date" class="input-campo" />
+          <button class="sc-btn sc-btn-primary" @click="salvarPerfil" :disabled="salvando">
+            {{ salvando ? "Salvando..." : "Salvar alterações" }}
+          </button>
         </div>
       </div>
 
-      <!-- Botões de Ação -->
-      <button @click="salvarPerfil" :disabled="salvando" class="btn-salvar">
-        {{ salvando ? "Salvando..." : "Salvar alterações" }}
-      </button>
+      <!-- Seção de Gerenciamento de Subcontas integrada ao Perfil -->
+      <div class="sc-card" style="padding: 24px;">
+        <div style="margin-bottom: 20px;">
+          <h2 class="sc-h3" style="display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-primary);"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Gerenciamento de Perfis (Subcontas)
+          </h2>
+          <p class="sc-muted" style="font-size: 13px; margin-top: 4px;">Crie contas de acesso adicionais para funcionários ou gerentes de recepção.</p>
+        </div>
 
-      <button @click="sairDaConta" class="btn-sair">
-        Sair da Conta
-      </button>
-    </div>
+        <!-- Formulário de cadastro de subconta -->
+        <div style="background: var(--sc-bg-elevated); padding: 16px; border-radius: var(--sc-radius); border: 1px solid var(--sc-border); margin-bottom: 20px;">
+          <div class="sc-grid-2" style="gap: 12px; margin-bottom: 12px;">
+            <input type="text" class="sc-input" v-model="novaSubconta.nome" placeholder="Nome do funcionário" />
+            <input type="email" class="sc-input" v-model="novaSubconta.email" placeholder="E-mail de acesso" />
+            <input type="password" class="sc-input" v-model="novaSubconta.senha" placeholder="Senha inicial" />
+            <input type="text" class="sc-input" v-model="novaSubconta.cargo" placeholder="Cargo (ex: Recepcionista)" />
+          </div>
+          <button class="sc-btn sc-btn-primary sc-btn-sm" @click="adicionarSubconta" style="width: 100%;">
+            Adicionar Subconta
+          </button>
+        </div>
 
-    <!-- Bottom Nav Mobile -->
-    <transition name="slide-up">
-      <nav class="bottom-nav" v-show="mostrarBarra">
-        <router-link to="/confirmar-quadra" class="nav-item" :class="$route.path === '/confirmar-quadra' ? 'nav-item--ativo' : ''">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span>Menu</span>
-        </router-link>
-        <router-link to="/reservas" class="nav-item" :class="$route.path === '/reservas' ? 'nav-item--ativo' : ''">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <span>Reservas</span>
-        </router-link>
-        <router-link to="/faturamento-dono" class="nav-item" :class="$route.path === '/faturamento-dono' ? 'nav-item--ativo' : ''">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          <span>Dashboard</span>
-        </router-link>
-        <router-link to="/perfil" class="nav-item" :class="$route.path === '/perfil' ? 'nav-item--ativo' : ''">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span>Perfil</span>
-        </router-link>
-      </nav>
-    </transition>
+        <!-- Lista de subcontas -->
+        <div v-if="subcontas.length === 0" class="sc-empty" style="padding: 20px;">
+          <p class="sc-muted">Nenhuma subconta cadastrada ainda.</p>
+        </div>
+        <div v-else style="display: flex; flex-direction: column; gap: 10px;">
+          <div
+            v-for="(s, idx) in subcontas"
+            :key="idx"
+            class="sc-flex-between"
+            style="padding: 12px; border-radius: var(--sc-radius); border: 1px solid var(--sc-border); background: var(--sc-bg-elevated);"
+          >
+            <div>
+              <div style="font-weight: 700; font-size: 14px;">{{ s.nome }} <span v-if="s.cargo" style="font-weight: 400;" class="sc-muted">• {{ s.cargo }}</span></div>
+              <div class="sc-muted" style="font-size: 12px;">{{ s.email }}</div>
+            </div>
+            <button class="sc-btn sc-btn-danger sc-btn-sm" @click="removerSubconta(idx)">
+              Remover
+            </button>
+          </div>
+        </div>
+      </div>
 
+    </main>
   </div>
 </template>
 
@@ -113,18 +137,14 @@ export default {
       form: { id: "", nomeCompleto: "", nomeUsuario: "", email: "", telefone: "", genero: "", cpf: "", dataNascimento: "", fotoPerfilUrl: "" },
       previewFoto: null,
       fileFoto: null,
-      defaultImage: require("@/assets/perfil.png"),
-      mostrarBarra: true,
-      ultimaPosicaoScroll: 0,
       salvando: false,
+      subcontas: [],
+      novaSubconta: { nome: "", email: "", senha: "", cargo: "" }
     };
   },
   mounted() {
     this.carregarDados();
-    window.addEventListener("scroll", this.verificarScroll);
-  },
-  beforeUnmount() {
-    window.removeEventListener("scroll", this.verificarScroll);
+    this.carregarSubcontas();
   },
   methods: {
     async carregarDados() {
@@ -142,17 +162,18 @@ export default {
           this.form.fotoPerfilUrl = `http://localhost:3006${user.foto_perfil_url}`;
         }
       } catch (err) {
-        console.error("Erro ao carregar dados do proprietário:", err);
+        console.error("Erro ao carregar dados do perfil:", err);
       }
+    },
+    async carregarSubcontas() {
+      try {
+        const salvo = localStorage.getItem("subcontas_dono");
+        if (salvo) this.subcontas = JSON.parse(salvo);
+      } catch (_e) { /* ignorado */ }
     },
     async salvarPerfil() {
       try {
         this.salvando = true;
-
-        if (this.fileFoto) {
-          this.form.fotoPerfilUrl = URL.createObjectURL(this.fileFoto);
-        }
-
         await api.atualizarPerfil({
           nome: this.form.nomeCompleto,
           nomeUsuario: this.form.nomeUsuario,
@@ -177,279 +198,29 @@ export default {
         this.previewFoto = URL.createObjectURL(file);
       }
     },
+    adicionarSubconta() {
+      if (!this.novaSubconta.nome.trim() || !this.novaSubconta.email.trim() || !this.novaSubconta.senha.trim()) {
+        alert("Preencha nome, e-mail e senha da subconta.");
+        return;
+      }
+      this.subcontas.push({ ...this.novaSubconta });
+      localStorage.setItem("subcontas_dono", JSON.stringify(this.subcontas));
+      this.novaSubconta = { nome: "", email: "", senha: "", cargo: "" };
+      alert("Subconta adicionada com sucesso!");
+    },
+    removerSubconta(idx) {
+      if (confirm("Deseja remover o acesso deste funcionário?")) {
+        this.subcontas.splice(idx, 1);
+        localStorage.setItem("subcontas_dono", JSON.stringify(this.subcontas));
+      }
+    },
     sairDaConta() {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("quadraId");
       localStorage.removeItem("quadraInfo");
       this.$router.push("/login");
-    },
-    verificarScroll() {
-      const posicaoAtual = window.scrollY;
-      this.mostrarBarra = (posicaoAtual <= this.ultimaPosicaoScroll);
-      this.ultimaPosicaoScroll = posicaoAtual;
-    },
-  },
+    }
+  }
 };
 </script>
-
-<style scoped>
-.pagina {
-  min-height: 100vh;
-  background: var(--background);
-  display: flex;
-  flex-direction: column;
-  font-family: var(--font-body);
-}
-
-.container {
-  max-width: 440px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 32px 16px 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.titulo-pagina {
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--foreground);
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-/* Foto Perfil */
-.foto-secao {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.foto-label {
-  position: relative;
-  cursor: pointer;
-  display: block;
-}
-
-.foto-moldura {
-  position: relative;
-  width: 112px;
-  height: 112px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 3.5px solid var(--accent);
-  box-shadow: var(--shadow-sm);
-}
-
-.foto-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.foto-hover-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.35);
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.foto-label:hover .foto-hover-overlay {
-  opacity: 1;
-}
-
-.foto-subtitulo {
-  font-size: 12px;
-  color: var(--muted-foreground);
-  margin-top: 8px;
-  font-weight: 600;
-}
-
-/* Card Formulario */
-.card-formulario {
-  width: 100%;
-  background: white;
-  border: 1.5px solid var(--border);
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: var(--shadow-card);
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.campo {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.campo-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #475569;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.input-campo {
-  width: 100%;
-  padding: 12px 16px;
-  background: #f8fafc;
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--foreground);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.input-campo:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  outline: none;
-}
-
-.input-campo:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Select */
-.select-wrapper {
-  position: relative;
-}
-
-.select-campo {
-  width: 100%;
-  padding: 12px 40px 12px 16px;
-  background: #f8fafc;
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--foreground);
-  appearance: none;
-  cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.select-campo:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  outline: none;
-}
-
-.select-seta {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--muted-foreground);
-  pointer-events: none;
-}
-
-/* Botões */
-.btn-salvar {
-  width: 100%;
-  padding: 14px;
-  background: var(--gradient-accent);
-  color: white;
-  font-weight: 700;
-  font-size: 14px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
-  margin-bottom: 12px;
-}
-
-.btn-salvar:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-}
-
-.btn-salvar:disabled {
-  opacity: 0.65;
-  pointer-events: none;
-}
-
-.btn-sair {
-  width: 100%;
-  padding: 14px;
-  background: #fef2f2;
-  color: var(--destructive);
-  font-weight: 700;
-  font-size: 14px;
-  border: 1.5px solid rgba(239, 68, 68, 0.2);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-
-.btn-sair:hover {
-  background: var(--destructive);
-  color: white;
-  border-color: var(--destructive);
-  transform: none;
-  box-shadow: none;
-}
-
-/* Bottom Nav */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  background: white;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 40;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
-}
-
-@media (min-width: 1024px) {
-  .bottom-nav {
-    display: none;
-  }
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted-foreground);
-  padding: 8px 16px;
-  transition: color 0.2s;
-  text-decoration: none;
-}
-
-.nav-item:hover {
-  color: #475569;
-}
-
-.nav-item--ativo {
-  color: var(--accent);
-}
-
-/* Slide Up */
-.slide-up-enter-active, .slide-up-leave-active { transition: transform 0.3s ease; }
-.slide-up-enter-from, .slide-up-leave-to { transform: translateY(100%); }
-</style>

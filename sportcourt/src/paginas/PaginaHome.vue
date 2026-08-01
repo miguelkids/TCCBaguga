@@ -1,434 +1,241 @@
 <template>
-  <div class="pagina">
-    
-    <!-- Efeitos de Brilho de Fundo (Glows Globais) -->
-    <div class="glow-fundo glow-fundo--topo" aria-hidden="true"></div>
-    <div class="glow-fundo glow-fundo--meio" aria-hidden="true"></div>
+  <div class="home-pagina">
 
-    <header class="navbar-home">
-      <router-link to="/" class="logo-link">
-        <img :src="logo" alt="SportCourt" class="logo-img" />
-      </router-link>
-      
-      <div class="navbar-acoes">
-        <router-link to="/login" class="btn-entrar">
-          Entrar
+    <!-- Header fixo -->
+    <header class="home-header" :class="{ 'home-header--scrolled': scrolled }">
+      <div class="home-header-inner">
+        <router-link to="/" class="home-logo-link">
+          <img :src="logo" alt="SportCourt" class="home-logo-img" />
         </router-link>
-        <router-link to="/escolher-perfil" class="btn-cadastrar-topo">
-          Cadastrar Quadra
-        </router-link>
+        <div class="home-header-acoes">
+          <router-link to="/login" class="home-btn-ghost">Entrar</router-link>
+          <router-link to="/escolher-perfil" class="home-btn-primary">Cadastrar-se</router-link>
+        </div>
       </div>
     </header>
 
-    <!-- Seção 1: Hero Section (Sua quadra esportiva no próximo nível) -->
-    <section class="hero-secao">
-      <!-- Glows do Hero -->
-      <div class="hero-glow hero-glow--topo-dir"></div>
-      <div class="hero-glow hero-glow--baixo-esq"></div>
-
-      <div class="hero-conteudo">
-        <div class="hero-badge">
-          <span class="badge-ping"></span>
-          A Revolução Digital para Quadras Esportivas
+    <!-- Hero -->
+    <section class="home-hero">
+      <div class="home-hero-inner">
+        <div class="home-badge">
+          <span class="home-badge-dot"></span>
+          Reservas simplificadas para todos
         </div>
-        
-        <h1 class="hero-titulo">
-          Sua quadra esportiva no <br class="hidden-sm" />
-          <span class="texto-gradiente">próximo nível</span>.
+
+        <h1 class="home-hero-titulo">
+          Sua partida começa no
+          <span class="home-gradiente">SportCourt</span>
         </h1>
-        
-        <p class="hero-descricao">
-          O sistema de gestão e agendamento online mais moderno do Brasil. Automatize horários, receba pagamentos antecipados e fidelize seus atletas de forma simples e segura.
+
+        <p class="home-hero-descricao">
+          Encontre, agende e jogue sem complicações. A plataforma que conecta
+          jogadores e donos de quadra em um só lugar.
         </p>
 
-        <div class="hero-botoes">
-          <router-link to="/escolher-perfil" class="btn-hero btn-hero--principal">
-            Começar Teste de 15 Dias Grátis
+        <div class="home-hero-botoes">
+          <router-link to="/cadastro-jogador" class="home-btn-hero home-btn-hero--principal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Sou Jogador
           </router-link>
-          <router-link to="/login" class="btn-hero btn-hero--secundario">
-            Buscar Quadras para Jogar
+          <router-link to="/cadastro-dono" class="home-btn-hero home-btn-hero--secundario">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Sou Dono de Quadra
           </router-link>
-        </div>
-        
-        <!-- Selos de Credibilidade -->
-        <div class="hero-selos">
-          <div class="selo-item">
-            <svg class="selo-check" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            Sem cartão de crédito
-          </div>
-          <div class="selo-item">
-            <svg class="selo-check" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            Configuração rápida
-          </div>
-          <div class="selo-item">
-            <svg class="selo-check" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            Suporte humanizado
-          </div>
-        </div>
-
-        <!-- Mockup Visual do Hero -->
-        <div class="hero-mockup-wrapper animate-scale-in">
-          <div class="mockup-card">
-            <!-- Indicador do Card -->
-            <div class="mockup-header">
-              <div class="mockup-botoes">
-                <span class="mockup-btn mockup-btn--vermelho"></span>
-                <span class="mockup-btn mockup-btn--amarelo"></span>
-                <span class="mockup-btn mockup-btn--verde"></span>
-              </div>
-              <span class="mockup-titulo">SportCourt</span>
-            </div>
-            <!-- Conteúdo simulado da Dashboard do Dono -->
-            <div class="mockup-conteudo">
-              <div class="mockup-faturamento-box">
-                <div class="mockup-label">Faturamento Hoje</div>
-                <div class="mockup-valor">R$ 1.840,00</div>
-                <div class="mockup-variacao">
-                  <svg class="variacao-icone" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                  +12.4% em relação a ontem
-                </div>
-              </div>
-
-              <!-- Simulação de Próximo Agendamento -->
-              <div class="mockup-agenda">
-                <div class="mockup-agenda-titulo">Próximos Jogos</div>
-                
-                <div class="agenda-item">
-                  <div class="agenda-dados">
-                    <div class="agenda-icone bg-futebol">⚽</div>
-                    <div class="agenda-textos">
-                      <div class="agenda-local">Quadra 1 - Futebol Society</div>
-                      <div class="agenda-info-reserva">Thiago Silva • 19:00 às 20:00</div>
-                    </div>
-                  </div>
-                  <span class="badge-status badge-status--confirmada">Confirmada</span>
-                </div>
-
-                <div class="agenda-item">
-                  <div class="agenda-dados">
-                    <div class="agenda-icone bg-tennis">🎾</div>
-                    <div class="agenda-textos">
-                      <div class="agenda-local">Quadra 2 - Beach Tennis</div>
-                      <div class="agenda-info-reserva">Mariana Costa • 20:00 às 21:30</div>
-                    </div>
-                  </div>
-                  <span class="badge-status badge-status--pendente">Pendente PIX</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Indicador de Scroll -->
-        <div class="hero-scroll-indicador">
-          <svg class="scroll-seta" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-          </svg>
         </div>
       </div>
     </section>
 
-    <!-- Seção 2: Uma plataforma completa para ambos os lados -->
-    <section class="funcionalidades-secao" id="funcionalidades">
-      <div class="secao-cabecalho">
-        <h2 class="secao-titulo">
-          Uma plataforma completa para ambos os lados
-        </h2>
-        <p class="secao-descricao">
-          Escolha abaixo o seu perfil e veja como simplificamos a sua vida esportiva.
-        </p>
-      </div>
-
-      <!-- Seletor de Abas -->
-      <div class="seletor-abas-container">
-        <div class="seletor-abas-fundo">
-          <button @click="abaAtiva = 'dono'" 
-                  :class="abaAtiva === 'dono' ? 'btn-aba--ativo' : ''" 
-                  class="btn-aba">
-            <svg class="aba-icone" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5"/></svg>
-            Para Quadras & Gestores
-          </button>
-          <button @click="abaAtiva = 'jogador'" 
-                  :class="abaAtiva === 'jogador' ? 'btn-aba--ativo' : ''" 
-                  class="btn-aba">
-            <svg class="aba-icone" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-            Para Atletas & Jogadores
-          </button>
-        </div>
-      </div>
-
-      <!-- Conteúdo da Aba (Centralizado e bem distribuído) -->
-      <div class="grade-funcionalidades-wrapper">
-        <!-- Conteúdo da Aba 1 (Dono) -->
-        <div v-if="abaAtiva === 'dono'" class="grid-funcionalidades animate-fade-in">
-          <div class="card-funcionalidade">
-            <div class="funcionalidade-corpo">
-              <div class="funcionalidade-emoji">📅</div>
-              <h3 class="funcionalidade-titulo">Gestão de Horários</h3>
-              <p class="funcionalidade-descricao">Crie, agende ou remova horários de mensalistas (fixos) ou avulsos em poucos cliques com uma agenda visual.</p>
-            </div>
-            <span class="funcionalidade-link">Controle Total →</span>
-          </div>
-
-          <div class="card-funcionalidade">
-            <div class="funcionalidade-corpo">
-              <div class="funcionalidade-emoji">💰</div>
-              <h3 class="funcionalidade-titulo">Pagamento Antecipado</h3>
-              <p class="funcionalidade-descricao">Reduza o calote para zero! Exija pagamento de sinal ou o valor total no PIX ou cartão de crédito na hora da reserva.</p>
-            </div>
-            <span class="funcionalidade-link">Fluxo Seguro →</span>
-          </div>
-
-          <div class="card-funcionalidade">
-            <div class="funcionalidade-corpo">
-              <div class="funcionalidade-emoji">📊</div>
-              <h3 class="funcionalidade-titulo">Painel Financeiro</h3>
-              <p class="funcionalidade-descricao">Monitore suas receitas diárias, custos e faturamento mensal de cada quadra por meio de gráficos inteligentes.</p>
-            </div>
-            <span class="funcionalidade-link">Decisões Rápidas →</span>
-          </div>
-
-          <div class="card-funcionalidade">
-            <div class="funcionalidade-corpo">
-              <div class="funcionalidade-emoji">👥</div>
-              <h3 class="funcionalidade-titulo">Controle de Equipes</h3>
-              <p class="funcionalidade-descricao">Crie acessos diferenciados para funcionários e sócios para que eles operem a recepção sem ver dados confidenciais.</p>
-            </div>
-            <span class="funcionalidade-link">Gestão Segura →</span>
-          </div>
-        </div>
-
-        <!-- Conteúdo da Aba 2 (Jogador) -->
-        <div v-else class="grid-funcionalidades animate-fade-in">
-          <div class="card-funcionalidade">
-            <div class="funcionalidade-corpo">
-              <div class="funcionalidade-emoji">⚡</div>
-              <h3 class="funcionalidade-titulo">Agendamento em 30s</h3>
-              <p class="funcionalidade-descricao">Encontre a quadra mais próxima de você, escolha o horário desejado e reserve instantaneamente pelo celular.</p>
-            </div>
-            <span class="funcionalidade-link">Reservar agora →</span>
-          </div>
-
-          <div class="card-funcionalidade">
-            <div class="funcionalidade-corpo">
-              <div class="funcionalidade-emoji">🤝</div>
-              <h3 class="funcionalidade-titulo">Racha de PIX (Breve)</h3>
-              <p class="funcionalidade-descricao">Divida a quadra com seus amigos de forma automatizada. Cada um paga sua parte via PIX e o app atualiza em tempo real.</p>
-            </div>
-            <span class="funcionalidade-link">Zero Estresse →</span>
-          </div>
-
-          <div class="card-funcionalidade">
-            <div class="funcionalidade-corpo">
-              <div class="funcionalidade-emoji">💬</div>
-              <h3 class="funcionalidade-titulo">Lembretes WhatsApp</h3>
-              <p class="funcionalidade-descricao">Receba notificações automáticas no seu WhatsApp com a confirmação e lembrete da partida para ninguém esquecer o jogo.</p>
-            </div>
-            <span class="funcionalidade-link">Organização Fácil →</span>
-          </div>
-
-          <div class="card-funcionalidade">
-            <div class="funcionalidade-corpo">
-              <div class="funcionalidade-emoji">🏆</div>
-              <h3 class="funcionalidade-titulo">Histórico & Ranking</h3>
-              <p class="funcionalidade-descricao">Acompanhe todos os seus agendamentos antigos, avalie os locais que jogou e favorite as melhores quadras.</p>
-            </div>
-            <span class="funcionalidade-link">Acompanhamento →</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Seção 3: Chega de dor de cabeça com a gestão manual -->
-    <section class="comparacao-secao">
-      <!-- Glow do fundo -->
-      <div class="comparacao-glow" aria-hidden="true"></div>
-
-      <div class="comparacao-conteudo">
-        <div class="secao-cabecalho text-center">
-          <h2 class="secao-titulo text-white">
-            Chega de dor de cabeça com a gestão manual
+    <!-- Seção de Benefícios -->
+    <section class="home-beneficios">
+      <div class="home-secao-inner">
+        <div class="home-secao-cabecalho">
+          <h2 class="home-secao-titulo">
+            Feito para os
+            <span class="home-gradiente">dois lados da quadra</span>
           </h2>
-          <p class="secao-descricao text-slate-400">
-            Compare como é a sua rotina atual sem tecnologia contra a simplicidade do SportCourt.
+          <p class="home-secao-subtitulo">
+            Recursos pensados para quem joga e para quem gerencia.
           </p>
         </div>
 
-        <div class="grade-comparacoes">
-          
-          <!-- Lado Manual (Antes) -->
-          <div class="card-comparacao card-comparacao--vermelho">
-            <div class="comparacao-badge-tipo comparacao-badge-tipo--vermelho">Sem Tecnologia</div>
-            <h3 class="comparacao-titulo-coluna text-red-400">
-              <span class="emoji-alerta">⚠️</span> No Passado
-            </h3>
-            <ul class="lista-comparacoes text-slate-300">
-              <li class="item-comparacao">
-                <span class="icone-marca icone-marca--rejeita">✕</span>
-                <span>Clientes mandando mensagem no WhatsApp às 23:00 para reservar quadra.</span>
+        <div class="home-cards-grid">
+          <!-- Card Jogador -->
+          <div class="home-card-audiencia" id="jogador">
+            <div class="home-card-badge">Para o jogador</div>
+            <h3 class="home-card-titulo">Encontre, agende e jogue</h3>
+            <p class="home-card-subtitulo">Tudo o que você precisa para organizar a próxima partida.</p>
+
+            <ul class="home-features-lista">
+              <li class="home-feature-item">
+                <div class="home-feature-icone">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <div>
+                  <div class="home-feature-nome">Busca inteligente</div>
+                  <div class="home-feature-desc">Pesquise por cidade e veja todas as quadras disponíveis perto de você.</div>
+                </div>
               </li>
-              <li class="item-comparacao">
-                <span class="icone-marca icone-marca--rejeita">✕</span>
-                <span>Caderninho rasgado, planilhas confusas e erros de horários duplicados.</span>
+              <li class="home-feature-item">
+                <div class="home-feature-icone">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div>
+                  <div class="home-feature-nome">Flexibilidade de horários</div>
+                  <div class="home-feature-desc">Reserve horários disponíveis de forma simples e rápida.</div>
+                </div>
               </li>
-              <li class="item-comparacao">
-                <span class="icone-marca icone-marca--rejeita">✕</span>
-                <span>Cancelamentos de última hora com a quadra vazia e prejuízo financeiro.</span>
+              <li class="home-feature-item">
+                <div class="home-feature-icone">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div>
+                  <div class="home-feature-nome">Gestão de partida</div>
+                  <div class="home-feature-desc">Liste os jogadores e defina as regras da sua pelada.</div>
+                </div>
               </li>
-              <li class="item-comparacao">
-                <span class="icone-marca icone-marca--rejeita">✕</span>
-                <span>Cobrança manual e desgastante dos mensalistas fixos no fim do mês.</span>
+              <li class="home-feature-item">
+                <div class="home-feature-icone">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div>
+                  <div class="home-feature-nome">Histórico e avaliação</div>
+                  <div class="home-feature-desc">Acompanhe agendamentos passados e avalie a infraestrutura de cada quadra.</div>
+                </div>
               </li>
             </ul>
+
+            <div class="home-breve-box">
+              <div class="home-breve-titulo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+                Próximas atualizações
+              </div>
+              <ul class="home-breve-lista">
+                <li class="home-breve-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  Pagamento online direto na plataforma
+                  <span class="home-breve-tag">Em breve</span>
+                </li>
+                <li class="home-breve-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  Chat integrado para comunicação entre jogadores
+                  <span class="home-breve-tag">Em breve</span>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <!-- Lado SportCourt (Depois) -->
-          <div class="card-comparacao card-comparacao--verde">
-            <div class="comparacao-badge-tipo comparacao-badge-tipo--verde">Com SportCourt</div>
-            <h3 class="comparacao-titulo-coluna text-emerald-400">
-              <span class="emoji-alerta">⚡</span> Com o SportCourt
-            </h3>
-            <ul class="lista-comparacoes text-slate-200">
-              <li class="item-comparacao">
-                <span class="icone-marca icone-marca--aprova">✓</span>
-                <span>Seu site de reservas funciona 24 horas por dia no piloto automático.</span>
+          <!-- Card Dono -->
+          <div class="home-card-audiencia" id="dono">
+            <div class="home-card-badge">Para o dono de quadra</div>
+            <h3 class="home-card-titulo">Controle total do seu negócio</h3>
+            <p class="home-card-subtitulo">Centralize agendamentos, clientes e finanças em uma única tela.</p>
+
+            <ul class="home-features-lista">
+              <li class="home-feature-item">
+                <div class="home-feature-icone">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <div>
+                  <div class="home-feature-nome">Gestão centralizada</div>
+                  <div class="home-feature-desc">Cadastre múltiplas quadras e gerencie horários, clientes e informações em um só lugar.</div>
+                </div>
               </li>
-              <li class="item-comparacao">
-                <span class="icone-marca icone-marca--aprova">✓</span>
-                <span>Banco de dados na nuvem, calendário sincronizado e sem erros humanos.</span>
+              <li class="home-feature-item">
+                <div class="home-feature-icone">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                </div>
+                <div>
+                  <div class="home-feature-nome">Dashboard financeiro</div>
+                  <div class="home-feature-desc">Painel completo para controle de faturamento e entradas em tempo real.</div>
+                </div>
               </li>
-              <li class="item-comparacao">
-                <span class="icone-marca icone-marca--aprova">✓</span>
-                <span>Sinal financeiro no PIX antecipado garante a presença ou quitação da vaga.</span>
+              <li class="home-feature-item">
+                <div class="home-feature-icone">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="23 21 23 19 21 15"/><line x1="20" y1="15" x2="20" y2="21"/></svg>
+                </div>
+                <div>
+                  <div class="home-feature-nome">CRM de clientes</div>
+                  <div class="home-feature-desc">Veja o histórico de cada cliente e identifique pendências rapidamente.</div>
+                </div>
               </li>
-              <li class="item-comparacao">
-                <span class="icone-marca icone-marca--aprova">✓</span>
-                <span>Mensalistas pagam de forma automatizada com lembretes recorrentes.</span>
+              <li class="home-feature-item">
+                <div class="home-feature-icone">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div>
+                  <div class="home-feature-nome">Segurança e confiabilidade</div>
+                  <div class="home-feature-desc">Seus dados e os de seus clientes protegidos do início ao fim.</div>
+                </div>
               </li>
             </ul>
-          </div>
 
+            <div class="home-breve-box">
+              <div class="home-breve-titulo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+                Próximas atualizações
+              </div>
+              <ul class="home-breve-lista">
+                <li class="home-breve-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  Gestão compartilhada com níveis de acesso para funcionários
+                  <span class="home-breve-tag">Em breve</span>
+                </li>
+                <li class="home-breve-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  Pagamento online com cobrança automática
+                  <span class="home-breve-tag">Em breve</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Seção de Números (Prova Social) -->
-    <section class="numeros-secao">
-      <div class="numeros-conteudo">
-        <div class="grade-numeros">
-          <div class="numero-item">
-            <div class="numero-valor">+300</div>
-            <div class="numero-label">Cidades Alcançadas</div>
-          </div>
-          
-          <div class="numero-item">
-            <div class="numero-valor">+1.5M</div>
-            <div class="numero-label">Agendamentos</div>
-          </div>
-
-          <div class="numero-item">
-            <div class="numero-valor">+160k</div>
-            <div class="numero-label">Jogadores Cadastrados</div>
-          </div>
-
-          <div class="numero-item">
-            <div class="numero-valor">R$ 136M</div>
-            <div class="numero-label">Faturados pelas Quadras</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Seção 4: FAQ Section (Perguntas Frequentes) -->
-    <section class="faq-secao">
-      <div class="faq-conteudo">
-        <div class="secao-cabecalho text-center">
-          <h2 class="secao-titulo">
-            Perguntas Frequentes
+    <!-- FAQ -->
+    <section class="home-faq" id="faq">
+      <div class="home-secao-inner home-secao-inner--narrow">
+        <div class="home-secao-cabecalho">
+          <h2 class="home-secao-titulo">
+            Perguntas
+            <span class="home-gradiente">frequentes</span>
           </h2>
-          <p class="secao-descricao">
-            Tire suas principais dúvidas sobre o funcionamento do SportCourt.
-          </p>
+          <p class="home-secao-subtitulo">Tudo o que você precisa saber para começar.</p>
         </div>
 
-        <div class="faq-lista">
-          <div class="collapse collapse-arrow faq-item">
-            <input type="radio" name="faq-accordion" checked="checked" /> 
-            <div class="collapse-title faq-pergunta">
-              Como funciona o teste gratuito de 15 dias?
-            </div>
-            <div class="collapse-content faq-resposta">
-              O teste é totalmente grátis e não requer cartão de crédito. Você se cadastra, cadastra suas quadras e pode utilizar todas as ferramentas de agendamento, controle de mensalistas e caixa. Após os 15 dias, você escolhe o plano que melhor atende à sua quadra.
-            </div>
-          </div>
-
-          <div class="collapse collapse-arrow faq-item">
-            <input type="radio" name="faq-accordion" /> 
-            <div class="collapse-title faq-pergunta">
-              Como os jogadores pagam pelas reservas online?
-            </div>
-            <div class="collapse-content faq-resposta">
-              Você pode ativar a nossa integração de pagamento. Assim, quando o jogador agendar pelo site ou app dele, ele será direcionado para pagar via PIX ou Cartão de Crédito. O valor cai direto na sua conta digital cadastrada de forma transparente.
+        <div class="home-faq-lista">
+          <div
+            v-for="(item, i) in faqs"
+            :key="i"
+            class="home-faq-item"
+            :class="{ 'home-faq-item--aberto': faqAberto === i }"
+          >
+            <button class="home-faq-pergunta" @click="faqAberto = faqAberto === i ? null : i">
+              <span>{{ item.q }}</span>
+              <svg class="home-faq-seta" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="home-faq-resposta" v-show="faqAberto === i">
+              <p>{{ item.a }}</p>
             </div>
           </div>
-
-          <div class="collapse collapse-arrow faq-item">
-            <input type="radio" name="faq-accordion" /> 
-            <div class="collapse-title faq-pergunta">
-              Posso cadastrar múltiplas quadras em um único perfil?
-            </div>
-            <div class="collapse-content faq-resposta">
-              Sim! Nossa plataforma permite o cadastro de múltiplos espaços físicos e quadras (como Quadra 1 de Futebol, Quadra 2 de Areia, etc.) dentro da mesma conta do gestor, cada uma com seus preços e regras de horário específicos.
-            </div>
-          </div>
-
-          <div class="collapse collapse-arrow faq-item">
-            <input type="radio" name="faq-accordion" /> 
-            <div class="collapse-title faq-pergunta">
-              O jogador recebe algum aviso ou lembrete da partida?
-            </div>
-            <div class="collapse-content faq-resposta">
-              Sim. Nosso sistema dispara avisos automáticos de confirmação de agendamento por e-mail e permite a integração com mensagens do WhatsApp, diminuindo o número de faltas dos times e mantendo as quadras cheias.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Final -->
-    <section class="cta-secao">
-      <div class="cta-glow" aria-hidden="true"></div>
-      <div class="cta-conteudo">
-        <h2 class="cta-titulo">Pronto para digitalizar sua Quadra?</h2>
-        <p class="cta-descricao">
-          Crie sua conta agora e veja a diferença na sua receita e no seu tempo livre logo na primeira semana.
-        </p>
-        <div class="cta-botao-wrapper">
-          <router-link to="/escolher-perfil" class="btn-cta">
-            Cadastrar Quadra Grátis
-          </router-link>
         </div>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="rodape">
-      <div class="rodape-conteudo">
-        <div class="rodape-logo-secao">
-          <img :src="logo" alt="SportCourt" class="rodape-logo-img" />
+    <footer class="home-footer">
+      <div class="home-footer-inner">
+        <div class="home-footer-logo">
+          <img :src="logo" alt="SportCourt" class="home-footer-logo-img" />
         </div>
-        
-        <div class="rodape-links">
-          <router-link to="/login" class="link-item">Entrar</router-link>
-          <router-link to="/escolher-perfil" class="link-item">Criar Quadra</router-link>
-          <a href="#" class="link-item">Termos de Uso</a>
-          <a href="#" class="link-item">Contato</a>
-        </div>
-
-        <div class="rodape-copyright">
-          &copy; 2026 SportCourt. Reservas Simplificadas. Todos os direitos reservados.
-        </div>
+        <nav class="home-footer-nav">
+          <a href="#jogador" class="home-footer-link">Jogador</a>
+          <a href="#dono" class="home-footer-link">Dono</a>
+          <a href="#faq" class="home-footer-link">FAQ</a>
+          <router-link to="/login" class="home-footer-link">Entrar</router-link>
+        </nav>
       </div>
+      <p class="home-footer-copy">© {{ anoAtual }} SportCourt. Reservas simplificadas.</p>
     </footer>
 
   </div>
@@ -442,154 +249,156 @@ export default {
   data() {
     return {
       logo,
-      abaAtiva: 'dono'
+      scrolled: false,
+      faqAberto: null,
+      anoAtual: new Date().getFullYear(),
+      faqs: [
+        {
+          q: 'Como faço para cancelar um agendamento?',
+          a: "Acesse 'Meus agendamentos', escolha a reserva e clique em Cancelar. Cancelamentos seguem a política definida pelo dono da quadra — você verá os detalhes antes de confirmar."
+        },
+        {
+          q: 'Como funciona o sistema de cobrança para os donos de quadra?',
+          a: 'O SportCourt oferece um dashboard financeiro com todas as reservas e entradas. Em breve, o pagamento online será processado direto na plataforma, com repasse automático ao dono.'
+        },
+        {
+          q: 'Posso agendar uma partida mensal recorrente?',
+          a: 'Sim. Ao criar uma reserva você pode marcá-la como recorrente e o sistema reserva automaticamente o mesmo horário nas próximas semanas.'
+        },
+        {
+          q: 'O aplicativo cobra alguma taxa extra do jogador?',
+          a: 'Não. Para o jogador, usar o SportCourt é gratuito — você paga apenas o valor da quadra definido pelo dono. Sem mensalidade e sem taxa de reserva.'
+        }
+      ]
+    }
+  },
+  mounted() {
+    window.addEventListener('scroll', this.onScroll, { passive: true })
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.onScroll)
+  },
+  methods: {
+    onScroll() {
+      this.scrolled = window.scrollY > 8
     }
   }
 }
 </script>
 
 <style scoped>
-.pagina {
+/* ===== BASE ===== */
+.home-pagina {
   min-height: 100vh;
-  background: var(--background);
+  background: var(--sc-bg);
+  color: var(--sc-text);
+  font-family: var(--sc-font);
   display: flex;
   flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  font-family: var(--font-body);
-  scroll-behavior: smooth;
 }
 
-/* Glows Globais */
-.glow-fundo {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.glow-fundo--topo {
-  top: 0;
-  left: 25%;
-  width: 600px;
-  height: 600px;
-  background: rgba(34, 197, 94, 0.08);
-  filter: blur(80px);
-}
-
-.glow-fundo--meio {
-  top: 33%;
-  right: 40px;
-  width: 500px;
-  height: 500px;
-  background: rgba(59, 130, 246, 0.04);
-  filter: blur(80px);
-}
-
-/* Navbar */
-.navbar-home {
-  width: 100%;
-  padding: 12px 24px;
-  background: #090d16;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+/* ===== HEADER ===== */
+.home-header {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0; right: 0;
   z-index: 50;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(12px);
+  transition: all 0.3s;
+  background: transparent;
+}
+
+.home-header--scrolled {
+  backdrop-filter: blur(20px);
+  background: rgba(15, 17, 23, 0.75);
+  border-bottom: 1px solid var(--sc-border);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+.home-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.logo-img {
-  height: 60px;
-  width: auto;
-  object-contain: contain;
-  transition: transform 0.3s;
+.home-logo-link {
+  display: flex;
+  align-items: center;
 }
 
-.logo-link:hover .logo-img {
+.home-logo-img {
+  height: 48px;
+  width: auto;
+  transition: transform 0.2s;
+}
+
+.home-logo-img:hover {
   transform: scale(1.04);
 }
 
-.navbar-acoes {
+.home-header-acoes {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-.btn-entrar {
-  color: #34d399;
+.home-btn-ghost {
+  color: var(--sc-text);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 9px 16px;
+  border-radius: var(--sc-radius);
+  transition: background var(--sc-transition);
+}
+
+.home-btn-ghost:hover {
+  background: rgba(255,255,255,0.07);
+}
+
+.home-btn-primary {
+  background: var(--sc-primary);
+  color: #0f1117;
   font-weight: 700;
   font-size: 14px;
   text-decoration: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  transition: background-color 0.2s;
+  padding: 9px 20px;
+  border-radius: var(--sc-radius);
+  box-shadow: var(--sc-shadow-glow-sm);
+  transition: all var(--sc-transition);
 }
 
-.btn-entrar:hover {
-  background-color: rgba(52, 211, 153, 0.08);
+.home-btn-primary:hover {
+  background: var(--sc-primary-dark);
+  transform: translateY(-1px);
 }
 
-.btn-cadastrar-topo {
-  background: var(--gradient-primary);
-  color: white;
-  font-weight: 700;
-  font-size: 13px;
-  padding: 10px 20px;
-  border-radius: 8px;
-  text-decoration: none;
-  box-shadow: var(--shadow-sm);
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.btn-cadastrar-topo:hover {
-  opacity: 0.95;
-  transform: translateY(-0.5px);
-}
-
-/* Hero Section */
-.hero-secao {
+/* ===== HERO ===== */
+.home-hero {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   position: relative;
-  background: #090d16;
-  color: white;
-  padding: 120px 24px 64px;
+  padding: 120px 24px 80px;
   overflow: hidden;
 }
 
-.hero-glow {
+.home-hero::before {
+  content: '';
   position: absolute;
-  border-radius: 50%;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(74,222,128,0.1) 0%, transparent 70%);
   pointer-events: none;
 }
 
-.hero-glow--topo-dir {
-  top: 25%;
-  right: 0;
-  width: 500px;
-  height: 500px;
-  background: rgba(34, 197, 94, 0.08);
-  filter: blur(80px);
-}
-
-.hero-glow--baixo-esq {
-  bottom: 25%;
-  left: 40px;
-  width: 400px;
-  height: 400px;
-  background: rgba(59, 130, 246, 0.08);
-  filter: blur(80px);
-}
-
-.hero-conteudo {
-  max-width: 900px;
+.home-hero-inner {
+  max-width: 800px;
   width: 100%;
   margin: 0 auto;
   text-align: center;
@@ -597,1047 +406,397 @@ export default {
   flex-direction: column;
   align-items: center;
   position: relative;
-  z-index: 10;
+  z-index: 1;
 }
 
-.hero-badge {
+.home-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  color: #34d399;
+  background: var(--sc-primary-subtle);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  color: var(--sc-primary);
   padding: 6px 16px;
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 24px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin-bottom: 28px;
 }
 
-.badge-ping {
+.home-badge-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #34d399;
-  position: relative;
+  background: var(--sc-primary);
+  animation: badgePulse 1.5s infinite;
 }
 
-.badge-ping::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background: #34d399;
-  opacity: 0.6;
-  animation: ping 1.2s infinite;
+@keyframes badgePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
 }
 
-@keyframes ping {
-  0% { transform: scale(0.6); opacity: 0.8; }
-  100% { transform: scale(1.8); opacity: 0; }
+.home-hero-titulo {
+  font-size: clamp(36px, 7vw, 72px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--sc-text);
+  margin-bottom: 24px;
 }
 
-.hero-titulo {
-  font-size: 36px;
-  font-weight: 800;
-  line-height: 1.2;
-  margin-bottom: 20px;
-  letter-spacing: -0.02em;
-}
-
-@media (min-width: 640px) {
-  .hero-titulo {
-    font-size: 48px;
-  }
-}
-
-@media (min-width: 768px) {
-  .hero-titulo {
-    font-size: 64px;
-  }
-}
-
-.texto-gradiente {
-  background: linear-gradient(135deg, #34d399, #10b981, #059669);
+.home-gradiente {
+  background: linear-gradient(135deg, var(--sc-primary), #22c55e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.hero-descricao {
-  font-size: 15px;
-  color: #94a3b8;
-  max-width: 600px;
-  line-height: 1.6;
-  font-weight: 300;
-  margin-bottom: 32px;
+.home-hero-descricao {
+  font-size: 18px;
+  color: var(--sc-text-muted);
+  line-height: 1.7;
+  max-width: 560px;
+  margin-bottom: 40px;
+  font-weight: 400;
 }
 
-@media (min-width: 640px) {
-  .hero-descricao {
-    font-size: 18px;
-  }
-}
-
-.hero-botoes {
+.home-hero-botoes {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  max-width: 480px;
-  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
 }
 
-@media (min-width: 640px) {
-  .hero-botoes {
-    flex-direction: row;
-    max-width: none;
-    justify-content: center;
-  }
-}
-
-.btn-hero {
-  padding: 16px 32px;
-  border-radius: 12px;
+.home-btn-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: var(--sc-radius-lg);
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
-  transition: all 0.2s;
-  text-align: center;
+  transition: all var(--sc-transition);
 }
 
-.btn-hero--principal {
-  background: var(--gradient-primary);
-  color: white;
-  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);
+.home-btn-hero--principal {
+  background: var(--sc-primary);
+  color: #0f1117;
+  box-shadow: var(--sc-shadow-glow);
 }
 
-.btn-hero--principal:hover {
-  opacity: 0.95;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.3);
+.home-btn-hero--principal:hover {
+  background: var(--sc-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 0 40px rgba(74, 222, 128, 0.4);
 }
 
-.btn-hero--secundario {
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(4px);
+.home-btn-hero--secundario {
+  background: var(--sc-bg-elevated);
+  color: var(--sc-text);
+  border: 1px solid var(--sc-border-hover);
 }
 
-.btn-hero--secundario:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+.home-btn-hero--secundario:hover {
+  background: var(--sc-bg-card);
+  border-color: rgba(74,222,128,0.4);
+  transform: translateY(-2px);
 }
 
-.hero-selos {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #475569;
-  margin-bottom: 48px;
+/* ===== SEÇÃO COMUM ===== */
+.home-beneficios,
+.home-faq {
+  padding: 80px 24px;
 }
 
-.selo-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.selo-check {
-  width: 14px;
-  height: 14px;
-  color: #10b981;
-}
-
-/* Mockup */
-.hero-mockup-wrapper {
-  width: 100%;
-  max-width: 520px;
-  padding: 0 16px;
-  margin-bottom: 24px;
-}
-
-.mockup-card {
-  background: rgba(15, 23, 42, 0.9);
-  border: 1.5px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-  backdrop-filter: blur(10px);
-}
-
-.mockup-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  padding-bottom: 12px;
-  margin-bottom: 16px;
-}
-
-.mockup-botoes {
-  display: flex;
-  gap: 6px;
-}
-
-.mockup-btn {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.mockup-btn--vermelho { background: rgba(239, 68, 68, 0.8); }
-.mockup-btn--amarelo { background: rgba(245, 158, 11, 0.8); }
-.mockup-btn--verde { background: rgba(34, 197, 94, 0.8); }
-
-.mockup-titulo {
-  font-size: 11px;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.mockup-conteudo {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  text-align: left;
-}
-
-.mockup-faturamento-box {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1.5px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.mockup-label {
-  font-size: 10px;
-  color: #64748b;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.mockup-valor {
-  font-size: 24px;
-  font-weight: 800;
-  color: #34d399;
-}
-
-.mockup-variacao {
-  font-size: 11px;
-  color: rgba(52, 211, 153, 0.85);
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.variacao-icone {
-  width: 14px;
-  height: 14px;
-}
-
-.mockup-agenda {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.mockup-agenda-titulo {
-  font-size: 12px;
-  font-weight: 700;
-  color: #94a3b8;
-  padding: 0 4px;
-}
-
-.agenda-item {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 12px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: background 0.2s;
-}
-
-.agenda-item:hover {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.agenda-dados {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.agenda-icone {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-}
-
-.bg-futebol {
-  background: rgba(16, 185, 129, 0.1);
-}
-
-.bg-tennis {
-  background: rgba(249, 115, 22, 0.1);
-}
-
-.agenda-textos {
-  display: flex;
-  flex-direction: column;
-}
-
-.agenda-local {
-  font-size: 12px;
-  font-weight: 700;
-  color: white;
-}
-
-.agenda-info-reserva {
-  font-size: 11px;
-  color: #94a3b8;
-  margin-top: 2px;
-}
-
-.badge-status {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 99px;
-}
-
-.badge-status--confirmada {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-}
-
-.badge-status--pendente {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-}
-
-.hero-scroll-indicador {
-  margin-top: 32px;
-  animation: bounce 2s infinite;
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .hero-scroll-indicador {
-    display: block;
-  }
-}
-
-.scroll-seta {
-  width: 24px;
-  height: 24px;
-  color: #475569;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
-}
-
-/* Seção Funcionalidades */
-.funcionalidades-secao {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 96px 24px;
-  background: white;
-  position: relative;
-  z-index: 10;
-}
-
-.secao-cabecalho {
-  text-align: center;
-  max-width: 700px;
-  margin: 0 auto 48px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.secao-titulo {
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--foreground);
-  line-height: 1.25;
-}
-
-@media (min-width: 768px) {
-  .secao-titulo {
-    font-size: 40px;
-  }
-}
-
-.secao-descricao {
-  font-size: 15px;
-  color: var(--muted-foreground);
-}
-
-@media (min-width: 768px) {
-  .secao-descricao {
-    font-size: 17px;
-  }
-}
-
-.seletor-abas-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 48px;
-  width: 100%;
-}
-
-.seletor-abas-fundo {
-  background: #f1f5f9;
-  padding: 6px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
-  border: 1px solid rgba(0,0,0,0.05);
-}
-
-.btn-aba {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #64748b;
-  transition: all 0.2s;
-  width: auto;
-  margin-top: 0;
-  box-shadow: none;
-}
-
-.btn-aba:hover {
-  color: #334155;
-  transform: none;
-  box-shadow: none;
-}
-
-.btn-aba--ativo {
-  background: white !important;
-  color: var(--foreground) !important;
-  font-weight: 700 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
-}
-
-.aba-icone {
-  width: 14px;
-  height: 14px;
-}
-
-.grade-funcionalidades-wrapper {
-  width: 100%;
-  max-width: 1100px;
+.home-secao-inner {
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-.grid-funcionalidades {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-  width: 100%;
+.home-secao-inner--narrow {
+  max-width: 740px;
 }
 
-@media (min-width: 640px) {
-  .grid-funcionalidades {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.home-secao-cabecalho {
+  text-align: center;
+  margin-bottom: 56px;
 }
 
-@media (min-width: 1024px) {
-  .grid-funcionalidades {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.card-funcionalidade {
-  background: #fafafa;
-  border: 1.5px solid var(--border);
-  border-radius: 20px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: all 0.3s;
-}
-
-.card-funcionalidade:hover {
-  box-shadow: var(--shadow-soft);
-  transform: translateY(-3px);
-  background: white;
-}
-
-.funcionalidade-corpo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.funcionalidade-emoji {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: rgba(16, 185, 129, 0.08);
-  color: #10b981;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 20px;
-}
-
-.funcionalidade-titulo {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--foreground);
+.home-secao-titulo {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--sc-text);
   margin-bottom: 12px;
 }
 
-.funcionalidade-descricao {
-  font-size: 13px;
-  color: var(--muted-foreground);
+.home-secao-subtitulo {
+  font-size: 16px;
+  color: var(--sc-text-muted);
+  max-width: 500px;
+  margin: 0 auto;
   line-height: 1.6;
 }
 
-.funcionalidade-link {
-  font-size: 12px;
-  font-weight: 700;
-  color: #047857;
-  margin-top: 24px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* Seção Comparação */
-.comparacao-secao {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 96px 24px;
-  background: #0f172a;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.comparacao-glow {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 500px;
-  height: 500px;
-  background: rgba(16, 185, 129, 0.04);
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-}
-
-.comparacao-conteudo {
-  max-width: 900px;
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-  z-index: 10;
-}
-
-.grade-comparacoes {
+/* ===== CARDS AUDIÊNCIA ===== */
+.home-cards-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 32px;
-  margin-top: 32px;
+  gap: 24px;
 }
 
-@media (min-width: 768px) {
-  .grade-comparacoes {
+@media (min-width: 900px) {
+  .home-cards-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-.card-comparacao {
-  background: rgba(2, 6, 23, 0.5);
-  border-radius: 20px;
+.home-card-audiencia {
+  background: var(--sc-bg-card);
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius-2xl);
   padding: 32px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+  transition: all var(--sc-transition);
+  scroll-margin-top: 80px;
 }
 
-.card-comparacao--vermelho {
-  border: 1.5px solid rgba(239, 68, 68, 0.15);
-  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.02);
+.home-card-audiencia:hover {
+  border-color: rgba(74,222,128,0.35);
+  box-shadow: var(--sc-shadow-glow);
 }
 
-.card-comparacao--verde {
-  border: 1.5px solid rgba(16, 185, 129, 0.25);
-  box-shadow: 0 10px 40px rgba(16, 185, 129, 0.06);
-}
-
-.comparacao-badge-tipo {
-  align-self: flex-start;
-  font-size: 10px;
+.home-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--sc-primary-subtle);
+  color: var(--sc-primary);
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 4px 10px;
-  border-radius: 8px;
+  letter-spacing: 0.08em;
+  padding: 4px 12px;
+  border-radius: 999px;
   margin-bottom: 16px;
 }
 
-.comparacao-badge-tipo--vermelho {
-  background: rgba(239, 68, 68, 0.1);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.2);
+.home-card-titulo {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--sc-text);
+  margin-bottom: 8px;
 }
 
-.comparacao-badge-tipo--verde {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-.comparacao-titulo-coluna {
-  font-size: 18px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 24px;
-}
-
-.lista-comparacoes {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  flex-grow: 1;
-}
-
-.item-comparacao {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
+.home-card-subtitulo {
   font-size: 14px;
+  color: var(--sc-text-muted);
+  margin-bottom: 28px;
   line-height: 1.5;
 }
 
-.icone-marca {
-  font-weight: 850;
-  font-size: 15px;
-  margin-top: 1px;
-}
-
-.icone-marca--rejeita {
-  color: #ef4444;
-}
-
-.icone-marca--aprova {
-  color: #34d399;
-}
-
-/* Numeros Section */
-.numeros-secao {
-  padding: 64px 24px;
-  background: var(--gradient-primary);
-  color: white;
-  position: relative;
-  z-index: 10;
-  width: 100%;
-}
-
-.numeros-conteudo {
-  max-width: 1100px;
-  width: 100%;
-  margin: 0 auto;
-}
-
-.grade-numeros {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
-  text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .grade-numeros {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.numero-item {
+.home-features-lista {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 20px;
 }
 
-.numero-valor {
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+.home-feature-item {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px;
+  align-items: start;
 }
 
-@media (min-width: 768px) {
-  .numero-valor {
-    font-size: 52px;
-  }
+.home-feature-icone {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--sc-radius-lg);
+  background: var(--sc-primary-subtle);
+  color: var(--sc-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.numero-label {
+.home-feature-nome {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--sc-text);
+  margin-bottom: 3px;
+}
+
+.home-feature-desc {
+  font-size: 13px;
+  color: var(--sc-text-muted);
+  line-height: 1.5;
+}
+
+/* ===== EM BREVE BOX ===== */
+.home-breve-box {
+  border: 1px dashed rgba(74,222,128,0.3);
+  background: var(--sc-primary-subtle);
+  border-radius: var(--sc-radius-lg);
+  padding: 18px;
+}
+
+.home-breve-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sc-primary);
+  margin-bottom: 14px;
+}
+
+.home-breve-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home-breve-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--sc-text-muted);
+}
+
+.home-breve-item svg {
+  flex-shrink: 0;
+  color: var(--sc-text-faint);
+}
+
+.home-breve-tag {
+  margin-left: auto;
+  background: var(--sc-primary-subtle);
+  color: var(--sc-primary);
+  font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
-  color: rgba(209, 250, 229, 0.9);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(74,222,128,0.3);
+  white-space: nowrap;
 }
 
-@media (min-width: 768px) {
-  .numero-label {
-    font-size: 13px;
-  }
+/* ===== FAQ ===== */
+.home-faq {
+  border-top: 1px solid var(--sc-border);
 }
 
-/* FAQ Section */
-.faq-secao {
-  min-height: 100vh;
+.home-faq-lista {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 96px 24px;
-  background: white;
-  border-top: 1px solid var(--border);
-  position: relative;
-  z-index: 10;
+  gap: 10px;
 }
 
-.faq-conteudo {
-  max-width: 800px;
+.home-faq-item {
+  background: var(--sc-bg-card);
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius-lg);
+  overflow: hidden;
+  transition: border-color var(--sc-transition);
+}
+
+.home-faq-item--aberto,
+.home-faq-item:hover {
+  border-color: rgba(74,222,128,0.35);
+}
+
+.home-faq-pergunta {
   width: 100%;
-  margin: 0 auto;
-}
-
-.faq-lista {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  max-width: 680px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.faq-item {
-  background: #f8fafc;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 16px;
-  box-shadow: var(--shadow-xs);
-  transition: all 0.2s;
-}
-
-.faq-item:hover {
-  background: #fafafa;
-}
-
-.faq-pergunta {
-  font-size: 15px;
-  font-weight: 800;
-  color: #334155;
-  padding: 20px 24px !important;
-}
-
-@media (min-width: 768px) {
-  .faq-pergunta {
-    font-size: 17px;
-  }
-}
-
-.faq-resposta {
-  padding: 0 24px 20px !important;
-  font-size: 14px;
-  color: var(--muted-foreground);
-  line-height: 1.6;
-}
-
-/* CTA Secao */
-.cta-secao {
-  min-height: 70vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 96px 24px;
-  background: #090d16;
-  color: white;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.cta-glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.cta-conteudo {
-  max-width: 600px;
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.cta-titulo {
-  font-size: 32px;
-  font-weight: 800;
-  line-height: 1.25;
-  margin-bottom: 24px;
-}
-
-@media (min-width: 768px) {
-  .cta-titulo {
-    font-size: 48px;
-  }
-}
-
-.cta-descricao {
-  font-size: 15px;
-  color: #94a3b8;
-  line-height: 1.6;
-  font-weight: 300;
-  max-width: 500px;
-  margin-bottom: 32px;
-}
-
-@media (min-width: 768px) {
-  .cta-descricao {
-    font-size: 18px;
-  }
-}
-
-.cta-botao-wrapper {
-  margin-top: 16px;
-}
-
-.btn-cta {
-  display: inline-block;
-  padding: 16px 40px;
-  background: var(--gradient-primary);
-  color: white;
-  font-weight: 700;
-  font-size: 15px;
-  border-radius: 12px;
-  text-decoration: none;
-  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
-  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-cta:hover {
-  opacity: 0.95;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.35);
-}
-
-/* Rodapé */
-.rodape {
-  width: 100%;
-  background: #090d16;
-  border-top: 1px solid #1e293b;
-  color: #94a3b8;
-  padding: 48px 24px;
-  position: relative;
-  z-index: 10;
-  font-size: 14px;
-}
-
-.rodape-conteudo {
-  max-width: 1100px;
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 32px;
-}
-
-@media (min-width: 768px) {
-  .rodape-conteudo {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-}
-
-.rodape-logo-secao {
-  display: flex;
-  align-items: center;
-}
-
-.rodape-logo-img {
-  height: 48px;
-  width: auto;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: 0.45;
-}
-
-.rodape-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 24px;
-}
-
-.link-item {
-  color: #94a3b8;
-  text-decoration: none;
-  transition: color 0.2s;
+  padding: 18px 20px;
   background: none;
-  padding: 0;
-  margin-top: 0;
-  font-weight: 500;
-}
-
-.link-item:hover {
-  color: white;
-}
-
-.rodape-copyright {
-  font-size: 12px;
-  color: #475569;
-}
-
-/* Transições & Helpers */
-.hidden-sm {
-  display: none;
-}
-
-@media (min-width: 640px) {
-  .hidden-sm {
-    display: inline;
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.animate-scale-in {
-  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-/* DaisyUI Accordion Integrations compatibility inside scoped style */
-.collapse:not(td):not(tr):not(thead) {
-  position: relative;
-  display: grid;
-  overflow: hidden;
-  grid-template-rows: auto 0fr;
-  transition: grid-template-rows 0.2s;
-}
-
-.collapse-title,
-.collapse-content {
-  grid-column-start: 1;
-  grid-row-start: 1;
-}
-
-.collapse-content {
-  grid-row-start: 2;
-  min-height: 0;
-  transition: visibility 0.2s;
-  visibility: hidden;
-}
-
-.collapse-arrow > .collapse-title:after {
-  position: absolute;
-  display: block;
-  height: 0.5rem;
-  width: 0.5rem;
-  content: "";
-  transform: rotate(45deg);
-  transition: transform 0.2s;
-  right: 1.8rem;
-  top: 1.8rem;
-  border-bottom: 2px solid currentColor;
-  border-right: 2px solid currentColor;
-  pointer-events: none;
-}
-
-.collapse input[type="radio"],
-.collapse input[type="checkbox"] {
-  grid-column-start: 1;
-  grid-row-start: 1;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  z-index: 1;
+  border: none;
   cursor: pointer;
-  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--sc-text);
+  text-align: left;
+  font-family: var(--sc-font);
 }
 
-.collapse input[type="radio"]:checked ~ .collapse-content,
-.collapse input[type="checkbox"]:checked ~ .collapse-content {
-  visibility: visible;
+.home-faq-seta {
+  flex-shrink: 0;
+  color: var(--sc-text-muted);
+  transition: transform 0.25s;
 }
 
-.collapse:has(input[type="radio"]:checked),
-.collapse:has(input[type="checkbox"]:checked) {
-  grid-template-rows: auto 1fr;
+.home-faq-item--aberto .home-faq-seta {
+  transform: rotate(180deg);
 }
 
-.collapse:has(input[type="radio"]:checked) .collapse-arrow > .collapse-title:after,
-.collapse:has(input[type="checkbox"]:checked) .collapse-arrow > .collapse-title:after {
-  transform: rotate(225deg);
-  top: 2.1rem;
+.home-faq-resposta {
+  padding: 0 20px 18px;
+  font-size: 14px;
+  color: var(--sc-text-muted);
+  line-height: 1.65;
+}
+
+/* ===== FOOTER ===== */
+.home-footer {
+  border-top: 1px solid var(--sc-border);
+  background: var(--sc-bg-card);
+  padding: 36px 24px 28px;
+}
+
+.home-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.home-footer-logo-img {
+  height: 40px;
+  width: auto;
+}
+
+.home-footer-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.home-footer-link {
+  font-size: 13px;
+  color: var(--sc-text-muted);
+  text-decoration: none;
+  transition: color var(--sc-transition);
+}
+
+.home-footer-link:hover {
+  color: var(--sc-primary);
+}
+
+.home-footer-copy {
+  max-width: 1200px;
+  margin: 0 auto;
+  font-size: 12px;
+  color: var(--sc-text-faint);
+  text-align: center;
 }
 </style>

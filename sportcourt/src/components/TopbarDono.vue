@@ -12,7 +12,6 @@
       <router-link to="/crm-clientes" class="sc-topbar-link" active-class="active">Clientes</router-link>
       <router-link to="/chat-dono" class="sc-topbar-link" active-class="active">Chat</router-link>
       <router-link to="/avisos-politicas" class="sc-topbar-link" active-class="active">Avisos</router-link>
-      <router-link to="/subcontas" class="sc-topbar-link" active-class="active">Subcontas</router-link>
     </nav>
 
     <div class="sc-flex sc-gap-2">
@@ -40,14 +39,13 @@
       <router-link to="/crm-clientes" class="sc-topbar-link" active-class="active">Clientes</router-link>
       <router-link to="/chat-dono" class="sc-topbar-link" active-class="active">Chat</router-link>
       <router-link to="/avisos-politicas" class="sc-topbar-link" active-class="active">Avisos & Políticas</router-link>
-      <router-link to="/subcontas" class="sc-topbar-link" active-class="active">Subcontas</router-link>
       <router-link to="/perfil" class="sc-topbar-link" active-class="active">Perfil</router-link>
     </div>
   </header>
 </template>
 
 <script>
-import logo from '@/assets/logosite.png'
+import logo from '@/assets/logosite1.png'
 
 export default {
   name: 'TopbarDono',
