@@ -180,13 +180,19 @@
                     <span>{{ j.goleiroPaga ? 'Paga R$' : 'Isento' }}</span>
                   </button>
 
-                  <!-- Botão Remover com Lixeira -->
+                  <!-- Botão Remover Jogador com Lixeira Vermelha Destacada -->
                   <button
                     class="btn-mini btn-remover"
                     @click="removerJogador(r, idx)"
-                    title="Remover jogador da partida"
+                    title="Excluir jogador"
+                    style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.12); width: 30px; height: 30px;"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                      <line x1="10" y1="11" x2="10" y2="17"/>
+                      <line x1="14" y1="11" x2="14" y2="17"/>
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -217,12 +223,18 @@
           <!-- ===== AÇÕES DO DONO ===== -->
           <div class="reserva-acoes">
             <template v-if="abaAtiva === 'pendentes'">
-              <button class="sc-btn sc-btn-danger sc-btn-sm" @click="cancelar(r.id)">Recusar</button>
+              <button class="sc-btn sc-btn-danger sc-btn-sm" @click="cancelar(r.id)" style="display: inline-flex; align-items: center; gap: 4px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Recusar
+              </button>
               <button class="sc-btn sc-btn-primary sc-btn-sm" @click="confirmar(r.id)">Confirmar Agendamento</button>
             </template>
 
             <template v-if="abaAtiva === 'confirmadas'">
-              <button class="sc-btn sc-btn-danger sc-btn-sm" @click="cancelar(r.id)">Cancelar</button>
+              <button class="sc-btn sc-btn-danger sc-btn-sm" @click="cancelar(r.id)" style="display: inline-flex; align-items: center; gap: 4px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Cancelar
+              </button>
               <button class="sc-btn sc-btn-primary sc-btn-sm" @click="concluir(r.id)">Encerrar Horário</button>
             </template>
 
