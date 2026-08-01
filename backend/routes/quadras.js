@@ -355,19 +355,17 @@ router.post('/:id/avaliar', authenticateToken, async (req, res) => {
         const [quadras] = await db.execute('SELECT id FROM quadras WHERE id = ?', [quadraId]);
         if (quadras.length === 0) return res.status(404).json({ error: 'Quadra não encontrada.' });
 
+        // Garante que a coluna mensagem existe na tabela avaliacoes
+        try {
+            await db.execute('ALTER TABLE avaliacoes ADD COLUMN IF NOT EXISTS mensagem TEXT NULL');
+        } catch (_) {}
+
         const [avaliacoesExistentes] = await db.execute('SELECT id FROM avaliacoes WHERE quadra_id = ? AND usuario_id = ?', [quadraId, usuarioId]);
 
         if (avaliacoesExistentes.length > 0) {
             await db.execute('UPDATE avaliacoes SET estrelas = ?, mensagem = ? WHERE id = ?', [estrelas, mensagem || null, avaliacoesExistentes[0].id]);
         } else {
-            // Tenta inserir com mensagem — se a coluna não existir, faz fallback sem ela
-            try {
-                await db.execute('INSERT INTO avaliacoes (quadra_id, usuario_id, estrelas, mensagem) VALUES (?, ?, ?, ?)', [quadraId, usuarioId, estrelas, mensagem || null]);
-            } catch (colErr) {
-                // Fallback: coluna mensagem pode não existir ainda — tenta adicionar e rein sere
-                await db.execute('ALTER TABLE avaliacoes ADD COLUMN IF NOT EXISTS mensagem TEXT NULL');
-                await db.execute('INSERT INTO avaliacoes (quadra_id, usuario_id, estrelas, mensagem) VALUES (?, ?, ?, ?)', [quadraId, usuarioId, estrelas, mensagem || null]);
-            }
+            await db.execute('INSERT INTO avaliacoes (quadra_id, usuario_id, estrelas, mensagem) VALUES (?, ?, ?, ?)', [quadraId, usuarioId, estrelas, mensagem || null]);
         }
 
         const [resultado] = await db.execute('SELECT AVG(estrelas) as media, COUNT(id) as total FROM avaliacoes WHERE quadra_id = ?', [quadraId]);

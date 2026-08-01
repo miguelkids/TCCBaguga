@@ -352,6 +352,8 @@ export default {
       try {
         await api.concluirReserva(id);
         await this.carregarReservas();
+        this.abaAtiva = "encerradas";
+        alert("Horário encerrado com sucesso! A reserva foi movida para a aba Encerradas.");
       } catch (e) {
         alert(e.message || 'Erro ao encerrar.');
       }

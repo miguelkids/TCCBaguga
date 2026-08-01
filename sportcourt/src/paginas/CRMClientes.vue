@@ -141,25 +141,53 @@ export default {
         const res = await api.getReservas().catch(() => []);
         const mapa = {};
         res.forEach(r => {
-          const nome = r.nome_jogador || r.nomeJogador || 'Cliente Avulso';
-          const tel = r.telefone_jogador || r.telefoneJogador || '';
-          const key = tel || nome;
+          const nome = r.nome || r.nome_jogador || r.nomeJogador || 'Cliente Avulso';
+          const tel = r.telefone || r.telefone_jogador || r.telefoneJogador || '';
+          const foto = r.fotoJogador ? (r.fotoJogador.startsWith('http') ? r.fotoJogador : `http://localhost:3006${r.fotoJogador}`) : null;
+          const key = (tel || nome).trim().toLowerCase();
           const preco = parseFloat(r.preco_total || r.preco || 0);
+          const dataJogo = r.data || r.data_reserva || r.dataReserva;
 
           if (!mapa[key]) {
             mapa[key] = {
               id: key,
               nome,
               telefone: tel,
-              foto: null,
+              foto,
               jogos: 0,
               totalGastoNum: 0,
-              ultimoJogo: r.data_reserva || r.dataReserva
+              ultimoJogo: dataJogo
             };
+          } else {
+            if (foto && !mapa[key].foto) mapa[key].foto = foto;
+            if (dataJogo) mapa[key].ultimoJogo = dataJogo;
           }
 
           mapa[key].jogos += 1;
           mapa[key].totalGastoNum += preco;
+
+          // Se a reserva incluir lista de jogadores (jogadoresLista)
+          if (Array.isArray(r.jogadoresLista)) {
+            r.jogadoresLista.forEach(j => {
+              const nomeSub = typeof j === 'string' ? j : j.nome;
+              if (nomeSub && nomeSub.trim() && nomeSub.trim().toLowerCase() !== key) {
+                const subKey = nomeSub.trim().toLowerCase();
+                if (!mapa[subKey]) {
+                  mapa[subKey] = {
+                    id: subKey,
+                    nome: nomeSub.trim(),
+                    telefone: '',
+                    foto: null,
+                    jogos: 1,
+                    totalGastoNum: 0,
+                    ultimoJogo: dataJogo
+                  };
+                } else {
+                  mapa[subKey].jogos += 1;
+                }
+              }
+            });
+          }
         });
 
         this.clientes = Object.values(mapa).map(c => ({
@@ -167,7 +195,7 @@ export default {
           totalGasto: c.totalGastoNum.toFixed(2)
         }));
       } catch (e) {
-        console.error(e);
+        console.error("Erro ao carregar clientes do CRM:", e);
       } finally {
         this.carregando = false;
       }

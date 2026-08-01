@@ -186,6 +186,7 @@ router.get('/', authenticateToken, async (req, res) => {
                 tipoJogo: r.tipo_jogo || 'horario_cheio',
                 jogadoresLista: jogadoresParsed,
                 statusPagamento: r.status_pagamento || 'pendente',
+                status: r.status || (r.confirmada && r.status_pagamento === 'pago' ? 'encerrada' : (r.confirmada ? 'confirmada' : 'pendente')),
                 nomeTime: r.nome_time || null,
                 nomeTimeB: r.nome_time_b || null,
                 nomeJogadorB: r.nome_jogador_b || null,
@@ -441,8 +442,13 @@ router.put('/:id/concluir', authenticateToken, async (req, res) => {
         const reserva = rows[0];
         const statusAnteriorPgto = reserva.status_pagamento || 'pendente';
 
-        // Atualiza para concluída e paga
-        await db.execute('UPDATE reservas SET confirmada = TRUE, status_pagamento = "pago" WHERE id = ?', [id]);
+        // Atualiza para concluída, paga e encerrada
+        try {
+            await db.execute('UPDATE reservas SET confirmada = TRUE, status_pagamento = "pago", status = "encerrada" WHERE id = ?', [id]);
+        } catch (statusErr) {
+            await db.execute('ALTER TABLE reservas ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT "ativa"');
+            await db.execute('UPDATE reservas SET confirmada = TRUE, status_pagamento = "pago", status = "encerrada" WHERE id = ?', [id]);
+        }
 
         // Se o pagamento mudou para pago, atualiza o faturamento do dono
         const preco = Number(reserva.preco || 0);
