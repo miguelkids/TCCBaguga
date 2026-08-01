@@ -251,7 +251,7 @@ export default {
           nomeTime: this.nomeTime
         });
         alert("Reserva enviada com sucesso ao proprietário da quadra!");
-        this.$router.push("/menu-jogador");
+        this.$router.push("/minhas-reservas?nova=1");
       } catch (e) {
         console.error("Erro ao efetuar reserva:", e);
         alert(e.message || "Erro ao efetuar reserva.");

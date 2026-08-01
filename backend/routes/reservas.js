@@ -130,9 +130,11 @@ router.get('/', authenticateToken, async (req, res) => {
         if (req.user.tipo === 'dono') {
             const [rows] = await db.execute(
                 `SELECT r.*, q.nome as quadraNome, q.endereco as quadraEndereco, q.foto_url as fotoUrl, q.telefone as quadraTelefone, q.media_avaliacao as media, q.preco as precoQuadra, q.esporte as quadraEsporte,
+                        u.foto_perfil_url as fotoJogador,
                         (SELECT COUNT(*) FROM avaliacoes WHERE quadra_id = q.id) as totalAvaliacoes
                  FROM reservas r
                  JOIN quadras q ON r.quadra_id = q.id
+                 LEFT JOIN usuarios u ON r.jogador_id = u.id
                  WHERE q.dono_id = ?`,
                 [req.user.id]
             );
@@ -175,6 +177,7 @@ router.get('/', authenticateToken, async (req, res) => {
                 quadraNome: r.quadraNome,
                 endereco: r.quadraEndereco,
                 fotoPreview: r.fotoUrl,
+                fotoJogador: r.fotoJogador || null,
                 quadraTelefone: r.quadraTelefone,
                 media: r.media,
                 avaliado: r.notaUsuario !== null && r.notaUsuario !== undefined,

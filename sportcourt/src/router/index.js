@@ -21,6 +21,7 @@ const PaginaFinalizarReserva = () => import('../paginas/FinalizarReserva.vue')
 const PaginaEditarDataHorario = () => import('../paginas/EditarDataHorario.vue')
 const PaginaMenuJogador = () => import('../paginas/MenuJogador.vue')
 const PaginaContaJogador = () => import('../paginas/ContaJogador.vue')
+const PaginaMinhasReservas = () => import('../paginas/MinhasReservasJogador.vue')
 const PaginaFaturamentoDono = () => import('../paginas/FaturamentoDono.vue')
 const PaginaMinhasQuadras = () => import('../paginas/MinhasQuadras.vue')
 const rotas = [
@@ -178,6 +179,12 @@ const rotas = [
     path: '/subcontas',
     name: 'Subcontas',
     component: () => import('../paginas/Subcontas.vue'),
+    meta: {requerAutenticacao: true}
+  },
+  {
+    path: '/minhas-reservas',
+    name: 'MinhasReservas',
+    component: PaginaMinhasReservas,
     meta: {requerAutenticacao: true}
   }
 ]

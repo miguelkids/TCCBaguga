@@ -260,11 +260,11 @@ export const api = {
   },
 
   // --- AVALIAÇÕES ---
-  async avaliarQuadra(quadraId, estrelas) {
+  async avaliarQuadra(quadraId, estrelas, mensagem) {
     const res = await fetch(`${API_URL}/quadras/${quadraId}/avaliar`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ estrelas })
+      body: JSON.stringify({ estrelas, mensagem: mensagem || null })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Erro ao avaliar quadra');

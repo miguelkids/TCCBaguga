@@ -3,70 +3,79 @@
     <TopbarJogador />
 
     <main class="sc-container sc-main sc-main-padded">
-      <div class="sc-flex-between sc-gap-4" style="margin-bottom: 24px; flex-wrap: wrap;">
-        <div>
-          <h1 class="sc-h2">Minhas Reservas</h1>
-          <p class="sc-muted">Acompanhe suas partidas e avalie as quadras que você jogou</p>
+      <div style="margin-bottom: 28px;">
+        <h1 class="sc-h2">Olá, {{ nomeUsuario || 'Jogador' }}</h1>
+        <p class="sc-muted">O que você quer fazer hoje?</p>
+      </div>
+
+      <!-- Cards de ação rápida -->
+      <div class="menu-grid">
+        <button class="menu-card" @click="$router.push('/reserva')">
+          <div class="menu-card-icon" style="background: rgba(74,222,128,0.12); color: #4ade80;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="menu-card-text">
+            <span class="menu-card-titulo">Reservar Quadra</span>
+            <span class="menu-card-sub">Encontre e agende uma quadra</span>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-text-muted); flex-shrink: 0;"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <button class="menu-card" @click="$router.push('/minhas-reservas')">
+          <div class="menu-card-icon" style="background: rgba(96,165,250,0.12); color: #60a5fa;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div class="menu-card-text">
+            <span class="menu-card-titulo">Minhas Reservas</span>
+            <span class="menu-card-sub">Acompanhe seus agendamentos</span>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-text-muted); flex-shrink: 0;"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <button class="menu-card" @click="$router.push('/conta-jogador')">
+          <div class="menu-card-icon" style="background: rgba(167,139,250,0.12); color: #a78bfa;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="menu-card-text">
+            <span class="menu-card-titulo">Meu Perfil</span>
+            <span class="menu-card-sub">Edite seus dados pessoais</span>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-text-muted); flex-shrink: 0;"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <!-- Reservas Recentes (preview das pendentes) -->
+      <div style="margin-top: 32px;">
+        <div class="sc-flex-between" style="margin-bottom: 16px;">
+          <h2 class="sc-h3" style="font-size: 15px;">Reservas Pendentes</h2>
+          <button class="sc-btn sc-btn-sm" style="font-size: 12px; padding: 6px 12px;" @click="$router.push('/minhas-reservas')">
+            Ver todas
+          </button>
         </div>
-        <button class="sc-btn sc-btn-primary" @click="$router.push('/reserva')">
-          + Reservar Nova Quadra
-        </button>
-      </div>
 
-      <div v-if="carregando" class="sc-empty">Carregando suas reservas...</div>
-      <div v-else-if="reservas.length === 0" class="sc-empty" style="padding: 40px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-text-muted); margin-bottom: 12px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <h2 class="sc-h3">Nenhuma reserva agendada</h2>
-        <p class="sc-muted">Você ainda não realizou nenhum agendamento. Encontre uma quadra disponível!</p>
-        <button class="sc-btn sc-btn-primary" style="margin-top: 16px;" @click="$router.push('/reserva')">
-          Buscar Quadra
-        </button>
-      </div>
-
-      <div v-else style="display: flex; flex-direction: column; gap: 16px;">
-        <div
-          v-for="r in reservas"
-          :key="r.id"
-          class="sc-card"
-          style="padding: 20px;"
-        >
-          <div class="sc-flex-between sc-gap-4" style="flex-wrap: wrap; margin-bottom: 12px;">
-            <div class="sc-flex sc-gap-3">
-              <div class="sc-avatar" style="width: 48px; height: 48px; border-radius: var(--sc-radius); background: var(--sc-bg-elevated); display: flex; align-items: center; justify-content: center;">
-                <img v-if="r.fotoUrl" :src="fotoSrc(r.fotoUrl)" :alt="r.quadraNome" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--sc-radius);" />
-                <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-primary);"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <div v-if="carregando" class="sc-empty" style="padding: 24px;">Carregando...</div>
+        <div v-else-if="reservasPendentes.length === 0" class="sc-empty" style="padding: 24px;">
+          <p class="sc-muted" style="font-size: 13px;">Nenhuma reserva pendente. Que tal reservar uma quadra?</p>
+        </div>
+        <div v-else style="display: flex; flex-direction: column; gap: 10px;">
+          <div v-for="r in reservasPendentes.slice(0, 3)" :key="r.id" class="reserva-preview sc-card">
+            <div class="reserva-preview-inner">
+              <div class="quadra-thumb-sm">
+                <img v-if="r.fotoPreview" :src="fotoSrc(r.fotoPreview)" :alt="r.quadraNome" />
+                <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-text-muted);"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
               </div>
-              <div>
-                <h3 style="font-weight: 800; font-size: 16px; margin: 0;">
-                  {{ r.tipoJogo === 'contra_time' && r.nomeTimeB ? `${r.nomeTime} vs ${r.nomeTimeB}` : (r.quadraNome || 'Reserva de Quadra') }}
-                </h3>
-                <p class="sc-muted" style="font-size: 13px; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  {{ formatarData(r.data_reserva) }} às {{ r.horario_reserva }}
-                </p>
+              <div style="flex: 1; min-width: 0;">
+                <p style="font-size: 14px; font-weight: 700; margin: 0 0 3px; color: var(--sc-text);">{{ r.quadraNome }}</p>
+                <p style="font-size: 12px; color: var(--sc-text-muted); margin: 0;">{{ formatarData(r.data) }} às {{ r.horario }}</p>
               </div>
-            </div>
-
-            <div class="sc-flex sc-gap-2">
-              <span class="sc-badge" :class="r.confirmada ? 'sc-badge-green' : 'sc-badge-amber'">
-                {{ r.confirmada ? 'Confirmada' : 'Pendente' }}
+              <span class="sc-badge" style="background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); font-size: 10px; white-space: nowrap;">
+                Aguardando
               </span>
             </div>
           </div>
-
-          <!-- Avaliação rápida -->
-          <div v-if="r.confirmada" class="sc-card-elevated sc-flex-between" style="padding: 12px 16px; margin-top: 12px;">
-            <span style="font-size: 13px; font-weight: 600;">Avalie esta quadra:</span>
-            <div class="sc-stars">
-              <span
-                v-for="star in 5"
-                :key="star"
-                class="sc-star"
-                :class="{ filled: star <= (r.minhaNota || 0) }"
-                @click="avaliar(r, star)"
-              >★</span>
-            </div>
-          </div>
+          <button v-if="reservasPendentes.length > 3" class="sc-btn sc-btn-sm" style="width: 100%;" @click="$router.push('/minhas-reservas')">
+            Ver mais {{ reservasPendentes.length - 3 }} reservas
+          </button>
         </div>
       </div>
     </main>
@@ -83,11 +92,17 @@ export default {
   data() {
     return {
       reservas: [],
-      carregando: true
+      carregando: true,
+      nomeUsuario: ""
     };
   },
+  computed: {
+    reservasPendentes() {
+      return this.reservas.filter(r => !r.confirmada);
+    }
+  },
   async created() {
-    await this.carregarReservas();
+    await this.carregar();
   },
   methods: {
     fotoSrc(url) {
@@ -96,26 +111,23 @@ export default {
     },
     formatarData(d) {
       if (!d) return "";
-      const date = new Date(d);
-      return date.toLocaleDateString("pt-BR");
+      const date = new Date(d + 'T12:00:00');
+      return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
     },
-    async carregarReservas() {
+    async carregar() {
       try {
         this.carregando = true;
-        this.reservas = await api.getReservasJogador();
+        const [me, reservas] = await Promise.all([
+          api.getMe(),
+          api.getReservas()
+        ]);
+        this.nomeUsuario = me.nome || me.nome_usuario || "";
+        this.reservas = reservas;
       } catch (e) {
-        console.error(e);
+        console.error("Erro ao carregar menu jogador:", e);
+        try { this.reservas = await api.getReservas(); } catch (err) { console.error(err); }
       } finally {
         this.carregando = false;
-      }
-    },
-    async avaliar(reserva, nota) {
-      try {
-        reserva.minhaNota = nota;
-        await api.avaliarQuadra(reserva.quadra_id, nota);
-        alert("Obrigado pela sua avaliação!");
-      } catch (e) {
-        alert(e.message || "Erro ao enviar avaliação.");
       }
     }
   }
@@ -123,8 +135,80 @@ export default {
 </script>
 
 <style scoped>
-.sc-stars { display: flex; gap: 4px; }
-.sc-star { font-size: 18px; color: var(--sc-text-faint); cursor: pointer; transition: color 0.2s; }
-.sc-star.filled { color: var(--sc-amber); }
-.sc-star:hover { color: var(--sc-amber); }
+.menu-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menu-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--sc-bg-card);
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  width: 100%;
+}
+.menu-card:hover {
+  border-color: var(--sc-primary);
+  background: var(--sc-bg-elevated);
+  transform: translateY(-1px);
+}
+
+.menu-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.menu-card-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.menu-card-titulo {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--sc-text);
+}
+.menu-card-sub {
+  font-size: 12px;
+  color: var(--sc-text-muted);
+}
+
+.reserva-preview {
+  padding: 14px 16px;
+}
+.reserva-preview-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.quadra-thumb-sm {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: var(--sc-bg-elevated);
+  border: 1px solid var(--sc-border);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.quadra-thumb-sm img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 </style>
