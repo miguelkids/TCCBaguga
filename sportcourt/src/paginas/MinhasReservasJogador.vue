@@ -92,9 +92,9 @@
 
           <!-- Ações / Avaliar -->
           <div class="card-acoes">
-            <!-- Botão avaliar: aparece em histórico não avaliado -->
+            <!-- Botão avaliar: aparece quando confirmado e ainda não avaliado -->
             <button
-              v-if="aba === 'historico' && !r.avaliado"
+              v-if="r.confirmada && !r.avaliado"
               class="sc-btn sc-btn-primary sc-btn-sm"
               @click="abrirAvaliacao(r)"
             >

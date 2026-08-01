@@ -7,7 +7,7 @@
 
     <nav class="sc-topbar-nav hidden-mobile">
       <router-link to="/reserva" class="sc-topbar-link" active-class="active">Buscar Quadra</router-link>
-      <router-link to="/menu-jogador" class="sc-topbar-link" active-class="active">Minhas Reservas</router-link>
+      <router-link to="/minhas-reservas" class="sc-topbar-link" active-class="active">Minhas Reservas</router-link>
       <router-link to="/conta-jogador" class="sc-topbar-link" active-class="active">Perfil</router-link>
     </nav>
 
@@ -31,7 +31,7 @@
     <!-- Dropdown mobile -->
     <div class="mobile-menu" v-show="menuAberto" @click="menuAberto = false">
       <router-link to="/reserva" class="sc-topbar-link" active-class="active">Buscar Quadra</router-link>
-      <router-link to="/menu-jogador" class="sc-topbar-link" active-class="active">Minhas Reservas</router-link>
+      <router-link to="/minhas-reservas" class="sc-topbar-link" active-class="active">Minhas Reservas</router-link>
       <router-link to="/conta-jogador" class="sc-topbar-link" active-class="active">Perfil</router-link>
     </div>
   </header>

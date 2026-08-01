@@ -19,7 +19,6 @@ const PaginaPerfilDono = () => import('../paginas/PerfilDono.vue')
 const PaginaEditarQuadra = () => import('../paginas/EditarQuadra.vue')
 const PaginaFinalizarReserva = () => import('../paginas/FinalizarReserva.vue')
 const PaginaEditarDataHorario = () => import('../paginas/EditarDataHorario.vue')
-const PaginaMenuJogador = () => import('../paginas/MenuJogador.vue')
 const PaginaContaJogador = () => import('../paginas/ContaJogador.vue')
 const PaginaMinhasReservas = () => import('../paginas/MinhasReservasJogador.vue')
 const PaginaFaturamentoDono = () => import('../paginas/FaturamentoDono.vue')
@@ -135,9 +134,7 @@ const rotas = [
   },
   {
     path: '/menu-jogador',
-    name: 'MenuJogador',
-    component: PaginaMenuJogador,
-    meta: { requerAutenticacao: true}
+    redirect: '/minhas-reservas'
   },
   {
     path: '/conta-jogador',
