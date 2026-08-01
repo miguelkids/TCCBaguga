@@ -20,10 +20,17 @@ const authenticateToken = (req, res, next) => {
 // Criar reserva
 router.post('/', authenticateToken, async (req, res) => {
     try {
-        const { quadraId, nomeJogador, telefoneJogador, data, horario, tipoJogo, jogadoresLista, nomeTime } = req.body;
-        console.log('[RESERVA] Recebido:', { nomeJogador, tipoJogo, jogadoresLista, nomeTime });
+        const { quadraId, nomeJogador, telefoneJogador, data, dataReserva, horario, horarioReserva, tipoJogo, jogadoresLista, nomeTime } = req.body;
+        const dataFinal = data || dataReserva;
+        const horarioFinal = horario || horarioReserva;
+        console.log('[RESERVA] Recebido:', { quadraId, nomeJogador, dataFinal, horarioFinal, tipoJogo, nomeTime });
+
+        if (!quadraId || !dataFinal || !horarioFinal) {
+            return res.status(400).json({ error: 'Quadra, data e horário são obrigatórios para realizar a reserva.' });
+        }
+
         const id = uuidv4();
-        const jogador_id = req.user.id;
+        const jogador_id = req.user ? req.user.id : null;
 
         // jogadoresLista chega como array de strings com nomes
         const jogadoresJson = jogadoresLista && jogadoresLista.length > 0
@@ -43,7 +50,7 @@ router.post('/', authenticateToken, async (req, res) => {
         await db.execute(
             `INSERT INTO reservas (id, quadra_id, jogador_id, nome_jogador, telefone_jogador, data_reserva, horario_reserva, tipo_jogo, jogadores_lista, nome_time)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [id, quadraId, jogador_id, nomeJogador, telefoneJogador, data, horario, tipoJogo || 'horario_cheio', jogadoresJson, nomeTime || null]
+            [id, quadraId, jogador_id, nomeJogador, telefoneJogador, dataFinal, horarioFinal, tipoJogo || 'horario_cheio', jogadoresJson, nomeTime || null]
         );
 
         res.status(201).json({ message: 'Reserva criada com sucesso!', id });

@@ -74,7 +74,7 @@
         </form>
 
         <div style="margin-top: 24px; text-align: center; border-top: 1px solid var(--sc-border); padding-top: 20px;">
-          <button class="sc-btn sc-btn-danger sc-btn-sm" @click="sairDaConta">
+          <button class="sc-btn sc-btn-danger sc-btn-sm" @click="sairDaConta" style="width: 100%; min-height: 44px; border-radius: var(--sc-radius);" >
             Sair da Conta
           </button>
         </div>

@@ -243,12 +243,14 @@ export default {
           quadraId: this.quadra.id,
           nomeJogador: this.jogador.nome.trim(),
           telefoneJogador: this.jogador.telefone.trim(),
+          data: this.dataSelecionada,
+          horario: this.horarioSelecionado,
           dataReserva: this.dataSelecionada,
           horarioReserva: this.horarioSelecionado,
           tipoJogo: this.tipoJogo,
           nomeTime: this.nomeTime
         });
-        alert("Reserva efetuada com sucesso!");
+        alert("Reserva enviada com sucesso ao proprietário da quadra!");
         this.$router.push("/menu-jogador");
       } catch (e) {
         console.error("Erro ao efetuar reserva:", e);
