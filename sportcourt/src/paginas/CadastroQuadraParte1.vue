@@ -1,6 +1,6 @@
 <template>
   <div class="sc-page sc-flex" style="min-height: 100vh; flex-direction: column;">
-    <header class="sc-topbar" style="position: sticky; top: 0; z-index: 100; background: rgba(15, 17, 23, 0.95); backdrop-filter: blur(12px);">
+    <header class="sc-topbar" style="position: relative; width: 100%; z-index: 10; background: var(--sc-bg); border-bottom: 1px solid var(--sc-border);">
       <router-link to="/" class="sc-topbar-logo">
         <img :src="logo" alt="SportCourt" style="height: 38px; width: auto;" />
       </router-link>

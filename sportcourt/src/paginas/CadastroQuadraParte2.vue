@@ -1,6 +1,6 @@
 <template>
   <div class="sc-page sc-flex" style="min-height: 100vh; flex-direction: column;">
-    <header class="sc-topbar" style="position: sticky; top: 0; z-index: 100; background: rgba(15, 17, 23, 0.95); backdrop-filter: blur(12px);">
+    <header class="sc-topbar" style="position: relative; width: 100%; z-index: 10; background: var(--sc-bg); border-bottom: 1px solid var(--sc-border);">
       <div class="sc-flex sc-gap-2">
         <button @click="voltarPasso" class="sc-btn sc-btn-ghost sc-btn-sm" aria-label="Voltar">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>

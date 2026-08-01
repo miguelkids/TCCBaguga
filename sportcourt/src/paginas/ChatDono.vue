@@ -24,9 +24,9 @@
               :class="{ active: threadAtiva === t.jogador_id }"
               @click="selecionarThread(t.jogador_id)"
             >
-              <div class="sc-avatar" style="width: 36px; height: 36px;">
-                <img v-if="t.jogador_foto" :src="t.jogador_foto" :alt="t.jogador_nome" />
-                <span v-else>{{ (t.jogador_nome || '?').charAt(0).toUpperCase() }}</span>
+              <div class="sc-avatar" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--sc-bg-elevated);">
+                <img v-if="t.jogador_foto" :src="t.jogador_foto" :alt="t.jogador_nome" style="width: 100%; height: 100%; object-fit: cover;" />
+                <span v-else style="font-weight: 700; color: var(--sc-primary);">{{ (t.jogador_nome || '?').charAt(0).toUpperCase() }}</span>
               </div>
               <div style="flex: 1; min-width: 0;">
                 <div class="sc-flex-between">
@@ -43,9 +43,9 @@
 
         <!-- Área de mensagens -->
         <section class="chat-main">
-          <div v-if="!threadAtiva" class="sc-empty" style="margin: auto;">
-            <div class="sc-empty-icon">💬</div>
-            <p>Selecione uma conversa para visualizar as mensagens.</p>
+          <div v-if="!threadAtiva" class="sc-empty" style="margin: auto; padding: 40px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-text-muted); margin-bottom: 12px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <p class="sc-muted">Selecione uma conversa para visualizar as mensagens.</p>
           </div>
           <template v-else>
             <div class="messages-wrap" ref="messagesWrap">
@@ -102,59 +102,70 @@ export default {
   },
   async created() {
     this.quadraId = localStorage.getItem('quadraId');
-    if (!this.quadraId) {
-      const minhas = await api.getMinhasQuadras();
-      if (minhas.length > 0) this.quadraId = minhas[0].id;
-    }
-    if (this.quadraId) {
-      await this.carregarThreads();
-      this.pollInterval = setInterval(this.carregarThreads, 3000);
-    }
+    await this.carregarThreads();
+    this.pollInterval = setInterval(this.carregarMensagensSilencioso, 3000);
   },
-  unmounted() {
+  beforeUnmount() {
     if (this.pollInterval) clearInterval(this.pollInterval);
   },
   methods: {
     async carregarThreads() {
+      if (!this.quadraId) return;
       try {
-        this.threads = await api.getChatThreads(this.quadraId);
-        this.carregandoThreads = false;
-        if (this.threadAtiva) {
-          await this.carregarMensagensThread(this.threadAtiva);
+        this.carregandoThreads = true;
+        this.threads = await api.getThreadsDono(this.quadraId);
+        if (this.threads.length > 0 && !this.threadAtiva) {
+          this.selecionarThread(this.threads[0].jogador_id);
         }
       } catch (e) {
         console.error(e);
+      } finally {
+        this.carregandoThreads = false;
       }
     },
     async selecionarThread(jogadorId) {
       this.threadAtiva = jogadorId;
-      await this.carregarMensagensThread(jogadorId);
+      await this.carregarMensagens();
     },
-    async carregarMensagensThread(jogadorId) {
+    async carregarMensagens() {
+      if (!this.quadraId || !this.threadAtiva) return;
       try {
-        this.mensagens = await api.getChatThreadJogador(this.quadraId, jogadorId);
+        this.mensagens = await api.getMensagensChat(this.quadraId, this.threadAtiva);
         this.$nextTick(() => {
-          if (this.$refs.messagesWrap) {
-            this.$refs.messagesWrap.scrollTop = this.$refs.messagesWrap.scrollHeight;
-          }
+          this.rolarParaBaixo();
         });
       } catch (e) {
         console.error(e);
       }
     },
+    async carregarMensagensSilencioso() {
+      if (!this.quadraId || !this.threadAtiva) return;
+      try {
+        const msgs = await api.getMensagensChat(this.quadraId, this.threadAtiva);
+        if (msgs.length !== this.mensagens.length) {
+          this.mensagens = msgs;
+          this.$nextTick(() => this.rolarParaBaixo());
+        }
+      } catch (e) {
+        // silencioso
+      }
+    },
     async enviar() {
-      if (!this.textoNovaMensagem.trim() || !this.threadAtiva) return;
+      if (!this.textoNovaMensagem.trim() || !this.quadraId || !this.threadAtiva) return;
       try {
         this.enviando = true;
-        await api.enviarMensagem(this.quadraId, this.textoNovaMensagem.trim());
+        await api.enviarMensagemChat(this.quadraId, this.threadAtiva, this.textoNovaMensagem.trim());
         this.textoNovaMensagem = '';
-        await this.carregarMensagensThread(this.threadAtiva);
-        await this.carregarThreads();
+        await this.carregarMensagens();
       } catch (e) {
-        alert(e.message || 'Erro ao enviar.');
+        alert(e.message || 'Erro ao enviar mensagem.');
       } finally {
         this.enviando = false;
       }
+    },
+    rolarParaBaixo() {
+      const el = this.$refs.messagesWrap;
+      if (el) el.scrollTop = el.scrollHeight;
     }
   }
 };
@@ -163,12 +174,15 @@ export default {
 <style scoped>
 .grid-chat {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  height: 600px;
+  grid-template-columns: 260px 1fr;
+  min-height: 520px;
   overflow: hidden;
 }
+
 @media (max-width: 768px) {
-  .grid-chat { grid-template-columns: 1fr; height: auto; }
+  .grid-chat {
+    grid-template-columns: 1fr;
+  }
 }
 
 .chat-sidebar {
@@ -176,21 +190,36 @@ export default {
   display: flex;
   flex-direction: column;
 }
+
 .threads-list {
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
-  flex: 1;
 }
+
 .thread-item {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 12px 16px;
-  cursor: pointer;
   border-bottom: 1px solid var(--sc-border);
-  transition: background 0.2s;
+  cursor: pointer;
+  transition: background var(--sc-transition);
 }
-.thread-item:hover, .thread-item.active {
+
+.thread-item:hover {
   background: var(--sc-bg-elevated);
+}
+
+.thread-item.active {
+  background: var(--sc-primary-subtle);
+  border-left: 3px solid var(--sc-primary);
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chat-main {
@@ -198,42 +227,45 @@ export default {
   flex-direction: column;
   height: 100%;
 }
+
 .messages-wrap {
   flex: 1;
-  overflow-y: auto;
   padding: 16px;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  max-height: 440px;
 }
 
 .msg-bubble-wrap {
   display: flex;
   justify-content: flex-start;
 }
+
 .msg-bubble-wrap.mine {
   justify-content: flex-end;
 }
+
 .msg-bubble {
   max-width: 75%;
   padding: 10px 14px;
-  border-radius: var(--sc-radius-lg);
+  border-radius: 14px;
   font-size: 14px;
   line-height: 1.4;
 }
+
 .msg-jogador {
   background: var(--sc-bg-elevated);
   border: 1px solid var(--sc-border);
   color: var(--sc-text);
+  border-top-left-radius: 2px;
 }
+
 .msg-dono {
   background: var(--sc-primary);
   color: #0f1117;
   font-weight: 500;
-}
-.truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  border-top-right-radius: 2px;
 }
 </style>
