@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import logo from '@/assets/logosite.png'
+import logo from '@/assets/logosite1.png'
 
 export default {
   name: 'TopbarJogador',

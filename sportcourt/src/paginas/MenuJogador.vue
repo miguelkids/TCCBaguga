@@ -14,10 +14,10 @@
       </div>
 
       <div v-if="carregando" class="sc-empty">Carregando suas reservas...</div>
-      <div v-else-if="reservas.length === 0" class="sc-empty">
-        <div class="sc-empty-icon">📅</div>
+      <div v-else-if="reservas.length === 0" class="sc-empty" style="padding: 40px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-text-muted); margin-bottom: 12px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         <h2 class="sc-h3">Nenhuma reserva agendada</h2>
-        <p>Você ainda não realizou nenhum agendamento. Encontre uma quadra disponível!</p>
+        <p class="sc-muted">Você ainda não realizou nenhum agendamento. Encontre uma quadra disponível!</p>
         <button class="sc-btn sc-btn-primary" style="margin-top: 16px;" @click="$router.push('/reserva')">
           Buscar Quadra
         </button>
@@ -32,16 +32,17 @@
         >
           <div class="sc-flex-between sc-gap-4" style="flex-wrap: wrap; margin-bottom: 12px;">
             <div class="sc-flex sc-gap-3">
-              <div class="sc-avatar" style="width: 48px; height: 48px; border-radius: var(--sc-radius);">
-                <img v-if="r.fotoUrl" :src="fotoSrc(r.fotoUrl)" :alt="r.quadraNome" />
-                <span v-else>⚽</span>
+              <div class="sc-avatar" style="width: 48px; height: 48px; border-radius: var(--sc-radius); background: var(--sc-bg-elevated); display: flex; align-items: center; justify-content: center;">
+                <img v-if="r.fotoUrl" :src="fotoSrc(r.fotoUrl)" :alt="r.quadraNome" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--sc-radius);" />
+                <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--sc-primary);"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
               </div>
               <div>
                 <h3 style="font-weight: 800; font-size: 16px; margin: 0;">
-                  {{ r.tipoJogo === 'contra_time' && r.nomeTimeB ? `${r.nomeTime} ⚔️ ${r.nomeTimeB}` : (r.quadraNome || 'Reserva de Quadra') }}
+                  {{ r.tipoJogo === 'contra_time' && r.nomeTimeB ? `${r.nomeTime} vs ${r.nomeTimeB}` : (r.quadraNome || 'Reserva de Quadra') }}
                 </h3>
-                <p class="sc-muted" style="font-size: 13px; margin-top: 2px;">
-                  📅 {{ formatarData(r.data_reserva) }} às {{ r.horario_reserva }}
+                <p class="sc-muted" style="font-size: 13px; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  {{ formatarData(r.data_reserva) }} às {{ r.horario_reserva }}
                 </p>
               </div>
             </div>
@@ -101,22 +102,29 @@ export default {
     async carregarReservas() {
       try {
         this.carregando = true;
-        this.reservas = await api.getReservas();
+        this.reservas = await api.getReservasJogador();
       } catch (e) {
         console.error(e);
       } finally {
         this.carregando = false;
       }
     },
-    async avaliar(reserva, estrelas) {
+    async avaliar(reserva, nota) {
       try {
-        await api.avaliarQuadra(reserva.quadra_id, estrelas);
-        reserva.minhaNota = estrelas;
-        alert("Avaliação registrada com sucesso!");
+        reserva.minhaNota = nota;
+        await api.avaliarQuadra(reserva.quadra_id, nota);
+        alert("Obrigado pela sua avaliação!");
       } catch (e) {
-        alert(e.message || "Erro ao avaliar.");
+        alert(e.message || "Erro ao enviar avaliação.");
       }
     }
   }
 };
 </script>
+
+<style scoped>
+.sc-stars { display: flex; gap: 4px; }
+.sc-star { font-size: 18px; color: var(--sc-text-faint); cursor: pointer; transition: color 0.2s; }
+.sc-star.filled { color: var(--sc-amber); }
+.sc-star:hover { color: var(--sc-amber); }
+</style>
